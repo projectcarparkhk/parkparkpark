@@ -18,6 +18,12 @@ export default {
       }
     },
     {
+      name: 'subDistrict',
+      title: 'Sub District',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'subDistrict' } }],
+    },
+    {
       name: 'author',
       title: 'Author',
       type: 'reference',
