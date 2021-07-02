@@ -10,13 +10,13 @@ Rename the `.env.test` file to `.env` and store the environment variables that N
 Once those env variables are ready, you can run the following commands to get Next's development server up and running:
 
 ```bash
-npm install
+yarn
 
 # Run the frontend
-npm run dev
+yarn run dev
 
 # Run the Studio
-npm run start:sanity
+yarn run start:sanity
 ```
 
 The blog will be running at `http://localhost:3000`, the Studio will run at `http://localhost:3333`.
