@@ -2,7 +2,7 @@ import { baseLanguage } from './localeString'
 
 export default {
   name: 'carpark',
-  title: 'Car Park',
+  title: 'Carpark',
   type: 'document',
   fields: [
     {

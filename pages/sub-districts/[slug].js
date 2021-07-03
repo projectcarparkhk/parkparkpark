@@ -5,6 +5,7 @@ import PostBody from '../../components/post-body'
 import MoreStories from '../../components/more-stories'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
+import List from '../../components/List'
 import ListItem from '../../components/ListItem'
 import SectionSeparator from '../../components/section-separator'
 import Layout from '../../components/layout'
@@ -37,20 +38,22 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
               </Head>
 
               <h1>{name}</h1>
-              {
-                carparks?.map(carpark => {
-                  return (
-                    <ListItem
-                        title={carpark.name}
-                        link={`/carparks/${carpark.slug}`}
-                        coverImage={carpark.coverImage}
-                        date={carpark.date}
-                        slug={carpark.slug}
-                        excerpt={carpark.excerpt}
-                      />
-                  )
-                })
-              }
+              <List>
+                {
+                  carparks?.map(carpark => {
+                    return (
+                      <ListItem
+                          title={carpark.name}
+                          link={`/carparks/${carpark.slug}`}
+                          coverImage={carpark.coverImage}
+                          date={carpark.date}
+                          slug={carpark.slug}
+                          excerpt={carpark.excerpt}
+                        />
+                    )
+                  })
+                }
+              </List>
               {/* <PostHeader
                 title={post.title}
                 coverImage={post.coverImage}
