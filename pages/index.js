@@ -25,10 +25,9 @@ export default function Index({ allPosts, allAreas, preview }) {
                 <div class='font-semibold py-2 px-4'>{area.name}</div>
                 <div class='grid grid-cols-3 gap-4'>
                 {area.subDistricts.map(subDistrict => {
-                  console.log(subDistrict)
                   return (
-                    <Link href={`/sub-district/${subDistrict.slug.zhSlug.current}`}>
-                      <div class='flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg'>{subDistrict.name.zh}</div>
+                    <Link href={`/sub-districts/${subDistrict.slug}`}>
+                      <div class='flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg'>{subDistrict.name}</div>
                     </Link>
                   )
                 })}
@@ -55,9 +54,9 @@ export default function Index({ allPosts, allAreas, preview }) {
   )
 }
 
-export async function getStaticProps({ preview = false, locale = 'zh' }) {
+export async function getStaticProps({ preview = false}) {
   const allPosts = await getAllPostsForHome(preview)
-  const allAreas = await getAllSubDistrictsGroupByArea(locale)
+  const allAreas = await getAllSubDistrictsGroupByArea()
   return {
     props: { allPosts, allAreas, preview },
     revalidate: 1
