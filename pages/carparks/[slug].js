@@ -22,6 +22,7 @@ export default function Carpark({ carpark, name, slug, preview = false }) {
   }
   return (
     <Layout preview={preview}>
+      <Container>
       <Header />
       {
         router.isFallback ? (
@@ -44,6 +45,7 @@ export default function Carpark({ carpark, name, slug, preview = false }) {
           </>
         )
       }
+      </Container>
     </Layout>
   )
 }

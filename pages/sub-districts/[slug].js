@@ -23,6 +23,7 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
   }
   return (
     <Layout preview={preview}>
+      <Container>
       <Header />
       {
         router.isFallback ? (
@@ -37,7 +38,7 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
                 {/* <meta property="og:image" content={post.ogImage.url} /> */}
               </Head>
 
-              <h1>{name}</h1>
+              <PostTitle>{name}</PostTitle>
               <List>
                 {
                   carparks?.map(carpark => {
@@ -65,6 +66,7 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
           </>
         )
       }
+      </Container>
     </Layout>
   )
 }

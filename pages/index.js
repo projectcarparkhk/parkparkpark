@@ -3,11 +3,12 @@ import Container from '../components/container'
 import Link from 'next/link'
 import MoreStories from '../components/more-stories'
 import HeroPost from '../components/hero-post'
-import Intro from '../components/intro'
+import Header from '../components/header'
 import Layout from '../components/layout'
 import { getAllPostsForHome, getAllSubDistrictsGroupByArea } from '../lib/api'
 import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
+import Tabs from '../components/Tabs'
 import TabNav from '../components/TabNav'
 import TabNavItem from '../components/TabNavItem'
 
@@ -21,35 +22,23 @@ export default function Index({ allPosts, allAreas, preview }) {
           <title>Next.js Blog Example with {CMS_NAME}</title>
         </Head>
         <Container>
-          <Intro />
-          <div>
-          {
-            allAreas.map(area => {
-              return (
-                <TabNav>
-                  <TabNavItem
-                    id={area._id}
-                    isActive={area._id === activeAreaId}
-                    onClick={e => setActiveAreaId(e.target.getAttribute('data-tab-id'))}
-                  >
-                      {area.name}
-                  </TabNavItem>
-                </TabNav>
-              )
-            })
-          }
-          <div>
-          {
-            allAreas.find(a => a._id === activeAreaId).subDistricts.map(subDistrict => {
-              return (
-                <Link href={`/sub-districts/${subDistrict.slug}`}>
-                  <div className='flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg'>{subDistrict.name}</div>
-                </Link>
-              )
-            })
-          }
-          </div>
-          </div>
+          <Header />
+            <Tabs tabs={allAreas.map(a => ({
+              ...a,
+              label: a.name,
+              panel: <div className="grid grid-cols-3 gap-4">
+              {
+                a.subDistricts.map(subDistrict => {
+                  return (
+                    <Link href={`/sub-districts/${subDistrict.slug}`}>
+                      <div className='flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg cursor-pointer'>{subDistrict.name}</div>
+                    </Link>
+                  )
+                })
+              }
+              </div>
+            }))} 
+            />
           {/* {heroPost && (
             <HeroPost
               title={heroPost.title}

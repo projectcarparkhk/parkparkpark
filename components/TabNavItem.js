@@ -1,12 +1,13 @@
-export default function TabNavItem({ id, href, isActive, children, onClick }) {
+export default function TabNavItem({ id, isActive, children, onClick }) {
   return (
-    <li onClick={onClick}>
-      <span
+    <li
+      onClick={onClick}>
+      <button
         data-tab-id={id} 
-        className={`block px-4 py-2 rounded-md ${isActive ? 'bg-amber-100 text-amber-700' : ''}`}
+        className={`block flex-1 px-4 py-2 rounded-md ${isActive ? 'bg-yellow-100 text-yellow-700' : ''}`}
       >
         {children}
-      </span>
+      </button>
     </li>
   )
 }
