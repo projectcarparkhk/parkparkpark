@@ -7,7 +7,7 @@ export default function CoverImage({ title, url, imageObject, slug, link }) {
     <img
       width={1240}
       height={540}
-      alt={`Cover Image for ${title}`}
+      alt={title}
       className={cn('shadow-small', {
         'hover:shadow-medium transition-shadow duration-200': slug,
       })}
@@ -19,7 +19,7 @@ export default function CoverImage({ title, url, imageObject, slug, link }) {
     <div className="-mx-5 sm:mx-0">
       {link ? (
         <Link href={link}>
-          <a aria-label={title}>{image}</a>
+          <span aria-label={title}>{image}</span>
         </Link>
       ) : (
         image
