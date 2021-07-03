@@ -6,6 +6,9 @@
     "build": "npm run build:sanity && pwd && npm run build:web",
     "build:web": "next build",
     "start:web": "next start",
+    "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx --ext js --ext jsx",
+    "lint:fix": "yarn lint --fix",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "build:sanity": "cd studio && sanity build ../public/studio -y && cd ..",
     "start:sanity": "cp .env ./studio/.env.development && cd studio && sanity start",
     "postinstall": "lerna bootstrap"
@@ -27,9 +30,29 @@
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@sanity/cli": "^2.0.5",
     "autoprefixer": "^10.2.6",
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "husky": "^7.0.0",
     "lerna": "^4.0.0",
+    "lint-staged": "^11.0.0",
     "postcss": "^8.3.5",
     "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.3.2",
     "tailwindcss": "^2.2.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "yarn format"
+    ]
   }
 }

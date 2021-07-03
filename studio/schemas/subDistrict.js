@@ -1,3 +1,5 @@
+import { baseLanguage } from './localeString'
+
 export default {
   name: 'subDistrict',
   title: 'Sub District',
@@ -5,22 +7,34 @@ export default {
   fields: [
     {
       name: 'name',
-      title: 'Name',
-      type: 'string'
+      title: 'Display Name',
+      type: 'localeString',
+    },
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'localeSlug',
+    },
+    {
+      name: 'area',
+      title: 'Area',
+      type: 'reference',
+      to: [{ type: 'area' }],
     },
     {
       name: 'image',
       title: 'Image',
       type: 'image',
       options: {
-        hotspot: true
-      }
+        hotspot: true,
+      },
     },
   ],
   preview: {
     select: {
-      title: 'name',
-      media: 'image'
-    }
-  }
+      title: `name.${baseLanguage.id}`,
+      subtitle: `area.name.${baseLanguage.id}`,
+      media: 'image',
+    },
+  },
 }

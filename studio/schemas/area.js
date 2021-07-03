@@ -1,30 +1,33 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'category',
-  title: 'Category',
+  name: 'area',
+  title: 'Area',
   type: 'document',
   fields: [
-    {
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-    },
     {
       name: 'name',
       title: 'Display Name',
       type: 'localeString',
     },
     {
-      name: 'description',
-      title: 'Description',
-      type: 'localeString',
+      name: 'slug',
+      title: 'Slug',
+      type: 'localeSlug',
+    },
+    {
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
     },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      media: 'mainImage',
+      media: 'image',
     },
   },
 }

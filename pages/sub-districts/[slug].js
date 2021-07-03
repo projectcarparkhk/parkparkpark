@@ -5,18 +5,20 @@ import PostBody from '../../components/post-body'
 import MoreStories from '../../components/more-stories'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
-import Comments from '../../components/comments'
+import List from '../../components/List'
+import ListItem from '../../components/ListItem'
 import SectionSeparator from '../../components/section-separator'
 import Layout from '../../components/layout'
-import { getAllPostsWithSlug, getPostAndMorePosts } from '../../lib/api'
+import { getAllSubDistrictsWithSlug, getAllCarParks } from '../../lib/api'
 import PostTitle from '../../components/post-title'
+import Link from 'next/link'
 import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import Form from '../../components/form'
 
-export default function Post({ post, morePosts, preview }) {
+export default function SubDistrict({ name, slug, carparks, preview = false }) {
   const router = useRouter()
-  if (!router.isFallback && !post?.slug) {
+  if (!router.isFallback && !slug) {
     return <ErrorPage statusCode={404} />
   }
   return (
@@ -29,25 +31,33 @@ export default function Post({ post, morePosts, preview }) {
           <>
             <article>
               <Head>
-                <title>
-                  {post.title} | Next.js Blog Example with {CMS_NAME}
-                </title>
+                <title>{name}</title>
                 {/* <meta property="og:image" content={post.ogImage.url} /> */}
               </Head>
-              <PostHeader
+
+              <PostTitle>{name}</PostTitle>
+              <List>
+                {carparks?.map((carpark) => {
+                  return (
+                    <ListItem
+                      title={carpark.name}
+                      link={`/carparks/${carpark.slug}`}
+                      coverImage={carpark.coverImage}
+                      date={carpark.date}
+                      slug={carpark.slug}
+                      excerpt={carpark.excerpt}
+                    />
+                  )
+                })}
+              </List>
+              {/* <PostHeader
                 title={post.title}
                 coverImage={post.coverImage}
                 date={post.date}
                 author={post.author}
               />
-              <PostBody content={post.body} />
+              <PostBody content={post.body} /> */}
             </article>
-
-            <Comments comments={post.comments} />
-            <Form _id={post._id} />
-
-            <SectionSeparator />
-            {morePosts.length > 0 && <MoreStories posts={morePosts} />}
           </>
         )}
       </Container>
@@ -56,24 +66,23 @@ export default function Post({ post, morePosts, preview }) {
 }
 
 export async function getStaticProps({ params, preview = false }) {
-  const data = await getPostAndMorePosts(params.slug, preview)
+  const data = await getAllCarParks(params.slug, preview)
   return {
     props: {
       preview,
-      post: data?.post || null,
-      morePosts: data?.morePosts || null,
+      ...data,
     },
     revalidate: 1,
   }
 }
 
 export async function getStaticPaths() {
-  const allPosts = await getAllPostsWithSlug()
+  const allSubdistricts = await getAllSubDistrictsWithSlug()
   return {
     paths:
-      allPosts?.map((post) => ({
+      allSubdistricts?.map((subDistrict) => ({
         params: {
-          slug: post.slug,
+          slug: subDistrict.slug,
         },
       })) || [],
     fallback: true,
