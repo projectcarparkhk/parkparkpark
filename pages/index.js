@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import Container from '../components/container'
 import Link from 'next/link'
 import MoreStories from '../components/more-stories'
@@ -23,22 +23,25 @@ export default function Index({ allPosts, allAreas, preview }) {
         </Head>
         <Container>
           <Header />
-            <Tabs tabs={allAreas.map(a => ({
+          <Tabs
+            tabs={allAreas.map((a) => ({
               ...a,
               label: a.name,
-              panel: <div className="grid grid-cols-3 gap-4">
-              {
-                a.subDistricts.map(subDistrict => {
-                  return (
-                    <Link href={`/sub-districts/${subDistrict.slug}`}>
-                      <div className='flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg cursor-pointer'>{subDistrict.name}</div>
-                    </Link>
-                  )
-                })
-              }
-              </div>
-            }))} 
-            />
+              panel: (
+                <div className="grid grid-cols-3 gap-4">
+                  {a.subDistricts.map((subDistrict) => {
+                    return (
+                      <Link href={`/sub-districts/${subDistrict.slug}`}>
+                        <div className="flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg cursor-pointer">
+                          {subDistrict.name}
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              ),
+            }))}
+          />
           {/* {heroPost && (
             <HeroPost
               title={heroPost.title}
@@ -56,12 +59,11 @@ export default function Index({ allPosts, allAreas, preview }) {
   )
 }
 
-export async function getStaticProps({ preview = false}) {
+export async function getStaticProps({ preview = false }) {
   const allPosts = await getAllPostsForHome(preview)
   const allAreas = await getAllSubDistrictsGroupByArea()
   return {
     props: { allPosts, allAreas, preview },
-    revalidate: 1
+    revalidate: 1,
   }
-
 }

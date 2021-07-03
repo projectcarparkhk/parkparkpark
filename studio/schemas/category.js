@@ -8,7 +8,7 @@ export default {
     {
       name: 'title',
       title: 'Title',
-      type: 'string'
+      type: 'string',
     },
     {
       name: 'name',
@@ -19,12 +19,12 @@ export default {
       name: 'description',
       title: 'Description',
       type: 'localeString',
-    }
+    },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      media: 'mainImage'
-    }
-  }
+      media: 'mainImage',
+    },
+  },
 }

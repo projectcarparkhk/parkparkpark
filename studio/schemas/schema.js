@@ -36,6 +36,6 @@ export default createSchema({
     blockContent,
     comment,
     subDistrict,
-    area
-  ])
+    area,
+  ]),
 })

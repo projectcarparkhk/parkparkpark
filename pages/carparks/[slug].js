@@ -8,7 +8,10 @@ import CarparkHeader from '../../components/carpark-header'
 import Comments from '../../components/comments'
 import SectionSeparator from '../../components/section-separator'
 import Layout from '../../components/layout'
-import { getAllCarParksWithSlug, getCarparkAndMoreCarparks } from '../../lib/api'
+import {
+  getAllCarParksWithSlug,
+  getCarparkAndMoreCarparks,
+} from '../../lib/api'
 import PostTitle from '../../components/post-title'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -23,17 +26,14 @@ export default function Carpark({ carpark, name, slug, preview = false }) {
   return (
     <Layout preview={preview}>
       <Container>
-      <Header />
-      {
-        router.isFallback ? (
+        <Header />
+        {router.isFallback ? (
           <PostTitle>Loading…</PostTitle>
         ) : (
           <>
             <article>
               <Head>
-                <title>
-                  {carpark.name}
-                </title>
+                <title>{carpark.name}</title>
                 {/* <meta property="og:image" content={post.ogImage.url} /> */}
               </Head>
               <CarparkHeader
@@ -43,8 +43,7 @@ export default function Carpark({ carpark, name, slug, preview = false }) {
               <CarparkBody content={carpark.body} />
             </article>
           </>
-        )
-      }
+        )}
       </Container>
     </Layout>
   )
@@ -57,7 +56,7 @@ export async function getStaticProps({ params, preview = false }) {
       preview,
       ...data,
     },
-    revalidate: 1
+    revalidate: 1,
   }
 }
 
@@ -65,7 +64,7 @@ export async function getStaticPaths() {
   const allCarParks = await getAllCarParksWithSlug()
   return {
     paths:
-    allCarParks?.map((carpark) => ({
+      allCarParks?.map((carpark) => ({
         params: {
           slug: carpark.slug,
         },

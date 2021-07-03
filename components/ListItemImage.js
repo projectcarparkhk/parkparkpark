@@ -2,7 +2,15 @@ import cn from 'classnames'
 import Link from 'next/link'
 import { imageBuilder } from '../lib/sanity'
 
-export default function ListItemImage({ title, url, imageObject, slug, link, width = '144', height = '144' }) {
+export default function ListItemImage({
+  title,
+  url,
+  imageObject,
+  slug,
+  link,
+  width = '144',
+  height = '144',
+}) {
   const image = (
     <img
       width={width}

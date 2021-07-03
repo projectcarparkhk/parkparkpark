@@ -24,36 +24,31 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
   return (
     <Layout preview={preview}>
       <Container>
-      <Header />
-      {
-        router.isFallback ? (
+        <Header />
+        {router.isFallback ? (
           <PostTitle>Loading…</PostTitle>
         ) : (
           <>
             <article>
               <Head>
-                <title>
-                  {name}
-                </title>
+                <title>{name}</title>
                 {/* <meta property="og:image" content={post.ogImage.url} /> */}
               </Head>
 
               <PostTitle>{name}</PostTitle>
               <List>
-                {
-                  carparks?.map(carpark => {
-                    return (
-                      <ListItem
-                          title={carpark.name}
-                          link={`/carparks/${carpark.slug}`}
-                          coverImage={carpark.coverImage}
-                          date={carpark.date}
-                          slug={carpark.slug}
-                          excerpt={carpark.excerpt}
-                        />
-                    )
-                  })
-                }
+                {carparks?.map((carpark) => {
+                  return (
+                    <ListItem
+                      title={carpark.name}
+                      link={`/carparks/${carpark.slug}`}
+                      coverImage={carpark.coverImage}
+                      date={carpark.date}
+                      slug={carpark.slug}
+                      excerpt={carpark.excerpt}
+                    />
+                  )
+                })}
               </List>
               {/* <PostHeader
                 title={post.title}
@@ -64,8 +59,7 @@ export default function SubDistrict({ name, slug, carparks, preview = false }) {
               <PostBody content={post.body} /> */}
             </article>
           </>
-        )
-      }
+        )}
       </Container>
     </Layout>
   )
@@ -78,7 +72,7 @@ export async function getStaticProps({ params, preview = false }) {
       preview,
       ...data,
     },
-    revalidate: 1
+    revalidate: 1,
   }
 }
 

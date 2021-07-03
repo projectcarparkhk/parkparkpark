@@ -13,30 +13,28 @@ export default {
     {
       name: 'slug',
       title: 'Slug',
-      type: 'localeSlug'
+      type: 'localeSlug',
     },
     {
       name: 'area',
       title: 'Area',
       type: 'reference',
-      to: [
-        { type: 'area'}
-      ]
+      to: [{ type: 'area' }],
     },
     {
       name: 'image',
       title: 'Image',
       type: 'image',
       options: {
-        hotspot: true
-      }
+        hotspot: true,
+      },
     },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      subtitle: `area.name.${baseLanguage.id}`, 
-      media: 'image'
-    }
-  }
+      subtitle: `area.name.${baseLanguage.id}`,
+      media: 'image',
+    },
+  },
 }

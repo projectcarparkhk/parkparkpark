@@ -1,9 +1,9 @@
 const supportedLanguages = [
   { id: 'zh', title: 'Traditional Chinese', isDefault: true },
-  { id: 'en', title: 'English' }
+  { id: 'en', title: 'English' },
 ]
 
-export const baseLanguage = supportedLanguages.find(l => l.isDefault)
+export const baseLanguage = supportedLanguages.find((l) => l.isDefault)
 
 export default {
   title: 'Localized string',
@@ -19,14 +19,14 @@ export default {
       options: {
         collapsible: true, // Makes the whole fieldset collapsible
         collapsed: false, // Defines if the fieldset should be collapsed by default or not
-      }
-    }
+      },
+    },
   ],
   // Dynamically define one field per language
-  fields: supportedLanguages.map(lang => ({
+  fields: supportedLanguages.map((lang) => ({
     title: lang.title,
     name: lang.id,
     type: 'string',
-    fieldset: lang.isDefault ? null : 'translations'
-  }))
+    fieldset: lang.isDefault ? null : 'translations',
+  })),
 }

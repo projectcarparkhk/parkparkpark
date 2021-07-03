@@ -20,14 +20,14 @@ export default {
       title: 'Image',
       type: 'image',
       options: {
-        hotspot: true
-      }
+        hotspot: true,
+      },
     },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      media: 'image'
-    }
-  }
+      media: 'image',
+    },
+  },
 }
