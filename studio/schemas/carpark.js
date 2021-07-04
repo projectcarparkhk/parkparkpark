@@ -16,6 +16,11 @@ export default {
       type: 'localeSlug',
     },
     {
+      name: 'address',
+      title: 'Address',
+      type: 'localeString',
+    },
+    {
       name: 'subDistrict',
       title: 'Sub District',
       type: 'array',
@@ -33,10 +38,10 @@ export default {
       },
     },
     {
-      name: 'categories',
-      title: 'Categories',
+      name: 'subTag',
+      title: 'Sub Tag',
       type: 'array',
-      of: [{ type: 'reference', to: { type: 'category' } }],
+      of: [{ type: 'reference', to: { type: 'subTag' } }],
     },
     {
       name: 'publishedAt',
