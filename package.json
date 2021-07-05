@@ -14,6 +14,7 @@
     "postinstall": "lerna bootstrap"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
     "@sanity/block-content-to-react": "^3.0.0",
     "@sanity/client": "^2.8.0",
     "@sanity/image-url": "^0.140.19",

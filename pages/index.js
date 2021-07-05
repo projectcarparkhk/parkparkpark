@@ -1,69 +1,52 @@
 import { useState } from 'react'
-import Container from '../components/container'
 import Link from 'next/link'
-import MoreStories from '../components/more-stories'
-import HeroPost from '../components/hero-post'
-import Header from '../components/header'
-import Layout from '../components/layout'
-import { getAllPostsForHome, getAllSubDistrictsGroupByArea } from '../lib/api'
+import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
 import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
-import Tabs from '../components/Tabs'
-import TabNav from '../components/TabNav'
-import TabNavItem from '../components/TabNavItem'
+import Header from '../components/header'
+import {Container} from '@material-ui/core'
+import {useTheme} from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles';
 
-export default function Index({ allPosts, allAreas, preview }) {
-  const [activeAreaId, setActiveAreaId] = useState(allAreas[0]._id)
 
+
+export default function Index({ posts, areas, preview }) {
+  const [activeAreaId, setActiveAreaId] = useState(areas[0]._id)
+
+  const theme = useTheme();
+
+  const useStyles = makeStyles({
+    root: {
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      border: 0,
+      borderRadius: 3,
+      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      color: theme.light.primaryText,
+      height: 48,
+      padding: '0 30px',
+    },
+  });
+  const classes = useStyles();
+  console.log({posts, areas, preview })
+  console.log(CMS_NAME)
   return (
     <>
-      <Layout preview={preview}>
-        <Head>
-          <title>Next.js Blog Example with {CMS_NAME}</title>
-        </Head>
-        <Container>
-          <Header />
-          <Tabs
-            tabs={allAreas.map((a) => ({
-              ...a,
-              label: a.name,
-              panel: (
-                <div className="grid grid-cols-3 gap-4">
-                  {a.subDistricts.map((subDistrict) => {
-                    return (
-                      <Link href={`/sub-districts/${subDistrict.slug}`}>
-                        <div className="flex py-2 px-4 items-center justify-center bg-gray-100 rounded-lg cursor-pointer">
-                          {subDistrict.name}
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              ),
-            }))}
-          />
-          {/* {heroPost && (
-            <HeroPost
-              title={heroPost.title}
-              coverImage={heroPost.coverImage}
-              date={heroPost.date}
-              author={heroPost.author}
-              slug={heroPost.slug}
-              excerpt={heroPost.excerpt}
-            />
-          )} */}
-          {/* {morePosts.length > 0 && <MoreStories posts={morePosts} />} */}
-        </Container>
-      </Layout>
+      <Container maxWidth="lg">
+        <Header/>
+        <div class={classes.root} >
+            hahaha
+        </div>
+
+      </Container>
     </>
   )
 }
 
 export async function getStaticProps({ preview = false }) {
-  const allPosts = await getAllPostsForHome(preview)
-  const allAreas = await getAllSubDistrictsGroupByArea()
+  const posts = await getPostsForHome(preview)
+  const areas = await getSubDistrictsGroupByArea()
   return {
-    props: { allPosts, allAreas, preview },
+    props: { posts, areas, preview },
     revalidate: 1,
   }
 }

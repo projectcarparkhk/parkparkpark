@@ -18,12 +18,6 @@ export default {
       },
     },
     {
-      name: 'subDistrict',
-      title: 'Sub District',
-      type: 'array',
-      of: [{ type: 'reference', to: { type: 'subDistrict' } }],
-    },
-    {
       name: 'author',
       title: 'Author',
       type: 'reference',
@@ -38,10 +32,10 @@ export default {
       },
     },
     {
-      name: 'categories',
-      title: 'Categories',
+      name: 'subtag',
+      title: 'Subtag',
       type: 'array',
-      of: [{ type: 'reference', to: { type: 'category' } }],
+      of: [{ type: 'reference', to: { type: 'subTag' } }],
     },
     {
       name: 'publishedAt',
