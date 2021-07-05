@@ -1,8 +1,8 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'category',
-  title: 'Category',
+  name: 'tag',
+  title: 'Tag',
   type: 'document',
   fields: [
     {
@@ -23,8 +23,7 @@ export default {
   ],
   preview: {
     select: {
-      title: `name.${baseLanguage.id}`,
-      media: 'mainImage',
+      title: `name.${baseLanguage.id}`
     },
   },
 }

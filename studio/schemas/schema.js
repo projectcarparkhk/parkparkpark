@@ -9,12 +9,13 @@ import localeString from './localeString'
 import localeSlug from './localeSlug'
 import carpark from './carpark'
 import blockContent from './blockContent'
-import category from './category'
 import post from './post'
 import author from './author'
 import comment from './comment'
 import subDistrict from './subDistrict'
 import area from './area'
+import tag from './tag'
+import subTag from './subTag'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -29,7 +30,6 @@ export default createSchema({
     // in the studio.
     post,
     author,
-    category,
     // When added to this list, object types can be used as
     // { type: 'typename' } in other document schemas
     carpark,
@@ -37,5 +37,7 @@ export default createSchema({
     comment,
     subDistrict,
     area,
+    tag,
+    subTag
   ]),
 })
