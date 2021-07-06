@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { AppBar, Container } from '@material-ui/core'
+import { AppBar, Toolbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
-  container: {
+  toolbar: {
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       justifyContent: 'center',
@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <>
       <AppBar>
-        <Container maxWidth="xl" fixed className={classes.container}>
+        <Toolbar className={classes.toolbar}>
           <div>
             <h2 className={classes.headerTitle}>
               <Link href="/">
@@ -37,8 +37,9 @@ export default function Header() {
               </Link>
             </h2>
             <div className={classes.slogan}>全港商場免費泊車及停車場優惠</div>
+
           </div>
-        </Container>
+        </Toolbar>
       </AppBar>
     </>
   )

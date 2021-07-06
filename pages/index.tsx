@@ -1,36 +1,69 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
 import Head from 'next/head'
 import Image from 'next/image'
 import { CMS_NAME } from '../lib/constants'
 import Header from '../components/header'
-import { Container, InputBase } from '@material-ui/core'
-import { useTheme } from '@material-ui/core/styles'
-import { makeStyles } from '@material-ui/core/styles'
+import { Avatar, Chip, Container, InputBase } from '@material-ui/core'
+import { Theme, useTheme } from '@material-ui/core/styles'
+import { fade, makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme?: Theme) => ({
   backdrop: {
     height: '80vh',
-		paddingTop: '72px',
-		zIndex: '-1'
+    paddingTop: '72px',
+    zIndex: -1,
   },
-	search: {
-		backgroundColor: 'white'
-	},
-	inputInput: {
-		backgroundColor: 'white',
-		borderRadius:"10px"
-	}
+  search: {
+    position: 'relative',
+    borderRadius: '30px',
+    backgroundColor: 'white',
+    width: '50%',
+    height: '4rem',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    marginTop: theme.spacing(3),
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    width: '100%',
+    fontSize: '1.6rem',
+  },
+  tagSelect: {
+    borderRadius: '30px',
+    backgroundColor: 'white',
+    width: '100%',
+    height: '4rem',
+    marginTop: theme.spacing(3),
+    display: 'flex',
+    alignItems:'center',
+    padding: theme.spacing(0,2)
+  },
 }))
 
 export default function Index({ posts, areas, preview }) {
   const [activeAreaId, setActiveAreaId] = useState(areas[0]._id)
-
+  const [isTagSelectOpen, setTagSelectOpen] = useState(false)
   const classes = useStyles()
   console.log({ posts, areas, preview })
   console.log(CMS_NAME)
+
+  const handleOnFocus = () => {
+    setTagSelectOpen(!isTagSelectOpen)
+  }
   return (
     <>
       <Header />
@@ -44,7 +77,12 @@ export default function Index({ posts, areas, preview }) {
             placeholder="Search…"
             className={classes.inputInput}
             inputProps={{ 'aria-label': 'search' }}
+            onFocus={handleOnFocus}
+            onBlur={handleOnFocus}
           />
+          {isTagSelectOpen && <div className={classes.tagSelect}>
+            <Chip label="Clickable" />
+          </div>}
         </div>
       </div>
       <Container maxWidth="xl">
