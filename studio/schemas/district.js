@@ -1,8 +1,8 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'subDistrict',
-  title: 'Sub District',
+  name: 'district',
+  title: 'District',
   type: 'document',
   fields: [
     {
@@ -16,12 +16,6 @@ export default {
       type: 'localeSlug',
     },
     {
-      name: 'district',
-      title: 'District',
-      type: 'reference',
-      to: [{ type: 'district' }],
-    },
-    {
       name: 'image',
       title: 'Image',
       type: 'image',
@@ -33,7 +27,6 @@ export default {
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      subtitle: `district.name.${baseLanguage.id}`,
       media: 'image',
     },
   },

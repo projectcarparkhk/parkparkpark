@@ -14,6 +14,8 @@
     "postinstall": "lerna bootstrap"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
     "@sanity/block-content-to-react": "^3.0.0",
     "@sanity/client": "^2.8.0",
     "@sanity/image-url": "^0.140.19",
@@ -29,6 +31,8 @@
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@sanity/cli": "^2.0.5",
+    "@types/node": "^16.0.0",
+    "@types/react": "^17.0.13",
     "autoprefixer": "^10.2.6",
     "eslint": "^7.30.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -43,7 +47,7 @@
     "postcss": "^8.3.5",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.3.2",
-    "tailwindcss": "^2.2.4"
+    "typescript": "^4.3.5"
   },
   "husky": {
     "hooks": {

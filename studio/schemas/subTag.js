@@ -1,8 +1,8 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'area',
-  title: 'Area',
+  name: 'subTag',
+  title: 'Subtag',
   type: 'document',
   fields: [
     {
@@ -11,23 +11,16 @@ export default {
       type: 'localeString',
     },
     {
-      name: 'slug',
-      title: 'Slug',
-      type: 'localeSlug',
-    },
-    {
-      name: 'image',
-      title: 'Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
+      name: 'tag',
+      title: 'Tag',
+      type: 'reference',
+      to: [{ type: 'tag' }],
     },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      media: 'image',
+      subtitle: `tag.name.${baseLanguage.id}`
     },
   },
 }
