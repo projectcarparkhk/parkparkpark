@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
+import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
 import Image from 'next/image'
 import { CMS_NAME } from '../lib/constants'
 import Header from '../components/header'
@@ -115,7 +115,6 @@ export default function Index({ posts, areas, preview }: IProps) {
       searchRef.current &&
       !searchRef.current.contains(event.target as Node)
     ) {
-      console.log(!searchRef.current.contains(event.target as Node))
       setTagSelectOpen(false)
     }
   }
@@ -157,6 +156,9 @@ export default function Index({ posts, areas, preview }: IProps) {
                       className={classes.chip}
                       key={tag.name}
                       label={tag.name}
+                      component="a"
+                      href={`/sub-districts/${tag.slug}`}
+                      clickable
                     />
                   ))}
                   <Divider />
@@ -175,7 +177,7 @@ export default function Index({ posts, areas, preview }: IProps) {
 
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
-  const areas = await getSubDistrictsGroupByArea()
+  const areas = await getSubDistrictsGroupByDistrict()
   return {
     props: { posts, areas, preview },
     revalidate: 1,

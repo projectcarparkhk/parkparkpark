@@ -84,8 +84,8 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
 //   return { post, morePosts: getUniquePosts(morePosts) }
 // }
 
-export async function getSubDistrictsGroupByArea(locale = 'zh'): Promise<DistrictResponse[]> {
-  const result: DistrictResponse[] = await client.fetch(`*[_type == 'area']{
+export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<DistrictResponse[]> {
+  const result: DistrictResponse[] = await client.fetch(`*[_type == 'district']{
     _id, 
     'name': name.${locale},
     'slug': slug.${locale}Slug.current,
@@ -94,6 +94,7 @@ export async function getSubDistrictsGroupByArea(locale = 'zh'): Promise<Distric
       'slug': slug.${locale}Slug.current
     }
   }`)
+  console.log('result!!', result)
   return result;
 }
 
