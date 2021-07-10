@@ -7,7 +7,7 @@ const inputPath = '/Users/anthonysiu/parkparkpark/studio/data/districts.csv'
 const outputPath =
   '/Users/anthonysiu/parkparkpark/studio/data/subDistrict.ndjson'
 
-const getDistrictIds = async (callback, data) => {
+const getDistrictIds = async () => {
   const { stdout } = await exec(
     `sanity documents query "*[_type == 'district']"`
   )
