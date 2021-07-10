@@ -16,10 +16,10 @@ export default {
       type: 'localeSlug',
     },
     {
-      name: 'area',
-      title: 'Area',
+      name: 'district',
+      title: 'District',
       type: 'reference',
-      to: [{ type: 'area' }],
+      to: [{ type: 'district' }],
     },
     {
       name: 'image',
@@ -33,7 +33,7 @@ export default {
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      subtitle: `area.name.${baseLanguage.id}`,
+      subtitle: `district.name.${baseLanguage.id}`,
       media: 'image',
     },
   },

@@ -1,8 +1,8 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'area',
-  title: 'Area',
+  name: 'district',
+  title: 'District',
   type: 'document',
   fields: [
     {

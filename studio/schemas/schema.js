@@ -13,7 +13,7 @@ import post from './post'
 import author from './author'
 import comment from './comment'
 import subDistrict from './subDistrict'
-import area from './area'
+import district from './district'
 import tag from './tag'
 import subTag from './subTag'
 
@@ -36,7 +36,7 @@ export default createSchema({
     blockContent,
     comment,
     subDistrict,
-    area,
+    district,
     tag,
     subTag
   ]),
