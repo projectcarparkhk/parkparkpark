@@ -42,7 +42,7 @@ function importDistrictData() {
         },
       }
       fs.appendFileSync(
-        '/Users/anthonysiu/parkparkpark/studio/data/district.ndjson',
+        outputPath,
         `${JSON.stringify(districtData)}\n`
       )
       districts.push(districtEn)

@@ -61,7 +61,7 @@ async function importSubDistrictData() {
       },
     }
     fs.appendFileSync(
-      '/Users/anthonysiu/parkparkpark/studio/data/subDistrict.ndjson',
+      outputPath,
       `${JSON.stringify(subDistrictData)}\n`
     )
   })
