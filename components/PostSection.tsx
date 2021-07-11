@@ -9,6 +9,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
+const items = [
+  {
+    title: '海港城',
+    parkingHours: '2',
+    tags: [],
+  },
+  {
+    title: '海港城',
+    parkingHours: '2',
+    tags: [],
+  },
+  {
+    title: '海港城',
+    parkingHours: '2',
+    tags: [],
+  },
+]
+
 interface IProps {}
 export const PostSection = ({}: IProps) => {
   const classes = useStyles()
