@@ -91,10 +91,11 @@ export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<Dis
     'slug': slug.${locale}Slug.current,
     'subDistricts': *[_type == 'subDistrict' && references(^._id)]{
       'name': name.${locale}, 
-      'slug': slug.${locale}Slug.current
+      'slug': slug.${locale}Slug.current,
+      'isHot': isHot,
     }
   }`)
-  console.log('result!!', result)
+  console.log('result!!', JSON.stringify(result, null, 2))
   return result;
 }
 

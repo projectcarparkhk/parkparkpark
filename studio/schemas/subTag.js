@@ -11,6 +11,11 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
+    },
+    {
       name: 'tag',
       title: 'Tag',
       type: 'reference',
