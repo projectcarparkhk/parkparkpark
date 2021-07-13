@@ -87,6 +87,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   chip: {
     margin: theme.spacing(0, 2, 1, 0),
   },
+  sectionContainer: {
+    padding: theme.spacing(5, 0),
+  },
 }))
 
 interface IProps {
@@ -150,7 +153,6 @@ export default function Index({ posts, districts, preview }: IProps) {
     },
   ]
 
-  console.log('class', classes)
 
   return (
     <>
@@ -198,8 +200,12 @@ export default function Index({ posts, districts, preview }: IProps) {
         </div>
       </div>
       <Container maxWidth="lg">
-        <CarouselBanner items={items} />
-        <PostSection />
+        <div className={classes.sectionContainer}>
+          <CarouselBanner items={items} />
+        </div>
+        <div className={classes.sectionContainer}>
+          <PostSection />
+        </div>
       </Container>
     </>
   )
@@ -208,7 +214,6 @@ export default function Index({ posts, districts, preview }: IProps) {
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
   const districts = await getSubDistrictsGroupByDistrict()
-  console.log('districts', districts)
   return {
     props: { posts, districts, preview },
     revalidate: 1,

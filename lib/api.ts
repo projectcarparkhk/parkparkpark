@@ -95,7 +95,6 @@ export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<Dis
       'isHot': isHot,
     }
   }`)
-  console.log('result!!', JSON.stringify(result, null, 2))
   return result;
 }
 

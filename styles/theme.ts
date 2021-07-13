@@ -3,11 +3,14 @@ import { red } from '@material-ui/core/colors';
 
 // Create a theme instance.
 const theme = createMuiTheme({
-  light: {
-      primaryText: 'red'
-  },
-  dark: {
-      primaryText: 'black'
+  breakpoints: {
+    values: {
+      xs: 480,
+      sm: 960,
+      md: 1366,
+      lg: 1536,
+      xl: 1920,
+    }
   }
 });
 
