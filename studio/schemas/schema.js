@@ -38,6 +38,6 @@ export default createSchema({
     subDistrict,
     district,
     tag,
-    subTag
+    subTag,
   ]),
 })
