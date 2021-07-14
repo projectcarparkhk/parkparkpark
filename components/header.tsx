@@ -3,6 +3,7 @@ import { AppBar, Toolbar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
+  offset: theme.mixins.toolbar,
   toolbar: {
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
@@ -41,6 +42,7 @@ export default function Header() {
           </div>
         </Toolbar>
       </AppBar>
+      <div className={classes.offset} />
     </>
   )
 }

@@ -27,21 +27,21 @@ const postFields = `
 
 const getClient = (preview: boolean) => (preview ? previewClient : client)
 
-// export async function getPreviewPostBySlug(slug) {
-//   const data = await getClient(true).fetch(
-//     `*[_type == 'post' && slug.current == $slug] | order(publishedAt desc){
-//       ${postFields}
-//       body
-//     }`,
-//     { slug }
-//   )
-//   return data[0]
-// }
+export async function getPreviewPostBySlug(slug: string) {
+  const data = await getClient(true).fetch(
+    `*[_type == 'post' && slug.current == $slug] | order(publishedAt desc){
+      ${postFields}
+      body
+    }`,
+    { slug }
+  )
+  return data[0]
+}
 
-// export async function getAllPostsWithSlug() {
-//   const data = await client.fetch(`*[_type == 'post']{ 'slug': slug.current }`)
-//   return data
-// }
+export async function getAllPostsWithSlug() {
+  const data = await client.fetch(`*[_type == 'post']{ 'slug': slug.current }`)
+  return data
+}
 
 export async function getPostsForHome(preview: boolean): Promise<PostResponse[]> {
   const results: PostResponse[] = await getClient(preview)
@@ -51,38 +51,38 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
   return getUniquePosts(results)
 }
 
-// export async function getPostAndMorePosts(slug: string, preview: boolean) {
-//   const curClient = getClient(preview)
-//   const [post, morePosts] = await Promise.all([
-//     curClient
-//       .fetch(
-//         `*[_type == 'post' && slug.current == $slug] | order(_updatedAt desc) {
-//         ${postFields}
-//         body,
-//         'comments': *[
-//                       _type == 'comment' && 
-//                       post._ref == ^._id && 
-//                       approved == true] {
-//           _id, 
-//           name, 
-//           email, 
-//           comment, 
-//           _createdAt
-//         }
-//       }`,
-//         { slug }
-//       )
-//       .then((res) => res?.[0]),
-//     curClient.fetch(
-//       `*[_type == 'post' && slug.current != $slug] | order(publishedAt desc, _updatedAt desc){
-//         ${postFields}
-//         body,
-//       }[0...2]`,
-//       { slug }
-//     ),
-//   ])
-//   return { post, morePosts: getUniquePosts(morePosts) }
-// }
+export async function getPostAndMorePosts(slug: string, preview: boolean) {
+  const curClient = getClient(preview)
+  const [post, morePosts] = await Promise.all([
+    curClient
+      .fetch(
+        `*[_type == 'post' && slug.current == $slug] | order(_updatedAt desc) {
+        ${postFields}
+        body,
+        'comments': *[
+                      _type == 'comment' && 
+                      post._ref == ^._id && 
+                      approved == true] {
+          _id, 
+          name, 
+          email, 
+          comment, 
+          _createdAt
+        }
+      }`,
+        { slug }
+      )
+      .then((res) => res?.[0]),
+    curClient.fetch(
+      `*[_type == 'post' && slug.current != $slug] | order(publishedAt desc, _updatedAt desc){
+        ${postFields}
+        body,
+      }[0...2]`,
+      { slug }
+    ),
+  ])
+  return { post, morePosts: getUniquePosts(morePosts) }
+}
 
 export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<DistrictResponse[]> {
   const result: DistrictResponse[] = await client.fetch(`*[_type == 'district']{
@@ -94,70 +94,69 @@ export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<Dis
       'slug': slug.${locale}Slug.current
     }
   }`)
-  console.log('result!!', result)
   return result;
 }
 
-// export async function getAllSubDistrictsWithSlug(locale = 'zh', subDistrict) {
-//   const data = await getClient(true).fetch(`*[_type == 'subDistrict']{
-//     _id, 
-//     'name': name.${locale},
-//     'slug': slug.${locale}Slug.current
-//   }`)
-//   return data
-// }
+export async function getAllSubDistrictsWithSlug(locale = 'zh', subDistrict: string) {
+  const data = await getClient(true).fetch(`*[_type == 'subDistrict']{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.${locale}Slug.current
+  }`)
+  return data
+}
 
-// export async function getAllCarParks(slug, preview, locale = 'zh') {
-//   const data = await client.fetch(
-//     `*[_type == 'subDistrict' && slug.${locale}Slug.current == $slug]{
-//     _id, 
-//     'name': name.${locale},
-//     'slug': slug.${locale}Slug.current,
-//     'carparks':*[_type == 'carpark' && references(^._id)]{
-//       'name': name.${locale},
-//       'coverImage': mainImage,
-//       'slug': slug.${locale}Slug.current
-//     }
-//   }`,
-//     { slug }
-//   )
-//   return data[0]
-// }
+export async function getAllCarParks(slug: string, preview: boolean, locale = 'zh') {
+  const data = await client.fetch(
+    `*[_type == 'subDistrict' && slug.${locale}Slug.current == $slug]{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.${locale}Slug.current,
+    'carparks':*[_type == 'carpark' && references(^._id)]{
+      'name': name.${locale},
+      'coverImage': mainImage,
+      'slug': slug.${locale}Slug.current
+    }
+  }`,
+    { slug }
+  )
+  return data[0]
+}
 
-// export async function getAllCarParksWithSlug(locale = 'zh') {
-//   const data = await client.fetch(`*[_type == 'carpark']{
-//     _id, 
-//     'name': name.${locale},
-//     'slug': slug.${locale}Slug.current,
-//     'coverImage': mainImage
-//   }`)
-//   return data
-// }
+export async function getAllCarParksWithSlug(locale = 'zh') {
+  const data = await client.fetch(`*[_type == 'carpark']{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.${locale}Slug.current,
+    'coverImage': mainImage
+  }`)
+  return data
+}
 
-// export async function getCarparkAndMoreCarparks(slug, preview, locale = 'zh') {
-//   const curClient = getClient(preview)
-//   const [carpark, moreCarparks] = await Promise.all([
-//     curClient
-//       .fetch(
-//         `*[_type == 'carpark' && slug.${locale}Slug.current == $slug] {
-//           _id, 
-//           'name': name.${locale},
-//           'slug': slug.${locale}Slug.current,
-//           'coverImage': mainImage,
-//           body
-//       }`,
-//         { slug }
-//       )
-//       .then((res) => res?.[0]),
-//     curClient.fetch(
-//       `*[_type == 'carpark' && slug.${locale}Slug.current != $slug] {
-//         _id, 
-//         'name': name.${locale},
-//         'slug': slug.${locale}Slug.current,
-//         body,
-//       }[0...2]`,
-//       { slug }
-//     ),
-//   ])
-//   return { carpark, moreCarparks }
-// }
+export async function getCarparkAndMoreCarparks(slug: string, preview: boolean, locale = 'zh') {
+  const curClient = getClient(preview)
+  const [carpark, moreCarparks] = await Promise.all([
+    curClient
+      .fetch(
+        `*[_type == 'carpark' && slug.${locale}Slug.current == $slug] {
+          _id, 
+          'name': name.${locale},
+          'slug': slug.${locale}Slug.current,
+          'coverImage': mainImage,
+          body
+      }`,
+        { slug }
+      )
+      .then((res) => res?.[0]),
+    curClient.fetch(
+      `*[_type == 'carpark' && slug.${locale}Slug.current != $slug] {
+        _id, 
+        'name': name.${locale},
+        'slug': slug.${locale}Slug.current,
+        body,
+      }[0...2]`,
+      { slug }
+    ),
+  ])
+  return { carpark, moreCarparks }
+}

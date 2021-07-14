@@ -41,10 +41,7 @@ function importDistrictData() {
           },
         },
       }
-      fs.appendFileSync(
-        outputPath,
-        `${JSON.stringify(districtData)}\n`
-      )
+      fs.appendFileSync(outputPath, `${JSON.stringify(districtData)}\n`)
       districts.push(districtEn)
     }
   })
@@ -54,7 +51,6 @@ function importDistrictData() {
 
 const importData = async () => {
   const { stdout } = await exec(`sanity dataset import ${outputPath} staging`)
-  console.log(stdout)
 }
 
 importDistrictData()

@@ -10,10 +10,10 @@ import SearchIcon from '@material-ui/icons/Search'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
 import { PostResponse, DistrictResponse } from '../types'
+import Search from '../components/search'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
-    paddingTop: theme.spacing(8),
     zIndex: -1,
   },
   imageContainer: {
@@ -43,6 +43,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: '50%',
     transform: 'translateX(-50%)',
   },
+  searchBox: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    width: '100%',
+    fontSize: '1.3rem',
+  },
   searchIcon: {
     padding: theme.spacing(0, 2),
     height: '100%',
@@ -51,13 +58,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    width: '100%',
-    fontSize: '1.3rem',
   },
   tagSelect: {
     borderRadius: '30px',
@@ -80,6 +80,7 @@ interface IProps {
 }
 
 export default function Index({ posts, areas, preview }: IProps) {
+  const [isSearchBoxOpen, setIsSearchBoxOpen] = useState(false)
   const [isTagSelectOpen, setTagSelectOpen] = useState(false)
   const districts = useMemo(
     () => areas.map((area) => ({ name: area.name, slug: area.slug })),
@@ -127,10 +128,13 @@ export default function Index({ posts, areas, preview }: IProps) {
       window.removeEventListener('mousedown', handleOutsideClick)
     }
   })
+
+
   return (
     <>
       <Header />
-      <div className={classes.backdrop}>
+      {
+        isSearchBoxOpen ? <div><Search /></div> : <div className={classes.backdrop}>
         <div className={classes.imageContainer}>
           <Image src="/backdrop.jpeg" layout="fill" objectFit="cover" />
         </div>
@@ -142,9 +146,10 @@ export default function Index({ posts, areas, preview }: IProps) {
           </div>
           <InputBase
             placeholder="Search…"
-            className={classes.inputInput}
+            className={classes.searchBox}
             inputProps={{ 'aria-label': 'search' }}
-            onFocus={handleOnFocus}
+            // onFocus={handleOnFocus}
+            onClick={() => setIsSearchBoxOpen(true)}
           />
           {isTagSelectOpen && (
             <div className={classes.tagSelect}>
@@ -168,9 +173,7 @@ export default function Index({ posts, areas, preview }: IProps) {
           )}
         </div>
       </div>
-      <Container maxWidth="xl">
-        
-      </Container>
+      }
     </>
   )
 }

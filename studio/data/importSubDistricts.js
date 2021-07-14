@@ -22,7 +22,6 @@ const getDistrictIds = async () => {
   return districtIdMap
 }
 
-
 async function importSubDistrictData() {
   const districtIdMap = await getDistrictIds()
   const rl = readline.Interface({
@@ -60,17 +59,13 @@ async function importSubDistrictData() {
         _type: 'reference',
       },
     }
-    fs.appendFileSync(
-      outputPath,
-      `${JSON.stringify(subDistrictData)}\n`
-    )
+    fs.appendFileSync(outputPath, `${JSON.stringify(subDistrictData)}\n`)
   })
   importData()
 }
 
 const importData = async () => {
   const { stdout } = await exec(`sanity dataset import ${outputPath} staging`)
-  console.log(stdout)
 }
 
 importSubDistrictData()
