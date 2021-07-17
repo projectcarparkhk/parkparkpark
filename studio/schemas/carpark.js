@@ -16,11 +16,6 @@ export default {
       type: 'localeSlug',
     },
     {
-      name: 'address',
-      title: 'Address',
-      type: 'localeString',
-    },
-    {
       name: 'subDistrict',
       title: 'Sub District',
       type: 'array',
@@ -51,7 +46,7 @@ export default {
     {
       name: 'body',
       title: 'Body',
-      type: 'blockContent',
+      type: 'localeBlockContent',
     },
   ],
   preview: {

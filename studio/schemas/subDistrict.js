@@ -2,7 +2,7 @@ import { baseLanguage } from './localeString'
 
 export default {
   name: 'subDistrict',
-  title: 'Sub District',
+  title: 'Sub-district',
   type: 'document',
   fields: [
     {

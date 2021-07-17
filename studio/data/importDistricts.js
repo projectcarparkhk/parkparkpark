@@ -41,10 +41,7 @@ function importDistrictData() {
           },
         },
       }
-      fs.appendFileSync(
-        outputPath,
-        `${JSON.stringify(districtData)}\n`
-      )
+      fs.appendFileSync(outputPath, `${JSON.stringify(districtData)}\n`)
       districts.push(districtEn)
     }
   })

@@ -7,6 +7,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type'
 // We import object and document schemas
 import localeString from './localeString'
 import localeSlug from './localeSlug'
+import localeBlockContent from './localeBlockContent'
 import carpark from './carpark'
 import blockContent from './blockContent'
 import post from './post'
@@ -26,6 +27,7 @@ export default createSchema({
   types: schemaTypes.concat([
     localeString,
     localeSlug,
+    localeBlockContent,
     // The following are document types which will appear
     // in the studio.
     post,
@@ -38,6 +40,6 @@ export default createSchema({
     subDistrict,
     district,
     tag,
-    subTag
+    subTag,
   ]),
 })

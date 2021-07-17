@@ -20,7 +20,7 @@ export default {
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      subtitle: `tag.name.${baseLanguage.id}`
+      subtitle: `tag.name.${baseLanguage.id}`,
     },
   },
 }
