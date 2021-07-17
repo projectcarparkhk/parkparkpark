@@ -20,6 +20,7 @@ import { PostResponse, DistrictResponse } from '../types'
 import Link from 'next/link'
 import { CarouselBanner } from '../components/carousel'
 import { PostSection } from '../components/PostSection'
+import { useStyles as useSearchBoxStyles } from '../components/search/input'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -42,33 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   subslogan: {
     fontSize: '2rem',
     margin: theme.spacing(0),
-  },
-
-  search: {
-    position: 'relative',
-    borderRadius: '30px',
-    backgroundColor: 'white',
-    width: '50%',
-    height: '3.3rem',
-    marginTop: theme.spacing(3),
-    left: '50%',
-    transform: 'translateX(-50%)',
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    width: '100%',
-    fontSize: '1.3rem',
   },
   tagSelect: {
     borderRadius: '30px',
@@ -99,48 +73,9 @@ interface IProps {
 }
 
 export default function Index({ posts, districts, preview }: IProps) {
-  const [isTagSelectOpen, setTagSelectOpen] = useState(false)
-  const tags = useMemo(
-    () =>
-      districts.reduce((acc, district) => {
-        acc.push({ name: district.name, slug: district.slug })
-        acc.push(
-          ...district.subDistricts
-            .filter((sub) => sub.isHot)
-            .map(({ name, slug }) => ({
-              name,
-              slug,
-            }))
-        )
-        return acc
-      }, [] as { name: string; slug: string }[]),
-    [districts]
-  )
+
   const classes = useStyles()
-  const searchRef = useRef<HTMLDivElement>(null)
-
-  const handleOnFocus = () => {
-    setTagSelectOpen(true)
-  }
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      searchRef &&
-      searchRef.current &&
-      !searchRef.current.contains(event.target as Node)
-    ) {
-      setTagSelectOpen(false)
-    }
-  }
-
-  useEffect(() => {
-    if (typeof window !== undefined) {
-      window.addEventListener('mousedown', handleOutsideClick)
-    }
-    return () => {
-      window.removeEventListener('mousedown', handleOutsideClick)
-    }
-  })
+  const searchBoxClasses = useSearchBoxStyles()
 
   const items = [
     {
@@ -165,39 +100,18 @@ export default function Index({ posts, districts, preview }: IProps) {
         <div className={`${classes.slogan} ${classes.subslogan}`}>
           幫你更快搵到位，慳錢慳時間
         </div>
-        <div className={classes.search} ref={searchRef}>
-          <div className={classes.searchIcon}>
+        <Link href="/search">
+        <div className={searchBoxClasses.searchBox}>
+          <div className={searchBoxClasses.searchIcon}>
             <SearchIcon />
           </div>
           <InputBase
-            placeholder="Search…"
-            className={classes.inputInput}
+            placeholder="搜尋地區 / 停車場"
+            className={searchBoxClasses.inputInput}
             inputProps={{ 'aria-label': 'search' }}
-            onFocus={handleOnFocus}
           />
-          {isTagSelectOpen && (
-            <div className={classes.tagSelect}>
-              <div className={classes.tagSelectHeader}>
-                <h3>熱門地區</h3>
-                <h4>
-                  <Link href="/districts">全部地區</Link>
-                </h4>
-              </div>
-              <div className={classes.tagsContainer}>
-                {tags.map((tag) => (
-                  <Chip
-                    className={classes.chip}
-                    key={tag.name}
-                    label={tag.name}
-                    component="a"
-                    href={`/sub-districts/${tag.slug}`}
-                    clickable
-                  />
-                ))}
-              </div>
-            </div>
-          )}
         </div>
+        </Link>
       </div>
       <Container maxWidth="lg">
         <div className={classes.sectionContainer}>
