@@ -16,7 +16,7 @@ export default {
       name: 'translations',
       options: {
         collapsible: true, // Makes the whole fieldset collapsible
-        collapsed: false, // Defines if the fieldset should be collapsed by default or not
+        collapsed: true, // Defines if the fieldset should be collapsed by default or not
       },
     },
   ],

@@ -7,7 +7,14 @@ const inputPath = '/Users/anthonysiu/parkparkpark/studio/data/districts.csv'
 const outputPath =
   '/Users/anthonysiu/parkparkpark/studio/data/subDistrict.ndjson'
 
-const hotSubDistricts = ['wan-chai', 'causeway-bay','tsim-sha-tsui', 'mong-kok','central', 'admiralty']
+const hotSubDistricts = [
+  'wan-chai',
+  'causeway-bay',
+  'tsim-sha-tsui',
+  'mong-kok',
+  'central',
+  'admiralty',
+]
 const getDistrictIds = async () => {
   const { stdout } = await exec(
     `sanity documents query "*[_type == 'district']"`
@@ -23,7 +30,6 @@ const getDistrictIds = async () => {
   return districtIdMap
 }
 
-
 async function importSubDistrictData() {
   // const districtIdMap = await getDistrictIds()
   const rl = readline.Interface({
@@ -38,9 +44,16 @@ async function importSubDistrictData() {
   rl.on('line', (line) => {
     const [subDistrictZh, subDistrictEn, _1, _2, _3, districtEn] =
       line.split(',')
-    const id = subDistrictEn.toLowerCase().split(' ').join('-').replace(/[^a-z0-9-_]/g,'');
-    const zhSlug = subDistrictZh;
-    const districtId = `${districtEn.toLowerCase().split(' ').join('-')}-district`
+    const id = subDistrictEn
+      .toLowerCase()
+      .split(' ')
+      .join('-')
+      .replace(/[^a-z0-9-_]/g, '')
+    const zhSlug = subDistrictZh
+    const districtId = `${districtEn
+      .toLowerCase()
+      .split(' ')
+      .join('-')}-district`
     const subDistrictData = {
       _type: 'subDistrict',
       _id: id,
@@ -66,10 +79,7 @@ async function importSubDistrictData() {
         _type: 'reference',
       },
     }
-    fs.appendFileSync(
-      outputPath,
-      `${JSON.stringify(subDistrictData)}\n`
-    )
+    fs.appendFileSync(outputPath, `${JSON.stringify(subDistrictData)}\n`)
   })
   importData()
 }

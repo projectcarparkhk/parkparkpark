@@ -34,18 +34,18 @@ function importDistrictData() {
           _type: 'localeSlug',
           enSlug: {
             _type: 'slug',
-            current: `${districtEn.toLowerCase().split(' ').join('-')}-district`,
+            current: `${districtEn
+              .toLowerCase()
+              .split(' ')
+              .join('-')}-district`,
           },
           zhSlug: {
             _type: 'slug',
-            current: districtZh.includes('區') ?districtZh : `${districtZh}區` ,
+            current: districtZh.includes('區') ? districtZh : `${districtZh}區`,
           },
         },
       }
-      fs.appendFileSync(
-        outputPath,
-        `${JSON.stringify(districtData)}\n`
-      )
+      fs.appendFileSync(outputPath, `${JSON.stringify(districtData)}\n`)
       districts.push(districtEn)
     }
   })
