@@ -3,34 +3,45 @@ import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
 import Image from 'next/image'
 import { CMS_NAME } from '../lib/constants'
 import Header from '../components/header'
-import { Chip, Container, Divider, InputBase } from '@material-ui/core'
+import {
+  Button,
+  Chip,
+  Container,
+  Divider,
+  InputBase,
+  Paper,
+} from '@material-ui/core'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import { useEffect } from 'react'
 import { useMemo } from 'react'
 import { PostResponse, DistrictResponse } from '../types'
+import Link from 'next/link'
+import { CarouselBanner } from '../components/carousel'
+import { PostSection } from '../components/PostSection'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
-    paddingTop: theme.spacing(8),
     zIndex: -1,
+    height: '80vh',
   },
   imageContainer: {
-    height: '80vh',
+    top: theme.spacing(8),
+    height: '70vh',
     position: 'absolute',
-    width: '100vw'
+    width: '100vw',
   },
   slogan: {
     position: 'relative',
     color: 'white',
     textAlign: 'center',
     fontSize: '3.5rem',
-    margin: theme.spacing(8,0,1,0)
+    margin: theme.spacing(8, 0, 1, 0),
   },
   subslogan: {
     fontSize: '2rem',
-    margin: theme.spacing(0)
+    margin: theme.spacing(0),
   },
 
   search: {
@@ -63,44 +74,47 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: '30px',
     backgroundColor: 'white',
     width: '100%',
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2, 3),
+  },
+  tagSelectHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   tagsContainer: {
-    padding: theme.spacing(1, 3),
+    padding: theme.spacing(1, 0),
   },
   chip: {
-    margin: theme.spacing(0, 1, 1, 0),
+    margin: theme.spacing(0, 2, 1, 0),
+  },
+  sectionContainer: {
+    padding: theme.spacing(5, 0),
   },
 }))
 
 interface IProps {
   posts: PostResponse[]
-  areas: DistrictResponse[]
+  districts: DistrictResponse[]
   preview: boolean
 }
 
-export default function Index({ posts, areas, preview }: IProps) {
+export default function Index({ posts, districts, preview }: IProps) {
   const [isTagSelectOpen, setTagSelectOpen] = useState(false)
-  const districts = useMemo(
-    () => areas.map((area) => ({ name: area.name, slug: area.slug })),
-    [areas]
-  )
   const tags = useMemo(
     () =>
-      areas.reduce(
-        (acc, area) => ({
-          ...acc,
-          [area.slug]: [
-            { name: area.name, slug: area.slug },
-            ...area.subDistricts.map((sub) => ({
-              name: sub.name,
-              slug: sub.slug,
-            })),
-          ],
-        }),
-        {} as { [key: string]: { name: string; slug: string }[] }
-      ),
-    [areas]
+      districts.reduce((acc, district) => {
+        acc.push({ name: district.name, slug: district.slug })
+        acc.push(
+          ...district.subDistricts
+            .filter((sub) => sub.isHot)
+            .map(({ name, slug }) => ({
+              name,
+              slug,
+            }))
+        )
+        return acc
+      }, [] as { name: string; slug: string }[]),
+    [districts]
   )
   const classes = useStyles()
   const searchRef = useRef<HTMLDivElement>(null)
@@ -127,6 +141,19 @@ export default function Index({ posts, areas, preview }: IProps) {
       window.removeEventListener('mousedown', handleOutsideClick)
     }
   })
+
+  const items = [
+    {
+      image: '/carousel1.jpeg',
+      postSlug: '/abc',
+    },
+    {
+      image: '/carousel2.jpeg',
+      postSlug: '/def',
+    },
+  ]
+
+
   return (
     <>
       <Header />
@@ -135,7 +162,9 @@ export default function Index({ posts, areas, preview }: IProps) {
           <Image src="/backdrop.jpeg" layout="fill" objectFit="cover" />
         </div>
         <h1 className={classes.slogan}>搜尋全港最新泊車優惠</h1>
-        <div className={`${classes.slogan} ${classes.subslogan}`}>幫你更快搵到位，慳錢慳時間</div>
+        <div className={`${classes.slogan} ${classes.subslogan}`}>
+          幫你更快搵到位，慳錢慳時間
+        </div>
         <div className={classes.search} ref={searchRef}>
           <div className={classes.searchIcon}>
             <SearchIcon />
@@ -148,28 +177,35 @@ export default function Index({ posts, areas, preview }: IProps) {
           />
           {isTagSelectOpen && (
             <div className={classes.tagSelect}>
-              {districts.map((district) => (
-                <div className={classes.tagsContainer}>
-                  <h3>{district.name}</h3>
-                  {tags[district.slug].map((tag) => (
-                    <Chip
-                      className={classes.chip}
-                      key={tag.name}
-                      label={tag.name}
-                      component="a"
-                      href={`/sub-districts/${tag.slug}`}
-                      clickable
-                    />
-                  ))}
-                  <Divider />
-                </div>
-              ))}
+              <div className={classes.tagSelectHeader}>
+                <h3>熱門地區</h3>
+                <h4>
+                  <Link href="/districts">全部地區</Link>
+                </h4>
+              </div>
+              <div className={classes.tagsContainer}>
+                {tags.map((tag) => (
+                  <Chip
+                    className={classes.chip}
+                    key={tag.name}
+                    label={tag.name}
+                    component="a"
+                    href={`/sub-districts/${tag.slug}`}
+                    clickable
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>
       </div>
-      <Container maxWidth="xl">
-        
+      <Container maxWidth="lg">
+        <div className={classes.sectionContainer}>
+          <CarouselBanner items={items} />
+        </div>
+        <div className={classes.sectionContainer}>
+          <PostSection />
+        </div>
       </Container>
     </>
   )
@@ -177,9 +213,9 @@ export default function Index({ posts, areas, preview }: IProps) {
 
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
-  const areas = await getSubDistrictsGroupByDistrict()
+  const districts = await getSubDistrictsGroupByDistrict()
   return {
-    props: { posts, areas, preview },
+    props: { posts, districts, preview },
     revalidate: 1,
   }
 }

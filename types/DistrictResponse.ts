@@ -1,6 +1,7 @@
 export interface SubDistrict {
     name: string;
     slug: string;
+    isHot: boolean
 }
 
 export interface DistrictResponse {

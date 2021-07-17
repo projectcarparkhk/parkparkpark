@@ -24,6 +24,7 @@ function importDistrictData() {
     if (!districts.includes(districtEn)) {
       const districtData = {
         _type: 'district',
+        _id: `${districtEn.toLowerCase().split(' ').join('-')}-district`,
         name: {
           _type: 'localeString',
           en: districtEn,
@@ -33,11 +34,14 @@ function importDistrictData() {
           _type: 'localeSlug',
           enSlug: {
             _type: 'slug',
-            current: districtEn.toLowerCase().split(' ').join('-'),
+            current: `${districtEn
+              .toLowerCase()
+              .split(' ')
+              .join('-')}-district`,
           },
           zhSlug: {
             _type: 'slug',
-            current: districtZh,
+            current: districtZh.includes('區') ? districtZh : `${districtZh}區`,
           },
         },
       }

@@ -22,6 +22,11 @@ export default {
       to: [{ type: 'district' }],
     },
     {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
+    },
+    {
       name: 'image',
       title: 'Image',
       type: 'image',

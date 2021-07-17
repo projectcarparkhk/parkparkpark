@@ -91,13 +91,28 @@ export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<Dis
     'slug': slug.${locale}Slug.current,
     'subDistricts': *[_type == 'subDistrict' && references(^._id)]{
       'name': name.${locale}, 
-      'slug': slug.${locale}Slug.current
+      'slug': slug.${locale}Slug.current,
+      'isHot': isHot,
     }
   }`)
-  console.log('result!!', result)
   return result;
 }
 
+export async function getCarparks(): Promise<DistrictResponse[]> {
+  return client.fetch(`*[_type == 'carpark']{
+    'type': _type,
+    name,
+    slug
+  }`)
+}
+
+export async function getSubDistricts(): Promise<DistrictResponse[]> {
+  return client.fetch(`*[_type == 'subDistrict']{
+    'type': _type,
+    name,
+    slug
+  }`)
+}
 // export async function getAllSubDistrictsWithSlug(locale = 'zh', subDistrict) {
 //   const data = await getClient(true).fetch(`*[_type == 'subDistrict']{
 //     _id, 
