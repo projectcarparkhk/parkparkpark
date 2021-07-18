@@ -84,8 +84,11 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
 //   return { post, morePosts: getUniquePosts(morePosts) }
 // }
 
-export async function getSubDistrictsGroupByDistrict(locale = 'zh'): Promise<DistrictResponse[]> {
-  const result: DistrictResponse[] = await client.fetch(`*[_type == 'district']{
+// Fix later: 
+// It should be subDistrict group by area, area: HK / KLN / NT
+export async function getSubDistrictsGroupByDistrict(preview: boolean, locale = 'zh'): Promise<DistrictResponse[]> {
+  const result: DistrictResponse[] = await getClient(preview)
+  .fetch(`*[_type == 'district']{
     _id, 
     'name': name.${locale},
     'slug': slug.${locale}Slug.current,
