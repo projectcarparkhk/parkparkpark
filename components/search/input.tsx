@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import Autosuggest from 'react-autosuggest';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import TextField from '@material-ui/core/TextField';
-import InputBase from '@material-ui/core/InputBase';
+import React, { useState } from 'react'
+import Autosuggest, {
+  ChangeEvent,
+  InputProps,
+  RenderInputComponentProps,
+  RenderSuggestionParams,
+  RenderSuggestionsContainerParams,
+  SuggestionSelectedEventData,
+  SuggestionsFetchRequestedParams,
+} from 'react-autosuggest'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import Avatar from '@material-ui/core/Avatar'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
+import TextField from '@material-ui/core/TextField'
+import InputBase from '@material-ui/core/InputBase'
 import { Suggestion } from './type'
 import { makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles'
@@ -46,25 +54,28 @@ export const useStyles = makeStyles((theme: Theme) => ({
 const searchEndpoint = (query: string) => `/api/search?q=${query}`
 
 const getSuggestions = async (query: string) => {
-  const inputValue = query.trim().toLowerCase();
-  const inputLength = inputValue.length;
+  const inputValue = query.trim().toLowerCase()
+  const inputLength = inputValue.length
 
   if (!inputLength) {
     return []
   }
 
   return fetch(searchEndpoint(query))
-    .then(res => res.json())
-    .then(res => res)
-};
+    .then((res) => res.json())
+    .then((res) => res)
+}
 
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = (suggestion: Suggestion) => suggestion.name;
+const getSuggestionValue = (suggestion: Suggestion) => suggestion.name
 
 // Use your imagination to render suggestions.
-const renderSuggestion = (suggestion: Suggestion) => (
+const renderSuggestion = (
+  suggestion: Suggestion,
+  params: RenderSuggestionParams
+) => (
   <ListItem button>
     <ListItemAvatar>
       <Avatar>
@@ -73,48 +84,55 @@ const renderSuggestion = (suggestion: Suggestion) => (
     </ListItemAvatar>
     <ListItemText primary={suggestion.name} secondary={suggestion.type} />
   </ListItem>
-);
+)
 
-const renderSuggestionsContainer = ({ containerProps, children }: any) => {
-  return (
-    <List {...containerProps}>
-      {children}
-    </List>
-  );
+const renderSuggestionsContainer = ({
+  containerProps,
+  children,
+}: RenderSuggestionsContainerParams) => {
+  return <List {...containerProps}>{children}</List>
 }
 
-function SearchInput({
-  onSuggestionClick
-}: any) {
+interface IProps {
+  onSuggestionClick: (suggestion: Suggestion) => void;
+}
+
+function SearchInput({ onSuggestionClick }: IProps) {
   const [value, setValue] = useState('')
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
 
-
-  function onChange(event: any, { newValue }: any) {
+  function onChange(
+    event: React.FormEvent<HTMLElement>,
+    { newValue }: ChangeEvent
+  ) {
     setValue(newValue)
   }
 
-  async function onSuggestionsFetchRequested({ value }: any) {
+  async function onSuggestionsFetchRequested({
+    value,
+  }: SuggestionsFetchRequestedParams) {
     const res = await getSuggestions(value)
     setSuggestions(res.result.data)
   }
 
   function onSuggestionsClearRequested() {
     setSuggestions([])
-  };
+  }
 
-  function onSuggestionSelected(event: any, { suggestion }: any) {
+  function onSuggestionSelected(
+    event: React.FormEvent<any>,
+    { suggestion }: SuggestionSelectedEventData<Suggestion>
+  ) {
     onSuggestionClick(suggestion)
-
   }
   // Autosuggest will pass through all these props to the input.
-  const inputProps = {
+  const inputProps: InputProps<Suggestion> = {
     placeholder: '搜尋地區 / 停車場',
     value,
     'aria-label': 'search',
     onChange,
-  };
+  }
 
   return (
     <Autosuggest
@@ -125,7 +143,7 @@ function SearchInput({
       getSuggestionValue={getSuggestionValue}
       renderSuggestion={renderSuggestion}
       renderSuggestionsContainer={renderSuggestionsContainer}
-      renderInputComponent={(inputProps: Autosuggest.RenderInputComponentProps) => {
+      renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (
           <div className={classes.searchBox}>
             <div className={classes.searchIcon}>
@@ -141,7 +159,7 @@ function SearchInput({
       }}
       inputProps={inputProps}
     />
-  );
+  )
 }
 
 export default SearchInput
