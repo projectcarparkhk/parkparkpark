@@ -1,8 +1,8 @@
 import { baseLanguage } from './localeString'
 
 export default {
-  name: 'subTag',
-  title: 'Subtag',
+  name: 'category',
+  title: 'Category',
   type: 'document',
   fields: [
     {
@@ -11,21 +11,19 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'slug',
+      title: 'Slug',
+      type: 'localeSlug',
+    },
+    {
       name: 'isHot',
       title: 'Is Hot',
       type: 'boolean',
-    },
-    {
-      name: 'tag',
-      title: 'Tag',
-      type: 'reference',
-      to: [{ type: 'tag' }],
     },
   ],
   preview: {
     select: {
       title: `name.${baseLanguage.id}`,
-      subtitle: `tag.name.${baseLanguage.id}`,
     },
   },
 }
