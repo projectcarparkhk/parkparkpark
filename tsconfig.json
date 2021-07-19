@@ -18,6 +18,13 @@
     "downlevelIteration": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "pages", "components"],
+  "exclude": [
+    "build",
+    "public",
+    "node_modules",
+    ".eslintrc.js",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

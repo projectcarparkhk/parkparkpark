@@ -1,15 +1,20 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../styles/theme'
+import { ElementType } from 'react'
 
-function MyApp({ Component, pageProps }) {
+interface IProps {
+  Component: ElementType;
+  pageProps: any
+}
+
+function MyApp({ Component, pageProps }: IProps) {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles) {
+    if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
   }, [])
