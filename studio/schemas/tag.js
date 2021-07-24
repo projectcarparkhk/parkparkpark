@@ -6,14 +6,25 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-    },
-    {
       name: 'name',
       title: 'Display Name',
       type: 'localeString',
+    },
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'localeSlug',
+    },
+    {
+      name: 'category',
+      title: 'Category',
+      type: 'reference',
+      to: { type: 'category' },
+    },
+    {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
     },
     {
       name: 'description',

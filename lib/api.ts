@@ -1,5 +1,5 @@
 
-import { PostResponse, DistrictResponse } from '../types'
+import { PostResponse, DistrictResponse, TagResponse } from '../types'
 import client, { previewClient } from './sanity'
 
 const getUniquePosts = (posts: PostResponse[]) => {
@@ -51,6 +51,7 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
   return getUniquePosts(results)
 }
 
+
 // export async function getPostAndMorePosts(slug: string, preview: boolean) {
 //   const curClient = getClient(preview)
 //   const [post, morePosts] = await Promise.all([
@@ -83,6 +84,17 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
 //   ])
 //   return { post, morePosts: getUniquePosts(morePosts) }
 // }
+
+
+
+export async function getHotTags(preview: boolean, locale = 'zh'): Promise<TagResponse[]> {
+  const result: TagResponse[] = await getClient(preview)
+    .fetch(`*[_type == 'tag']{
+      'name': name.${locale},
+      'slug': slug.${locale}Slug.current,
+    }`)
+  return result
+}
 
 // Fix later: 
 // It should be subDistrict group by area, area: HK / KLN / NT
