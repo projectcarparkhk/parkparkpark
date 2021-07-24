@@ -17,6 +17,9 @@ interface IProps {
 
 
 const useStyles = makeStyles((theme: Theme) => ({
+  searchWrapper: {
+    marginTop: theme.spacing(2),
+  },
   chip: {
     margin: theme.spacing(0, 1, 1, 0),
   },
@@ -32,6 +35,7 @@ function Search({ hotTags }: IProps) {
   return (
     <Container>
       <Header />
+      <div className={classes.searchWrapper}>
       <SearchInput
         onSuggestionClick={onSuggestionClick}
       >
@@ -40,7 +44,7 @@ function Search({ hotTags }: IProps) {
           <div>
             {hotTags
               .map((tag) => (
-                <Link href={`/tags/${tag.slug}`}>
+                <Link key={tag.name} href={`/tags/${tag.slug}`}>
                   <Chip
                     className={classes.chip}
                     key={tag.name}
@@ -51,6 +55,7 @@ function Search({ hotTags }: IProps) {
           </div>
         </>
       </SearchInput>
+      </div>
     </Container>
   )
 }

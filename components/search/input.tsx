@@ -26,8 +26,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     borderRadius: '30px',
     backgroundColor: '#EEEEEE',
-    height: '3.3rem',
+    height: '2rem',
     [theme.breakpoints.up('sm')]: {
+      height: '3rem',
       width: '50%',
       left: '50%',
       transform: 'translateX(-50%)',
@@ -43,11 +44,15 @@ export const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
   },
   inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    paddingRight: theme.spacing(2.5),
     width: '100%',
-    fontSize: '1.3rem',
+    fontSize: '1rem',
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(1, 1),
+      fontSize: '1rem',
+    },
   },
 }))
 
