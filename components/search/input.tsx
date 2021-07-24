@@ -95,9 +95,10 @@ const renderSuggestionsContainer = ({
 
 interface IProps {
   onSuggestionClick: (suggestion: Suggestion) => void;
+  children: React.ReactChild
 }
 
-function SearchInput({ onSuggestionClick }: IProps) {
+function SearchInput({ onSuggestionClick, children }: IProps) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
@@ -145,6 +146,7 @@ function SearchInput({ onSuggestionClick }: IProps) {
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (
+          <div>
           <div className={classes.searchBox}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -154,6 +156,10 @@ function SearchInput({ onSuggestionClick }: IProps) {
               className={classes.inputInput}
               inputProps={inputProps}
             />
+          </div>
+          {!suggestions.length && <div>
+            {children}
+          </div>}
           </div>
         )
       }}
