@@ -127,7 +127,7 @@ export default function Index({ posts, districts, preview }: IProps) {
 
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
-  const districts = await getSubDistrictsGroupByDistrict()
+  const districts = await getSubDistrictsGroupByDistrict(preview)
   return {
     props: { posts, districts, preview },
     revalidate: 1,
