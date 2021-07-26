@@ -8,6 +8,7 @@ interface IProps {
   children: React.ReactNode
   bold?: boolean
   inline?: boolean
+  style?: React.CSSProperties
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -18,17 +19,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const StyledText = ({
   className: klasses = '',
+  style,
   size,
   children,
   bold,
-  inline
+  inline,
 }: IProps) => {
   const classes = useStyles()
   return (
-    <Typography variant={size} className={klasses} display={inline ? 'inline' : 'block'}>
+    <Typography
+      variant={size}
+      className={klasses}
+      display={inline ? 'inline' : 'block'}
+    >
       <Box
         display="inline"
         fontWeight={bold ? 'fontWeightBold' : 'fontWeightRegular'}
+        style={style}
       >
         {children}
       </Box>

@@ -9,11 +9,11 @@ const theme = createMuiTheme({
   },
   breakpoints: {
     values: {
-      xs: 480,
-      sm: 960,
-      md: 1366,
-      lg: 1536,
-      xl: 1920,
+      xs: 320,
+      sm: 540,
+      md: 960,
+      lg: 1280,
+      xl: 1536,
     },
   },
 })
@@ -53,21 +53,21 @@ theme.typography.h5 = {
 theme.typography.h6 = {
   fontSize: '0.8rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '1.2rem',
+    fontSize: '1rem',
   },
 }
 
 theme.typography.body1 = {
   fontSize: '0.8rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '1rem',
+    fontSize: '0.8rem',
   },
 }
 
 theme.typography.subtitle1 = {
   fontSize: '0.6rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '0.8rem',
+    fontSize: '0.6rem',
   },
 }
 

@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Link,
   makeStyles,
   Paper,
   Theme,
@@ -22,8 +21,19 @@ import { Chip } from '@material-ui/core'
 import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme: Theme) => ({
+  card: {
+    height: 'min-content',
+  },
   media: {
     height: 140,
+  },
+  fullImageMedia: {
+    [theme.breakpoints.down('sm')]: {
+      height: '15rem',
+    },
+    [theme.breakpoints.up('sm')]: {
+      height: '20rem',
+    },
   },
   iconSection: {
     display: 'flex',
@@ -36,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'space-between',
     fontSize: '0.8rem',
     [theme.breakpoints.up('sm')]: {
-      fontSize: '1rem',
+      fontSize: '0.9rem',
     },
   },
   iconContainerStart: {
@@ -64,16 +74,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginTop: theme.spacing(4),
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing(4),
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(2),
+    },
   },
 }))
 
 export interface StyledCardProps {
   slug: string
-  imagePath: string
+  imagePath?: string
+  fullImage?: boolean
   subHeader: string
-  header: string
-  tags: { label: string }[]
+  header?: string
+  tags?: { label: string }[]
   renderCaption: () => JSX.Element
   likes?: number
   comments?: number
@@ -87,7 +103,7 @@ const StyledChip = withStyles((theme: Theme) => ({
   },
   label: {
     padding: theme.spacing(0, 1),
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(0, 0.7),
       fontSize: '0.6rem',
@@ -106,6 +122,7 @@ const StyledCardContent = withStyles((theme: Theme) => ({
 export const StyledCard = ({
   slug,
   imagePath,
+  fullImage,
   subHeader,
   header,
   tags,
@@ -116,44 +133,50 @@ export const StyledCard = ({
   const classes = useStyles()
   const router = useRouter()
   return (
-    <Card>
+    <Card className={`${classes.card}`}>
       <CardActionArea onClick={() => router.push(`/${slug}`)}>
-        <CardMedia className={classes.media} image={imagePath} />
-        <StyledCardContent>
-          <StyledText size="body1">{header}</StyledText>
-          <StyledText className={classes.titles} size="h5" bold>
-            {subHeader}
-          </StyledText>
-          <div>
-            {tags.map((tag) => (
-              <StyledChip
-                className={classes.chip}
-                key={tag.label}
-                label={tag.label}
-              />
-            ))}
-          </div>
+        <CardMedia
+          className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
+          image={imagePath}
+        />
+        {!fullImage && (
+          <StyledCardContent>
+            <StyledText size="body1">{header}</StyledText>
+            <StyledText className={classes.titles} size="h6" bold>
+              {subHeader}
+            </StyledText>
+            <div>
+              {tags &&
+                tags.map((tag) => (
+                  <StyledChip
+                    className={classes.chip}
+                    key={tag.label}
+                    label={tag.label}
+                  />
+                ))}
+            </div>
 
-          <div className={classes.captionContainer}>
-            {renderCaption()}
-            <div className={classes.iconSection}>
-              <div
-                className={`${classes.iconContainer} ${classes.iconContainerStart}`}
-              >
-                <div className={classes.icons}>
-                  <FavoriteBorderIcon fontSize="inherit" />
+            <div className={classes.captionContainer}>
+              {renderCaption()}
+              <div className={classes.iconSection}>
+                <div
+                  className={`${classes.iconContainer} ${classes.iconContainerStart}`}
+                >
+                  <div className={classes.icons}>
+                    <FavoriteBorderIcon fontSize="inherit" />
+                  </div>
+                  <div>{likes}</div>
                 </div>
-                <div>{likes}</div>
-              </div>
-              <div className={classes.iconContainer}>
-                <div className={classes.icons}>
-                  <ChatBubbleOutlineIcon fontSize="inherit" />
+                <div className={classes.iconContainer}>
+                  <div className={classes.icons}>
+                    <ChatBubbleOutlineIcon fontSize="inherit" />
+                  </div>
+                  <div>{comments}</div>
                 </div>
-                <div>{comments}</div>
               </div>
             </div>
-          </div>
-        </StyledCardContent>
+          </StyledCardContent>
+        )}
       </CardActionArea>
     </Card>
   )

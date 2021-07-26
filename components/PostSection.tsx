@@ -1,34 +1,28 @@
-import {
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Link,
-  makeStyles,
-  Paper,
-  Theme,
-  Typography,
-  useTheme,
-} from '@material-ui/core'
+import { makeStyles, Theme, useTheme } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
-import { useState } from 'react'
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
-import { Chip } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import { StyledCard, StyledCardProps } from './StyledCard'
 import { useMediaQuery } from '@material-ui/core'
+import UndecoratedLink from './UndecoratedLink'
 
 const useStyles = makeStyles((theme: Theme) => ({
   section: {
     margin: theme.spacing(3, 0),
   },
+  titleContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    [theme.breakpoints.up('sm')]: {
+      marginBottom: theme.spacing(4),
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(1),
+    },
+  },
   sectionTitle: {
-    marginBottom: theme.spacing(4),
     fontWeight: 'bold',
   },
   carousel: {
@@ -39,24 +33,61 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   postContainer: {
     display: 'flex',
-    [theme.breakpoints.down('sm')]: {
-      flexWrap: 'wrap',
-    },
+    flexWrap: 'wrap',
+  },
+  postContainerWrap: {
+    flexWrap: 'nowrap',
+    overflowX: 'scroll',
   },
   cardContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  cardContainerWrap: {
     [theme.breakpoints.up('sm')]: {
       marginRight: theme.spacing(3),
-      width: '25%',
+      flex: 1,
+      maxWidth: '25%',
+
     },
     [theme.breakpoints.down('sm')]: {
-      width: '40%',
-      flex: 1,
-      margin: theme.spacing(1, 1),
+      flex: '0.5',
+      maxWidth: '45%',
+      marginRight: theme.spacing(1.5),
     },
   },
-  cardContainerMargin: {
-    [theme.breakpoints.up('sm')]: {
+  cardContainerEven: {
+    [theme.breakpoints.down('sm')]: {
       marginRight: theme.spacing(0),
+    },
+  },
+  cardContainerFull: {
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '100%',
+      margin: theme.spacing(1, 0),
+    },
+  },
+  cardContainerNoWrap: {
+    flexShrink: 0,
+    [theme.breakpoints.up('sm')]: {
+      marginRight: theme.spacing(3),
+      width: '20%',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginRight: theme.spacing(1.5),
+      width: '45%',
+
+    },
+    
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      height: theme.spacing(5),
+    },
+    [theme.breakpoints.up('sm')]: {
+      height: theme.spacing(6),
     },
   },
 }))
@@ -64,187 +95,34 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface PostItem {
   slug: string
   title: string
-  location: string
-  parkingHours: string
-  comments: number
-  minimumSpending: string
-  likes: number
-  tags: { label: string }[]
+  location?: string
+  parkingHours?: string
+  comments?: number
+  minimumSpending?: string
+  likes?: number
+  tags?: { label: string }[]
   imagePath: string
 }
-const postItems: PostItem[] = [
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-  {
-    slug: 'harborcity',
-    location: '太古廣場',
-    title: '3小時免費泊車優惠',
-    parkingHours: '3',
-    minimumSpending: '300',
-    comments: 10,
-    likes: 20,
-    tags: [{ label: '寵物友善' }, { label: '有贈品' }],
-    imagePath: '/taikoo.webp',
-  },
-]
-
-interface IProps {}
-export const PostSection = ({}: IProps) => {
-  const classes = useStyles()
-  const router = useRouter()
+export interface PostSectionProps {
+  sectionHeader: string
+  fullWidth?: boolean
+  fullCarousel?: boolean
+  postItems: PostItem[]
+  limited?: boolean
+  renderButton?: () => JSX.Element
+  renderSideLink?: () => JSX.Element
+}
+export const PostSection = ({
+  sectionHeader,
+  postItems,
+  fullCarousel = false,
+  fullWidth = false,
+  limited = false,
+  renderSideLink,
+  renderButton,
+}: PostSectionProps) => {
   const theme = useTheme()
+  const classes = useStyles(theme)
   const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
   const windowPosts = useMemo(() => {
     let window: PostItem[] = []
@@ -262,9 +140,13 @@ export const PostSection = ({}: IProps) => {
 
   const smPosts = useMemo(() => postItems.slice(0, 4), [postItems])
 
-  const renderPosts = (page: PostItem[]) => {
+  const renderPosts = (page: PostItem[], fullImage = false, noWrap = false) => {
     return (
-      <div className={classes.postContainer}>
+      <div
+        className={`${classes.postContainer} ${
+          noWrap && classes.postContainerWrap
+        }`}
+      >
         {page.map(
           (
             {
@@ -284,24 +166,33 @@ export const PostSection = ({}: IProps) => {
             const hoursCaption = `泊${parkingHours}個鐘`
             return (
               <div
-                className={`${classes.cardContainer} ${
-                  i === page.length - 1 && classes.cardContainerMargin
-                }`}
+                className={`
+                ${classes.cardContainer} 
+                ${!noWrap && classes.cardContainerWrap} 
+                ${fullWidth && classes.cardContainerFull} 
+                ${(i + 1) % 2 === 0 && !noWrap && classes.cardContainerEven}
+                ${noWrap && classes.cardContainerNoWrap}
+                `}
               >
                 <StyledCard
                   slug={slug}
                   imagePath={imagePath}
                   subHeader={title}
+                  fullImage={fullImage}
                   tags={tags}
                   likes={likes}
                   comments={comments}
                   header={location}
                   renderCaption={() => (
                     <div>
-                      <StyledText size="h6">
+                      <StyledText size="h6" inline={smOrAbove || fullWidth}>
                         {minSpendingCaption}
                       </StyledText>{' '}
-                      <StyledText size="h6" bold>
+                      <StyledText
+                        size="h6"
+                        inline={smOrAbove || fullWidth}
+                        bold
+                      >
                         {hoursCaption}
                       </StyledText>
                     </div>
@@ -317,21 +208,31 @@ export const PostSection = ({}: IProps) => {
 
   return (
     <div className={classes.section}>
-      <StyledText className={classes.sectionTitle} size="h3" bold>
-        鄰近你的泊車優惠
-      </StyledText>
-      {smOrAbove ? (
+      <div className={classes.titleContainer}>
+        <StyledText size={smOrAbove ? 'h3' : 'h4'} bold>
+          {sectionHeader}
+        </StyledText>
+        {renderSideLink && renderSideLink()}
+      </div>
+      {fullCarousel ? (
+        <div>{renderPosts(postItems, true, true)}</div>
+      ) : smOrAbove ? (
         <Carousel
+          swipe
           animation="slide"
           className={classes.carousel}
           autoPlay={false}
+          indicators={false}
         >
           {windowPosts.map((page) => (
             <div>{renderPosts(page)}</div>
           ))}
         </Carousel>
       ) : (
-        <>{renderPosts(smPosts)}</>
+        <>{renderPosts(limited ? smPosts : postItems)}</>
+      )}
+      {renderButton && (
+        <div className={classes.buttonContainer}>{renderButton()}</div>
       )}
     </div>
   )
