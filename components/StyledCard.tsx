@@ -22,6 +22,7 @@ import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
+    width: '90%',
     height: 'min-content',
   },
   media: {

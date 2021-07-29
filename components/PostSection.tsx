@@ -43,16 +43,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   cardContainerWrap: {
+    display: 'flex',
+    justifyContent: 'center',
     [theme.breakpoints.up('sm')]: {
-      marginRight: theme.spacing(3),
       flex: 1,
       maxWidth: '25%',
-
     },
     [theme.breakpoints.down('sm')]: {
-      flex: '0.5',
-      maxWidth: '45%',
-      marginRight: theme.spacing(1.5),
+      width: '50%',
     },
   },
   cardContainerEven: {
@@ -69,11 +67,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   cardContainerNoWrap: {
     flexShrink: 0,
     [theme.breakpoints.up('sm')]: {
-      marginRight: theme.spacing(3),
       width: '20%',
     },
     [theme.breakpoints.down('sm')]: {
-      marginRight: theme.spacing(1.5),
       width: '45%',
 
     },
@@ -170,7 +166,6 @@ export const PostSection = ({
                 ${classes.cardContainer} 
                 ${!noWrap && classes.cardContainerWrap} 
                 ${fullWidth && classes.cardContainerFull} 
-                ${(i + 1) % 2 === 0 && !noWrap && classes.cardContainerEven}
                 ${noWrap && classes.cardContainerNoWrap}
                 `}
               >
