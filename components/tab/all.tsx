@@ -7,6 +7,13 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+interface TabConfigProps {
+  label: string
+  content: React.ReactNode
+}
+interface TabProps {
+  tabs: TabConfigProps[]
+}
 interface TabPanelProps {
   children?: React.ReactNode;
   dir?: string;
@@ -48,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function FullWidthTabs({
     tabs
-}) {
+}: TabProps) {
   const classes = useStyles();
   const theme = useTheme();
 

@@ -16,7 +16,7 @@ import comment from './comment'
 import subDistrict from './subDistrict'
 import district from './district'
 import tag from './tag'
-import subTag from './subTag'
+import category from './category'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -40,6 +40,6 @@ export default createSchema({
     subDistrict,
     district,
     tag,
-    subTag,
+    category,
   ]),
 })

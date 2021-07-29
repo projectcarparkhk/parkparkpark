@@ -32,10 +32,10 @@ export default {
       },
     },
     {
-      name: 'subtag',
-      title: 'Subtag',
+      name: 'tag',
+      title: 'Tag',
       type: 'array',
-      of: [{ type: 'reference', to: { type: 'subTag' } }],
+      of: [{ type: 'reference', to: { type: 'tag' } }],
     },
     {
       name: 'publishedAt',

@@ -26,8 +26,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     borderRadius: '30px',
     backgroundColor: '#EEEEEE',
-    height: '3.3rem',
+    height: '2rem',
     [theme.breakpoints.up('sm')]: {
+      height: '3rem',
       width: '50%',
       left: '50%',
       transform: 'translateX(-50%)',
@@ -43,11 +44,15 @@ export const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
   },
   inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    paddingRight: theme.spacing(2.5),
     width: '100%',
-    fontSize: '1.3rem',
+    fontSize: '1rem',
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(1, 1),
+      fontSize: '1rem',
+    },
   },
 }))
 
@@ -95,9 +100,10 @@ const renderSuggestionsContainer = ({
 
 interface IProps {
   onSuggestionClick: (suggestion: Suggestion) => void;
+  children: React.ReactChild
 }
 
-function SearchInput({ onSuggestionClick }: IProps) {
+function SearchInput({ onSuggestionClick, children }: IProps) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
@@ -145,6 +151,7 @@ function SearchInput({ onSuggestionClick }: IProps) {
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (
+          <div>
           <div className={classes.searchBox}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -154,6 +161,10 @@ function SearchInput({ onSuggestionClick }: IProps) {
               className={classes.inputInput}
               inputProps={inputProps}
             />
+          </div>
+          {!suggestions.length && <div>
+            {children}
+          </div>}
           </div>
         )
       }}
