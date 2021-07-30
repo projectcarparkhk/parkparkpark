@@ -1,26 +1,20 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
 import Image from 'next/image'
 import { CMS_NAME } from '../lib/constants'
 import Header from '../components/header'
-import {
-  Button,
-  Chip,
-  Container,
-  Divider,
-  InputBase,
-  Paper,
-} from '@material-ui/core'
-import { Theme } from '@material-ui/core/styles'
+import { popularAreas, postItems } from '../mocks/constants'
+import { Button, Container, InputBase } from '@material-ui/core'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
-import { useEffect } from 'react'
-import { useMemo } from 'react'
 import { PostResponse, DistrictResponse } from '../types'
 import Link from 'next/link'
 import { CarouselBanner } from '../components/carousel'
-import { PostSection } from '../components/PostSection'
+import { PostSection, PostSectionProps } from '../components/PostSection'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
+import { StyledText } from '../components/StyledText'
+import UndecoratedLink from '../components/UndecoratedLink'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -62,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0, 2, 1, 0),
   },
   sectionContainer: {
-    padding: theme.spacing(5, 0),
+    padding: theme.spacing(2, 0),
   },
 }))
 
@@ -73,7 +67,6 @@ interface IProps {
 }
 
 export default function Index({ posts, districts, preview }: IProps) {
-
   const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
 
@@ -88,6 +81,72 @@ export default function Index({ posts, districts, preview }: IProps) {
     },
   ]
 
+  const StyledButton = withStyles((theme: Theme) => ({
+    root: {
+      [theme.breakpoints.down('sm')]: {
+        width: '100%',
+      },
+      [theme.breakpoints.up('sm')]: {
+        width: '30%',
+      },
+    },
+  }))(Button)
+
+  const postSections: PostSectionProps[] = [
+    {
+      sectionHeader: '最近瀏覽',
+      postItems: postItems,
+    },
+    {
+      sectionHeader: '附近',
+      postItems: postItems,
+      limited: true,
+      renderSideLink: () => (
+        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
+      ),
+      renderButton: () => (
+        <Link href="/nearby">
+          <StyledButton variant="outlined" color="primary">
+            <StyledText size="h6" bold>
+              顯示全部
+            </StyledText>
+          </StyledButton>
+        </Link>
+      ),
+    },
+    {
+      sectionHeader: '熱門地區',
+      postItems: postItems,
+      limited: true,
+      renderSideLink: () => (
+        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
+      ),
+      renderButton: () => (
+        <Link href="/nearby">
+          <StyledButton variant="outlined" color="primary">
+            <StyledText size="h6" bold>
+              顯示全部
+            </StyledText>
+          </StyledButton>
+        </Link>
+      ),
+    },
+    {
+      sectionHeader: '熱門優惠',
+      postItems: popularAreas,
+      fullCarousel: true,
+      
+      renderButton: () => (
+        <Link href="/nearby">
+          <StyledButton variant="outlined" color="primary">
+            <StyledText size="h6" bold>
+              全部目的地
+            </StyledText>
+          </StyledButton>
+        </Link>
+      ),
+    },
+  ]
 
   return (
     <>
@@ -101,25 +160,29 @@ export default function Index({ posts, districts, preview }: IProps) {
           幫你更快搵到位，慳錢慳時間
         </div>
         <Link href="/search">
-        <div className={searchBoxClasses.searchBox}>
-          <div className={searchBoxClasses.searchIcon}>
-            <SearchIcon />
+          <div className={searchBoxClasses.searchBox}>
+            <div className={searchBoxClasses.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="搜尋地區 / 停車場"
+              className={searchBoxClasses.inputInput}
+              inputProps={{ 'aria-label': 'search' }}
+            />
           </div>
-          <InputBase
-            placeholder="搜尋地區 / 停車場"
-            className={searchBoxClasses.inputInput}
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </div>
         </Link>
       </div>
       <Container maxWidth="lg">
         <div className={classes.sectionContainer}>
           <CarouselBanner items={items} />
         </div>
-        <div className={classes.sectionContainer}>
-          <PostSection />
-        </div>
+        {postSections.map((section, i) => (
+          <div className={classes.sectionContainer}>
+            <PostSection 
+              {...section}
+            />
+          </div>
+        ))}
       </Container>
     </>
   )
