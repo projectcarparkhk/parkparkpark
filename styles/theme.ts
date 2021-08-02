@@ -16,12 +16,17 @@ const theme = createMuiTheme({
       xl: 1536,
     },
   },
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#54B175',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+  }
 })
 theme.typography.h1 = {
-  fontSize: '1.5em',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '2.5rem',
-  },
+  fontSize: '1rem'
 }
 theme.typography.h2 = {
   fontSize: '1.45rem',
