@@ -78,7 +78,7 @@ function All({ districts, preview }: IProps) {
   ]
   return (
     <>
-      <Header />
+      <Header imageToTop={false} />
       <FullWidthTabs tabs={tabConfig} />
     </>
   )
