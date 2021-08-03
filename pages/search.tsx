@@ -34,7 +34,7 @@ function Search({ hotTags }: IProps) {
   }
   return (
     <Container>
-      <Header />
+      <Header imageToTop={false} />
       <div className={classes.searchWrapper}>
       <SearchInput
         onSuggestionClick={onSuggestionClick}

@@ -19,24 +19,25 @@ import UndecoratedLink from '../components/UndecoratedLink'
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
-    height: '80vh',
+    height: '40vh',
+    padding: theme.spacing(8, 2, 2, 2),
+    backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.jpeg')`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
-  imageContainer: {
-    top: theme.spacing(8),
-    height: '70vh',
-    position: 'absolute',
-    width: '100vw',
-  },
-  slogan: {
+  sloganContainer: {
     position: 'relative',
     color: 'white',
-    textAlign: 'center',
-    fontSize: '3.5rem',
-    margin: theme.spacing(8, 0, 1, 0),
   },
-  subslogan: {
-    fontSize: '2rem',
-    margin: theme.spacing(0),
+  subSlogan: {
+    fontWeight: 700
+  },
+  mainSlogan: {
+    fontSize: '1.5rem',
+    fontWeight: 700
   },
   tagSelect: {
     borderRadius: '30px',
@@ -67,7 +68,10 @@ interface IProps {
 }
 
 export default function Index({ posts, districts, preview }: IProps) {
-  const classes = useStyles()
+  const imageToTop = true
+  const classes = useStyles({
+    imageToTop
+  })
   const searchBoxClasses = useSearchBoxStyles()
 
   const items = [
@@ -150,15 +154,8 @@ export default function Index({ posts, districts, preview }: IProps) {
 
   return (
     <>
-      <Header />
+      <Header imageToTop />
       <div className={classes.backdrop}>
-        <div className={classes.imageContainer}>
-          <Image src="/backdrop.jpeg" layout="fill" objectFit="cover" />
-        </div>
-        <h1 className={classes.slogan}>搜尋全港最新泊車優惠</h1>
-        <div className={`${classes.slogan} ${classes.subslogan}`}>
-          幫你更快搵到位，慳錢慳時間
-        </div>
         <Link href="/search">
           <div className={searchBoxClasses.searchBox}>
             <div className={searchBoxClasses.searchIcon}>
@@ -171,7 +168,11 @@ export default function Index({ posts, districts, preview }: IProps) {
             />
           </div>
         </Link>
-      </div>
+        <div className={classes.sloganContainer}>
+          <div className={classes.subSlogan}>搜尋全港最新泊車優惠</div>
+          <div className={classes.mainSlogan}>幫你更快搵到位，慳錢慳時間</div>
+        </div>
+        </div>
       <Container maxWidth="lg">
         <div className={classes.sectionContainer}>
           <CarouselBanner items={items} />
