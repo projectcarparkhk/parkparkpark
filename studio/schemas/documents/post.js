@@ -1,4 +1,4 @@
-import { defaultLanguage } from "../supportedLanguages"
+import { defaultLanguage } from '../supportedLanguages'
 
 export default {
   name: 'post',
@@ -42,7 +42,7 @@ export default {
     {
       title: 'Promotion details',
       name: 'promotionDetails',
-      type: 'table',
+      type: 'localeTable',
     },
     {
       name: 'body',
@@ -59,7 +59,7 @@ export default {
       name: 'carpark',
       title: 'Carpark',
       type: 'reference',
-      to: {type: 'carpark'}
+      to: { type: 'carpark' },
     },
     {
       name: 'externalLink',
@@ -76,14 +76,9 @@ export default {
           type: 'object',
           fields: [
             {
-              name: 'tableName',
-              title: 'Table name',
-              type: 'localeString',
-            },
-            {
-              title: 'Table',
-              name: 'table',
-              type: 'table',
+              name: 'infoTable',
+              title: 'Info table',
+              type: 'localeTable',
             },
           ],
         },
@@ -95,7 +90,6 @@ export default {
       type: 'reference',
       to: { type: 'author' },
     },
-    
   ],
 
   preview: {

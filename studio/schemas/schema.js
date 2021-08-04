@@ -6,6 +6,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type'
 
 // We import object and document schemas
 import localeString from './components/localeString'
+import localeTable from './components/localeTable'
 import localeBlockContent from './components/localeBlockContent'
 import startAndExpiryDates from './components/startAndExpiryDates'
 import carpark from './documents/carpark'
@@ -28,6 +29,7 @@ export default createSchema({
   // to the ones provided by any plugins that are installed
   types: schemaTypes.concat([
     localeString,
+    localeTable,
     startAndExpiryDates,
     localeBlockContent,
     // The following are document types which will appear
