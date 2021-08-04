@@ -3,7 +3,6 @@ import Autosuggest, {
   ChangeEvent,
   InputProps,
   RenderInputComponentProps,
-  RenderSuggestionParams,
   RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
   SuggestionsFetchRequestedParams,
@@ -14,7 +13,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
-import TextField from '@material-ui/core/TextField'
 import InputBase from '@material-ui/core/InputBase'
 import { Suggestion } from './type'
 import { makeStyles } from '@material-ui/core/styles'
@@ -79,7 +77,6 @@ const getSuggestionValue = (suggestion: Suggestion) => suggestion.name
 // Use your imagination to render suggestions.
 const renderSuggestion = (
   suggestion: Suggestion,
-  params: RenderSuggestionParams
 ) => (
   <ListItem button>
     <ListItemAvatar>

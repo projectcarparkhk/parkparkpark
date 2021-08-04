@@ -1,20 +1,14 @@
 import {
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   makeStyles,
-  Paper,
   Theme,
-  Typography,
   withStyles,
 } from '@material-ui/core'
-import React, { useMemo } from 'react'
-import Carousel from 'react-material-ui-carousel'
+import React from 'react'
 import { StyledText } from './StyledText'
-import { useState } from 'react'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
 import { Chip } from '@material-ui/core'

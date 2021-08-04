@@ -1,4 +1,4 @@
-import { Box, makeStyles, Theme, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { Variant } from '@material-ui/core/styles/createTypography'
 import React from 'react'
 
@@ -11,12 +11,6 @@ interface IProps {
   style?: React.CSSProperties
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  bold: {
-    fontWeight: 'bold',
-  },
-}))
-
 export const StyledText = ({
   className: klasses = '',
   style,
@@ -25,7 +19,6 @@ export const StyledText = ({
   bold,
   inline,
 }: IProps) => {
-  const classes = useStyles()
   return (
     <Typography
       variant={size}
