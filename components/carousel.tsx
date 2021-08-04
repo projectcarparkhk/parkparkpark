@@ -1,10 +1,9 @@
-import { Paper, Button, Theme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
 import Image from 'next/image'
 import { makeStyles } from '@material-ui/core/styles'
 import Link from 'next/link'
-import { ClassNameMap } from '@material-ui/core/styles/withStyles'
 
 interface IProps {
   items: {
@@ -13,7 +12,7 @@ interface IProps {
   }[]
   className?: string
 }
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   carousel: {
     height: '25vh',
     width: '100%',
@@ -33,7 +32,7 @@ export const CarouselBanner = ({ items, className: klasses = "" }: IProps) => {
   return (
     <div className={`${classes.carouselContainer} ${klasses}`}>
       <Carousel className={classes.carousel}>
-        {items.map(({ image, postSlug }, i) => (
+        {items.map(({ image, postSlug }) => (
           <Paper key={postSlug}>
             <Link href={postSlug}>
               <div>

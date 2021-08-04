@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-function ShowTogglableTagList({_id, name, slug, subDistricts}: DistrictResponse) {
+function ShowTogglableTagList({name, subDistricts}: DistrictResponse) {
   const [isShowAll, setIsShowAll] = useState(false)
   const classes = useStyles()
 
@@ -59,7 +59,7 @@ function ShowTogglableTagList({_id, name, slug, subDistricts}: DistrictResponse)
   )
 }
 
-function All({ districts, preview }: IProps) {
+function All({ districts }: IProps) {
   const tabConfig = [
     {
       label: '地區',

@@ -2,10 +2,8 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
-import { useRouter } from 'next/router'
-import { StyledCard, StyledCardProps } from './StyledCard'
+import { StyledCard} from './StyledCard'
 import { useMediaQuery } from '@material-ui/core'
-import UndecoratedLink from './UndecoratedLink'
 
 const useStyles = makeStyles((theme: Theme) => ({
   section: {
@@ -156,7 +154,6 @@ export const PostSection = ({
               imagePath,
               minimumSpending,
             },
-            i
           ) => {
             const minSpendingCaption = `滿$${minimumSpending}`
             const hoursCaption = `泊${parkingHours}個鐘`
@@ -168,6 +165,7 @@ export const PostSection = ({
                 ${fullWidth && classes.cardContainerFull} 
                 ${noWrap && classes.cardContainerNoWrap}
                 `}
+                key={slug}
               >
                 <StyledCard
                   slug={slug}
@@ -219,8 +217,8 @@ export const PostSection = ({
           autoPlay={false}
           indicators={false}
         >
-          {windowPosts.map((page) => (
-            <div>{renderPosts(page)}</div>
+          {windowPosts.map((page, i) => (
+            <div key={i}>{renderPosts(page)}</div>
           ))}
         </Carousel>
       ) : (

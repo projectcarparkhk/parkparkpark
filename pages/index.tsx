@@ -1,14 +1,13 @@
 import React from 'react'
 import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
 import Image from 'next/image'
-import { CMS_NAME } from '../lib/constants'
 import Header from '../components/header'
 import { popularAreas, postItems } from '../mocks/constants'
 import { Button, Container, InputBase } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
-import { PostResponse, DistrictResponse } from '../types'
+// import { PostResponse, DistrictResponse } from '../types'
 import Link from 'next/link'
 import { CarouselBanner } from '../components/carousel'
 import { PostSection, PostSectionProps } from '../components/PostSection'
@@ -61,17 +60,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-interface IProps {
-  posts: PostResponse[]
-  districts: DistrictResponse[]
-  preview: boolean
-}
+// interface IProps {
+//   posts: PostResponse[]
+//   districts: DistrictResponse[]
+//   preview: boolean
+// }
 
-export default function Index({ posts, districts, preview }: IProps) {
-  const imageToTop = true
-  const classes = useStyles({
-    imageToTop
-  })
+export default function Index() {
+  const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
 
   const items = [
@@ -177,8 +173,8 @@ export default function Index({ posts, districts, preview }: IProps) {
         <div className={classes.sectionContainer}>
           <CarouselBanner items={items} />
         </div>
-        {postSections.map((section, i) => (
-          <div className={classes.sectionContainer}>
+        {postSections.map((section) => (
+          <div key={section.sectionHeader} className={classes.sectionContainer}>
             <PostSection 
               {...section}
             />
