@@ -1,4 +1,4 @@
-import { baseLanguage } from './localeString'
+import { defaultLanguage } from '../supportedLanguages'
 
 export default {
   name: 'tag',
@@ -13,7 +13,18 @@ export default {
     {
       name: 'slug',
       title: 'Slug',
-      type: 'localeSlug',
+      type: 'slug',
+      options: {
+        source: 'name.en',
+        maxLength: 96,
+        slugify: (input) =>
+          input.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
+      },
+    },
+    {
+      name: 'shortDescription',
+      title: 'Short description',
+      type: 'localeString',
     },
     {
       name: 'category',
@@ -34,7 +45,7 @@ export default {
   ],
   preview: {
     select: {
-      title: `name.${baseLanguage.id}`,
+      title: `name.${defaultLanguage}`,
     },
   },
 }

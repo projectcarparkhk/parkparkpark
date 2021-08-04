@@ -1,11 +1,8 @@
-const supportedLanguages = [
-  { id: 'zh', title: 'Traditional Chinese', isDefault: true },
-  { id: 'en', title: 'English', isSlug: true },
-]
+import { defaultLanguage, supportedLanguages } from "../supportedLanguages"
 
 export default {
-  title: 'Localized slug',
-  name: 'localeSlug',
+  title: 'Localized string',
+  name: 'localeString',
   type: 'object',
   // Fieldsets can be used to group object fields.
   // Here we omit a fieldset for the "default language",
@@ -22,15 +19,9 @@ export default {
   ],
   // Dynamically define one field per language
   fields: supportedLanguages.map((lang) => ({
-    title: `${lang.title} Slug`,
-    name: `${lang.id}Slug`,
-    type: 'slug',
-    fieldset: lang.isDefault ? null : 'translations',
-    options: {
-      source: `name.${lang.id}`,
-      maxLength: 96,
-      slugify: (input) =>
-        input.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
-    },
+    title: lang.label,
+    name: lang.code,
+    type: 'string',
+    fieldset: lang.code === defaultLanguage ? null : 'translations',
   })),
 }
