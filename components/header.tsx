@@ -5,10 +5,18 @@ import { Theme } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
+import { StyledText } from '../components/StyledText'
 
-const useStyles = makeStyles((theme: Theme) => ({
+type HeaderProps = {
+  imageToTop: boolean
+}
+
+type AppBarStyleProps = HeaderProps
+
+const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
-    height: theme.mixins.toolbar.minHeight
+    height: theme.mixins.toolbar.minHeight,
+    color: props => props.imageToTop ? 'white' : theme.palette.primary.main,
   },
   toolBar: {
     minHeight: theme.mixins.toolbar.minHeight,
@@ -16,27 +24,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   title: {
     flexGrow: 1,
   },
-  offset: theme.mixins.toolbar,
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
+  offset: theme.mixins.toolbar
 }))
-export default function Header() {
-  const classes = useStyles()
+export default function Header({ imageToTop }: HeaderProps) {
+  const classes = useStyles({
+    imageToTop
+  })
   return (
     <>
-      <AppBar className={classes.appBar}>
+      <AppBar position='absolute' elevation={0} color='transparent' className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
         <Link href="/all">
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <IconButton edge="start" color="inherit" aria-label="menu">
           <MenuIcon />
         </IconButton>
         </Link>
-          <h2 className={classes.title}>
+          <div className={classes.title}>
             <Link href="/">
-              <span className="hover:underline">ParkParkPark!</span>
+              <span className="hover:underline">
+              <StyledText size="h1" bold>
+              ParkPark泊車資訊網
+            </StyledText>
+            </span>
             </Link>
-          </h2>
+          </div>
         <Link href="/search">
         <IconButton edge="end" color="inherit" aria-label="search">
           <SearchIcon />
@@ -44,7 +55,7 @@ export default function Header() {
         </Link>
         </Toolbar>
       </AppBar>
-      <div className={classes.offset} />
+      {!imageToTop && <div className={classes.offset} />}
     </>
   )
 }
