@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "npm run build:sanity && pwd && npm run build:web",
+    "build": "lerna bootstrap && npm run build:sanity && pwd && npm run build:web",
     "build:web": "next build",
     "start:web": "next start",
     "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx --ext js --ext jsx",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "build:sanity": "cd studio && sanity build ../public/studio -y && cd ..",
-    "start:sanity": "cp .env ./studio/.env.development && cd studio && sanity start"
+    "start:sanity": "cp .env ./studio/.env.development && cd studio && sanity start",
+    "postinstall": "lerna bootstrap"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
