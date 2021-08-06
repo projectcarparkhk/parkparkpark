@@ -16,6 +16,7 @@ type AppBarStyleProps = HeaderProps
 const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
     height: theme.mixins.toolbar.minHeight,
+    paddingTop: theme.spacing(1),
     color: props => props.imageToTop ? 'white' : theme.palette.primary.main,
   },
   toolBar: {

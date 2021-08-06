@@ -2,13 +2,10 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
-import { StyledCard} from './StyledCard'
+import { StyledCard } from './StyledCard'
 import { useMediaQuery } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) => ({
-  section: {
-    margin: theme.spacing(3, 0),
-  },
   titleContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -71,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '45%',
 
     },
-    
+
   },
   buttonContainer: {
     display: 'flex',
@@ -134,12 +131,11 @@ export const PostSection = ({
 
   const smPosts = useMemo(() => postItems.slice(0, 4), [postItems])
 
-  const renderPosts = (page: PostItem[], fullImage = false, noWrap = false) => {
+  const renderPosts = (page: PostItem[], option?: {fullImage:boolean, noWrap: boolean}) => {
     return (
       <div
-        className={`${classes.postContainer} ${
-          noWrap && classes.postContainerWrap
-        }`}
+        className={`${classes.postContainer} ${option?.noWrap && classes.postContainerWrap
+          }`}
       >
         {page.map(
           (
@@ -161,9 +157,9 @@ export const PostSection = ({
               <div
                 className={`
                 ${classes.cardContainer} 
-                ${!noWrap && classes.cardContainerWrap} 
+                ${!option?.noWrap && classes.cardContainerWrap} 
                 ${fullWidth && classes.cardContainerFull} 
-                ${noWrap && classes.cardContainerNoWrap}
+                ${option?.noWrap && classes.cardContainerNoWrap}
                 `}
                 key={slug}
               >
@@ -171,7 +167,7 @@ export const PostSection = ({
                   slug={slug}
                   imagePath={imagePath}
                   subHeader={title}
-                  fullImage={fullImage}
+                  fullImage={option?.fullImage}
                   tags={tags}
                   likes={likes}
                   comments={comments}
@@ -200,7 +196,7 @@ export const PostSection = ({
   }
 
   return (
-    <div className={classes.section}>
+    <div>
       <div className={classes.titleContainer}>
         <StyledText size={smOrAbove ? 'h3' : 'h4'} bold>
           {sectionHeader}
@@ -208,7 +204,7 @@ export const PostSection = ({
         {renderSideLink && renderSideLink()}
       </div>
       {fullCarousel ? (
-        <div>{renderPosts(postItems, true, true)}</div>
+        <div>{renderPosts(postItems, { fullImage: true, noWrap: true })}</div>
       ) : smOrAbove ? (
         <Carousel
           swipe

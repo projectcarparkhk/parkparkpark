@@ -18,24 +18,26 @@ import UndecoratedLink from '../components/UndecoratedLink'
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
-    height: '40vh',
+    height: '35vh',
     padding: theme.spacing(8, 2, 2, 2),
-    backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.jpeg')`,
+    backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.png')`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    boxShadow: '3px 6px 15px -8px #000000;'
   },
   sloganContainer: {
     position: 'relative',
     color: 'white',
   },
   subSlogan: {
-    fontWeight: 700
+    fontWeight: 700,
+    fontSize: '1rem',
   },
   mainSlogan: {
-    fontSize: '1.5rem',
+    fontSize: '1.8rem',
     fontWeight: 700
   },
   tagSelect: {
@@ -56,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0, 2, 1, 0),
   },
   sectionContainer: {
+    marginTop: theme.spacing(2),
     padding: theme.spacing(2, 0),
   },
 }))
@@ -165,8 +168,8 @@ export default function Index() {
           </div>
         </Link>
         <div className={classes.sloganContainer}>
-          <div className={classes.subSlogan}>搜尋全港最新泊車優惠</div>
-          <div className={classes.mainSlogan}>幫你更快搵到位，慳錢慳時間</div>
+          <div className={classes.subSlogan}>輕鬆暢遊港九新界</div>
+          <div className={classes.mainSlogan}>搜索更慳優惠</div>
         </div>
         </div>
       <Container maxWidth="lg">
