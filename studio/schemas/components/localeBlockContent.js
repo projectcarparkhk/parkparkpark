@@ -1,7 +1,4 @@
-const supportedLanguages = [
-  { id: 'zh', title: 'Traditional Chinese', isDefault: true },
-  { id: 'en', title: 'English', isSlug: true },
-]
+import { defaultLanguage, supportedLanguages } from '../supportedLanguages'
 
 export default {
   title: 'Localized block content',
@@ -22,10 +19,10 @@ export default {
   ],
   // Dynamically define one field per language
   fields: supportedLanguages.map((lang) => ({
-    title: lang.title,
-    name: lang.id,
+    title: lang.label,
+    name: lang.code,
     type: 'array',
-    fieldset: lang.isDefault ? null : 'translations',
+    fieldset: lang.code === defaultLanguage ? null : 'translations',
     of: [
       {
         title: 'Block',

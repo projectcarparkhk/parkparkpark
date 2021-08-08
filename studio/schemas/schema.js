@@ -5,18 +5,21 @@ import createSchema from 'part:@sanity/base/schema-creator'
 import schemaTypes from 'all:part:@sanity/base/schema-type'
 
 // We import object and document schemas
-import localeString from './localeString'
-import localeSlug from './localeSlug'
-import localeBlockContent from './localeBlockContent'
-import carpark from './carpark'
-import blockContent from './blockContent'
-import post from './post'
-import author from './author'
-import comment from './comment'
-import subDistrict from './subDistrict'
-import district from './district'
-import tag from './tag'
-import category from './category'
+import localeString from './components/localeString'
+import localeTable from './components/localeTable'
+import localeBlockContent from './components/localeBlockContent'
+import startAndExpiryDates from './components/startAndExpiryDates'
+import carpark from './documents/carpark'
+import vehicleType from './documents/vehicleType'
+import blockContent from './components/blockContent'
+import post from './documents/post'
+import author from './documents/author'
+import comment from './components/comment'
+import subDistrict from './documents/subDistrict'
+import area from './documents/area'
+import paymentMethod from './documents/paymentMethod'
+import tag from './documents/tag'
+import category from './documents/category'
 
 // Then we give our schema to the builder and provide the result to Sanity
 export default createSchema({
@@ -26,7 +29,8 @@ export default createSchema({
   // to the ones provided by any plugins that are installed
   types: schemaTypes.concat([
     localeString,
-    localeSlug,
+    localeTable,
+    startAndExpiryDates,
     localeBlockContent,
     // The following are document types which will appear
     // in the studio.
@@ -35,10 +39,12 @@ export default createSchema({
     // When added to this list, object types can be used as
     // { type: 'typename' } in other document schemas
     carpark,
+    vehicleType,
     blockContent,
     comment,
     subDistrict,
-    district,
+    area,
+    paymentMethod,
     tag,
     category,
   ]),

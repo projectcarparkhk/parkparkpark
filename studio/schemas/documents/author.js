@@ -1,3 +1,5 @@
+import { defaultLanguage } from '../supportedLanguages'
+
 export default {
   name: 'author',
   title: 'Author',
@@ -5,16 +7,18 @@ export default {
   fields: [
     {
       name: 'name',
-      title: 'Name',
-      type: 'string',
+      title: 'Display Name',
+      type: 'localeString',
     },
     {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'name',
+        source: 'name.en',
         maxLength: 96,
+        slugify: (input) =>
+          input.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
       },
     },
     {
@@ -41,7 +45,7 @@ export default {
   ],
   preview: {
     select: {
-      title: 'name',
+      title: `name.${defaultLanguage}`,
       media: 'image',
     },
   },
