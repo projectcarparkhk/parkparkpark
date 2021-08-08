@@ -125,7 +125,7 @@ export const StyledCard = ({
   likes,
   comments,
 }: StyledCardProps) => {
-  const classes = useStyles()
+  const classes = useStyles(fullImage)
   const router = useRouter()
   return (
     <Card className={`${classes.card}`}>
