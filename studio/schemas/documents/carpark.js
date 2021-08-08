@@ -39,6 +39,14 @@ export default {
       },
     },
     {
+      name: 'gateImage',
+      title: 'Gate image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    },
+    {
       title: 'Price details',
       name: 'priceDetails',
       type: 'table',
@@ -49,7 +57,12 @@ export default {
       type: 'array',
       of: [{ type: 'reference', to: { type: 'tag' } }],
     },
-
+    {
+      name: 'posts',
+      title: 'Posts',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'post' } }],
+    },
     {
       name: 'paymentMethods',
       title: 'Payment methods',
@@ -118,6 +131,7 @@ export default {
   preview: {
     select: {
       title: `name.${defaultLanguage}`,
+      subtitle: `subDistrict.0.name.${defaultLanguage}`,
       media: 'mainImage',
     },
   },

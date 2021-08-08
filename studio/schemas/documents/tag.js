@@ -46,6 +46,7 @@ export default {
   preview: {
     select: {
       title: `name.${defaultLanguage}`,
+      subtitle: `category.name.${defaultLanguage}`,
     },
   },
 }

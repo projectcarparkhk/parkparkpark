@@ -6,8 +6,8 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'name',
-      title: 'Display Name',
+      name: 'title',
+      title: 'Title',
       type: 'localeString',
     },
     {
@@ -56,12 +56,6 @@ export default {
       of: [{ type: 'reference', to: { type: 'tag' } }],
     },
     {
-      name: 'carpark',
-      title: 'Carpark',
-      type: 'reference',
-      to: { type: 'carpark' },
-    },
-    {
       name: 'externalLink',
       title: 'External link',
       type: 'url',
@@ -94,15 +88,16 @@ export default {
 
   preview: {
     select: {
-      title: 'title',
+      title: `title.${defaultLanguage}`,
       author: `author.name.${defaultLanguage}`,
       media: 'mainImage',
     },
     prepare(selection) {
       const { author } = selection
-      return Object.assign({}, selection, {
+      return {
+        ...selection,
         subtitle: author && `by ${author}`,
-      })
+      }
     },
   },
 }

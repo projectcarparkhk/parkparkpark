@@ -1,4 +1,4 @@
-import { defaultLanguage, supportedLanguages } from "../supportedLanguages"
+import { defaultLanguage, supportedLanguages } from '../supportedLanguages'
 
 export default {
   title: 'Localized block content',

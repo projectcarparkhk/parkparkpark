@@ -1,4 +1,4 @@
-import { defaultLanguage } from "../supportedLanguages";
+import { defaultLanguage } from '../supportedLanguages'
 
 export default {
   name: 'author',

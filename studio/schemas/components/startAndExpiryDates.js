@@ -1,4 +1,4 @@
-import { defaultLanguage, supportedLanguages } from "../supportedLanguages"
+import { defaultLanguage, supportedLanguages } from '../supportedLanguages'
 
 export default {
   title: 'Start and expiry dates',
@@ -22,12 +22,12 @@ export default {
     {
       title: 'Start date',
       name: 'startDate',
-      type: 'datetime'
+      type: 'datetime',
     },
     {
       title: 'Expiry date',
       name: 'expiryDate',
       type: 'datetime',
-    }
-  ]
+    },
+  ],
 }
