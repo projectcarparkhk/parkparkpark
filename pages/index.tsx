@@ -1,5 +1,5 @@
 import React from 'react'
-import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
+import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
 import Image from 'next/image'
 import Header from '../components/header'
 import { popularAreas, postItems } from '../mocks/constants'
@@ -187,9 +187,9 @@ export default function Index() {
 
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
-  const districts = await getSubDistrictsGroupByDistrict(preview)
+  const areas = await getSubDistrictsGroupByArea(preview)
   return {
-    props: { posts, districts, preview },
+    props: { posts, areas, preview },
     revalidate: 1,
   }
 }
