@@ -98,15 +98,15 @@ export async function getHotTags(preview: boolean, locale = 'zh'): Promise<TagRe
 
 // Fix later: 
 // It should be subDistrict group by area, area: HK / KLN / NT
-export async function getSubDistrictsGroupByDistrict(preview: boolean, locale = 'zh'): Promise<DistrictResponse[]> {
+export async function getSubDistrictsGroupByArea(preview: boolean, locale = 'zh'): Promise<DistrictResponse[]> {
   const result: DistrictResponse[] = await getClient(preview)
-  .fetch(`*[_type == 'district']{
+  .fetch(`*[_type == 'area']{
     _id, 
     'name': name.${locale},
-    'slug': slug.${locale}Slug.current,
+    'slug': slug.current,
     'subDistricts': *[_type == 'subDistrict' && references(^._id)]{
       'name': name.${locale}, 
-      'slug': slug.${locale}Slug.current,
+      'slug': slug.current,
       'isHot': isHot,
     }
   }`)

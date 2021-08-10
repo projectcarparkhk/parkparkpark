@@ -1,21 +1,29 @@
 import React from 'react'
-import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
+import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
+import { Area } from '../types/DistrictResponse'
 import Image from 'next/image'
 import Header from '../components/header'
 import { popularAreas, postItems } from '../mocks/constants'
-import { Button, Container, InputBase } from '@material-ui/core'
+import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
-// import { PostResponse, DistrictResponse } from '../types'
 import Link from 'next/link'
 import { CarouselBanner } from '../components/carousel'
 import { PostSection, PostSectionProps } from '../components/PostSection'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
+import FilterHdrIcon from '@material-ui/icons/FilterHdr';
+import GestureIcon from '@material-ui/icons/Gesture'; 
+import NatureIcon from '@material-ui/icons/Nature';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
-const useStyles = makeStyles((theme: Theme) => ({
+interface IndexStyleProps {
+  iconColor?: string
+}
+
+const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
     height: '40vh',
@@ -58,16 +66,111 @@ const useStyles = makeStyles((theme: Theme) => ({
   sectionContainer: {
     padding: theme.spacing(2, 0),
   },
+  areaIconContainer: {
+    margin: theme.spacing(2, 0),
+    display: 'grid',
+    gridTemplateColumns: `repeat(4, 1fr)`,
+    width: '100%',
+    textAlign: 'center',
+    '& div': {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }
+  },
+  icon: {
+    padding: theme.spacing(1.5),
+    marginBottom: theme.spacing(1),
+    borderRadius: theme.spacing(6),
+    background: props => props.iconColor,
+    '& svg': {
+      fill: '#666',
+      width: '0.95rem',
+      height: '0.95rem',
+    }
+  }
 }))
 
-// interface IProps {
-//   posts: PostResponse[]
-//   districts: DistrictResponse[]
-//   preview: boolean
-// }
+interface AProps {
+  areas: Area[]
+}
 
-export default function Index() {
-  const classes = useStyles()
+const areaConfig = [
+  {
+    icon: <FilterHdrIcon />,
+    color: '#e4f3ea'
+  },
+  {
+    icon: <GestureIcon />,
+    color: '#ffece8'
+  },
+  {
+    icon: <NatureIcon />,
+    color: '#fff6e4'
+  },
+  {
+    icon: <MoreHorizIcon />,
+    color: '#f0edfc'
+  }
+]
+
+interface IconCircleProps {
+  color: string
+  children: React.ReactElement<SvgIconProps>
+}
+
+function IconCircle({ color, children }: IconCircleProps) {
+  const classes = useStyles({
+    iconColor: color
+  })
+
+  return (
+    <div className={classes.icon}>
+      {children}
+    </div>
+  )
+}
+
+function AreaCategory({ areas }: AProps) {
+  const classes = useStyles({})
+
+  return (
+    <div className={classes.sectionContainer}>
+      <StyledText size="h3" bold>
+        地區分類
+      </StyledText>
+      <div className={classes.areaIconContainer}>
+        {[...areas, {
+          _id: 'more',
+          name: '更多',
+          slug: ""
+        }].map((area, i) => {
+          return (
+            <Link 
+              href={{
+                pathname: '/all',
+                query: { area: area.slug },
+              }}
+              key={area.slug}
+            >
+              <div>
+                <IconCircle 
+                  color={areaConfig[i].color}
+                >
+                {areaConfig[i].icon}
+                </IconCircle>
+                {area.name}
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default function Index({ areas }: AProps) {
+  const classes = useStyles({})
   const searchBoxClasses = useSearchBoxStyles()
 
   const items = [
@@ -170,6 +273,9 @@ export default function Index() {
         </div>
         </div>
       <Container maxWidth="lg">
+        <AreaCategory 
+          areas={areas} 
+        />
         <div className={classes.sectionContainer}>
           <CarouselBanner items={items} />
         </div>
@@ -187,9 +293,9 @@ export default function Index() {
 
 export async function getStaticProps({ preview = false }) {
   const posts = await getPostsForHome(preview)
-  const districts = await getSubDistrictsGroupByDistrict(preview)
+  const areas = await getSubDistrictsGroupByArea(preview)
   return {
-    props: { posts, districts, preview },
+    props: { posts, areas, preview },
     revalidate: 1,
   }
 }
