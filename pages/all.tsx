@@ -11,7 +11,7 @@ import ButtonBase from '@material-ui/core/ButtonBase'
 import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
 import { StyledText } from '../components/StyledText'
-
+import { getArrayData } from '../lib/helper'
 interface IProps {
   areas: Area[]
   preview?: boolean
@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function SubDistrictList({ areas }: IProps) {
   const classes = useStyles()
-  const [selectedArea, setSelectedArea] = useState(areas[0]._id)
+  const router = useRouter()
+  const [selectedArea, setSelectedArea] = useState(router.query.area || areas[0]._id)
 
   return (
     <>
@@ -60,10 +61,10 @@ function SubDistrictList({ areas }: IProps) {
         ))}
       </div>
       <div>
-        <StyledText size="h3" inline={false}>分區</StyledText>
+        <StyledText size="h3" bold inline={false}>分區</StyledText>
         {
-          areas
-            .find((area: Area) => area._id === selectedArea)
+          getArrayData(areas
+            .find((area: Area) => area._id === selectedArea))
             .subDistricts
             .map((subDistrict: SubDistrict) => {
               return (
