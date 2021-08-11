@@ -21,6 +21,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   media: {
     height: 140,
+    position: 'relative',
+    filter: 'blur(1.5px)'
+  },
+  mediaText: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
   },
   fullImageMedia: {
     [theme.breakpoints.down('sm')]: {
@@ -134,7 +141,9 @@ export const StyledCard = ({
           className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
           image={imagePath}
         />
-        {!fullImage && (
+        {fullImage ? (
+          <div className={classes.mediaText}>{renderCaption()}</div>
+        ) : (
           <StyledCardContent>
             <StyledText size="body1">{header}</StyledText>
             <StyledText className={classes.titles} size="h6" bold>

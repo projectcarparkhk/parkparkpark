@@ -25,7 +25,8 @@
     "i18n",
     "locales",
     "hooks",
-    "types"
+    "types",
+    "constants"
   ],
   "exclude": [
     "build",

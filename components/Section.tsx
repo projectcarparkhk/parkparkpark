@@ -66,9 +66,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     [theme.breakpoints.down('sm')]: {
       width: '90%',
-
     },
-
   },
   buttonContainer: {
     display: 'flex',
@@ -87,14 +85,13 @@ interface PostItem {
   slug: string
   title: string
   location?: string
-  parkingHours?: string
   comments?: number
-  minimumSpending?: string
   likes?: number
   tags?: { label: string }[]
   imagePath: string
+  shortDescription?: string
 }
-export interface  SectionProps {
+export interface SectionProps {
   sectionHeader: string
   fullWidth?: boolean
   slidingCard?: boolean
@@ -131,28 +128,27 @@ export const Section = ({
 
   const smPosts = useMemo(() => postItems.slice(0, 4), [postItems])
 
-  const renderPosts = (page: PostItem[], option?: {fullImage:boolean, noWrap: boolean}) => {
+  const renderPosts = (
+    page: PostItem[],
+    option?: { fullImage: boolean; noWrap: boolean }
+  ) => {
     return (
       <div
-        className={`${classes.postContainer} ${option?.noWrap && classes.postContainerWrap
-          }`}
+        className={`${classes.postContainer} ${
+          option?.noWrap && classes.postContainerWrap
+        }`}
       >
         {page.map(
-          (
-            {
-              slug,
-              title,
-              location,
-              parkingHours,
-              tags,
-              comments,
-              likes,
-              imagePath,
-              minimumSpending,
-            },
-          ) => {
-            const minSpendingCaption = `滿$${minimumSpending}`
-            const hoursCaption = `泊${parkingHours}個鐘`
+          ({
+            slug,
+            title,
+            location,
+            tags,
+            comments,
+            likes,
+            imagePath,
+            shortDescription,
+          }) => {
             return (
               <div
                 className={`
@@ -173,16 +169,16 @@ export const Section = ({
                   comments={comments}
                   header={location}
                   renderCaption={() => (
-                    <div>
-                      <StyledText size="h6" inline={smOrAbove || fullWidth}>
-                        {minSpendingCaption}
+                    <div style={{color: 'white', padding: '1rem'}}>
+                      <StyledText size="h4" inline={smOrAbove || fullWidth} bold>
+                        {title}
                       </StyledText>{' '}
                       <StyledText
                         size="h6"
                         inline={smOrAbove || fullWidth}
                         bold
                       >
-                        {hoursCaption}
+                        {shortDescription && (shortDescription.slice(0,18) + '...')}
                       </StyledText>
                     </div>
                   )}

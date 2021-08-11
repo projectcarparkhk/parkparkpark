@@ -15,6 +15,7 @@ import { PostResponse } from '../types'
 import translations from '../locales/pages/index'
 import { useRouter } from 'next/router'
 import { imageBuilder } from '../lib/sanity'
+import { SupportedLanguages } from '../constants/SupportedLanguages'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -72,12 +73,28 @@ interface IProps {
 export default function Index({ latestPosts, hotPosts }: IProps) {
   const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
-  // const { locale as Loca } = useRouter()
+  const { locale } = useRouter()
+  const fallBackLocale = (locale as SupportedLanguages) || 'zh'
 
-  const fallBackLocale:  = locale || 'zh';
-  const tLatestPosts = useMemo(()=> {
-    return latestPosts.map((post) => ({...post, title: post[fallBackLocale].title}))
+  const translatedLatestPosts = useMemo(() => {
+    return latestPosts.map((post) => ({
+      ...post,
+      title: post[fallBackLocale].title,
+      shortDescription: post[fallBackLocale].shortDescription,
+      imagePath: imageBuilder(post.imagePath).toString() || '/hk.webp'
+    }))
   }, [latestPosts])
+
+  const translatedHotPosts = useMemo(() => {
+    return hotPosts.map((post) => ({
+      ...post,
+      title: post[fallBackLocale].title,
+      shortDescription: post[fallBackLocale].shortDescription,
+      imagePath: imageBuilder(post.imagePath).toString() || '/hk.webp'
+
+
+    }))
+  }, [hotPosts])
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
@@ -89,7 +106,6 @@ export default function Index({ latestPosts, hotPosts }: IProps) {
       },
     },
   }))(Button)
-
 
   const {
     mainSlogan,
@@ -104,12 +120,12 @@ export default function Index({ latestPosts, hotPosts }: IProps) {
   const sections: SectionProps[] = [
     {
       sectionHeader: latestCarparkPromotions,
-      postItems: latestPosts,
+      postItems: translatedLatestPosts,
       slidingCard: true,
     },
     {
       sectionHeader: cheapestCarparkPromotions,
-      postItems: popularAreas,
+      postItems: translatedHotPosts,
       slidingCard: true,
     },
     {
