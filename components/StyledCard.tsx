@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   fullImageMedia: {
     [theme.breakpoints.down('sm')]: {
-      height: '15rem',
+      height: '10rem',
     },
     [theme.breakpoints.up('sm')]: {
       height: '20rem',

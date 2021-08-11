@@ -75,6 +75,11 @@ export default {
       type: 'localeBlockContent',
     },
     {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
+    },
+    {
       name: 'infoTables',
       title: 'Info tables',
       type: 'array',

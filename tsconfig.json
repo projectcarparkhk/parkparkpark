@@ -18,7 +18,15 @@
     "downlevelIteration": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["next-env.d.ts", "pages", "components"],
+  "include": [
+    "next-env.d.ts",
+    "pages",
+    "components",
+    "i18n",
+    "locales",
+    "hooks",
+    "types"
+  ],
   "exclude": [
     "build",
     "public",

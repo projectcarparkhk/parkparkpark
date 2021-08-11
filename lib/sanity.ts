@@ -1,19 +1,23 @@
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import {
   groq,
   createClient,
   createImageUrlBuilder,
   createPreviewSubscriptionHook,
+  ClientConfig,
 } from 'next-sanity'
 
-const config = {
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+const config: ClientConfig = {
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'staging',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'project-id',
   useCdn: process.env.NODE_ENV === 'production',
 }
 
-export const imageBuilder = (source) =>
+export const imageBuilder = (source: SanityImageSource) =>
   createImageUrlBuilder(config).image(source)
+
 export const usePreviewSubscription = createPreviewSubscriptionHook(config)
+
 export const client = createClient(config)
 export const previewClient = createClient({
   ...config,
@@ -21,5 +25,5 @@ export const previewClient = createClient({
   token: process.env.SANITY_API_TOKEN,
 })
 
-export const getClient = (usePreview) => (usePreview ? previewClient : client)
+export const SanityClient = (usePreview?: boolean) => (usePreview ? previewClient : client)
 export default client

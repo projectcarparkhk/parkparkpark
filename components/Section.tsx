@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: '20%',
     },
     [theme.breakpoints.down('sm')]: {
-      width: '45%',
+      width: '90%',
 
     },
 
@@ -94,24 +94,24 @@ interface PostItem {
   tags?: { label: string }[]
   imagePath: string
 }
-export interface PostSectionProps {
+export interface  SectionProps {
   sectionHeader: string
   fullWidth?: boolean
-  fullCarousel?: boolean
+  slidingCard?: boolean
   postItems: PostItem[]
   limited?: boolean
   renderButton?: () => JSX.Element
   renderSideLink?: () => JSX.Element
 }
-export const PostSection = ({
+export const Section = ({
   sectionHeader,
   postItems,
-  fullCarousel = false,
+  slidingCard = false,
   fullWidth = false,
   limited = false,
   renderSideLink,
   renderButton,
-}: PostSectionProps) => {
+}: SectionProps) => {
   const theme = useTheme()
   const classes = useStyles(theme)
   const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
@@ -203,7 +203,7 @@ export const PostSection = ({
         </StyledText>
         {renderSideLink && renderSideLink()}
       </div>
-      {fullCarousel ? (
+      {slidingCard ? (
         <div>{renderPosts(postItems, { fullImage: true, noWrap: true })}</div>
       ) : smOrAbove ? (
         <Carousel

@@ -1,34 +1,23 @@
 
 import { PostResponse, DistrictResponse, TagResponse } from '../types'
-import client, { previewClient } from './sanity'
-
-const getUniquePosts = (posts: PostResponse[]) => {
-  const slugs = new Set()
-  return posts.filter((post) => {
-    if (slugs.has(post.slug)) {
-      return false
-    } else {
-      slugs.add(post.slug)
-      return true
-    }
-  })
-}
+import {SanityClient} from './sanity'
 
 const postFields = `
   _id,
-  name,
-  title,
-  'date': publishedAt,
-  excerpt,
+  'imagePath': mainImage.asset._ref,
   'slug': slug.current,
-  'coverImage': mainImage,
-  'author': author->{name, 'picture': image.asset->url},
+  'en' : {
+    'title': title.en,
+    'shortDescription': shortDescription.en
+  },
+  'zh' : {
+    'title': title.zh,
+    'shortDescription': shortDescription.zh
+  }
 `
 
-const getClient = (preview: boolean) => (preview ? previewClient : client)
-
 // export async function getPreviewPostBySlug(slug) {
-//   const data = await getClient(true).fetch(
+//   const data = await SanityClient(true).fetch(
 //     `*[_type == 'post' && slug.current == $slug] | order(publishedAt desc){
 //       ${postFields}
 //       body
@@ -43,17 +32,23 @@ const getClient = (preview: boolean) => (preview ? previewClient : client)
 //   return data
 // }
 
-export async function getPostsForHome(preview: boolean): Promise<PostResponse[]> {
-  const results: PostResponse[] = await getClient(preview)
-    .fetch(`*[_type == 'post'] | order(publishedAt desc){
+export async function getLatestPosts(preview?: boolean): Promise<PostResponse[]> {
+  return SanityClient(preview)
+    .fetch(`*[_type == 'post'] | order(publishedAt desc)[0..7]{
       ${postFields}
     }`)
-  return getUniquePosts(results)
+}
+
+export async function getHotPosts(preview?: boolean): Promise<PostResponse[]> {
+  return SanityClient(preview)
+    .fetch(`*[_type == 'post' && isHot == true] | order(publishedAt desc)[0..7]{
+      ${postFields}
+    }`)
 }
 
 
 // export async function getPostAndMorePosts(slug: string, preview: boolean) {
-//   const curClient = getClient(preview)
+//   const curClient = SanityClient(preview)
 //   const [post, morePosts] = await Promise.all([
 //     curClient
 //       .fetch(
@@ -88,7 +83,7 @@ export async function getPostsForHome(preview: boolean): Promise<PostResponse[]>
 
 
 export async function getHotTags(preview: boolean, locale = 'zh'): Promise<TagResponse[]> {
-  const result: TagResponse[] = await getClient(preview)
+  const result: TagResponse[] = await SanityClient(preview)
     .fetch(`*[_type == 'tag']{
       'name': name.${locale},
       'slug': slug.${locale}Slug.current,
@@ -99,7 +94,7 @@ export async function getHotTags(preview: boolean, locale = 'zh'): Promise<TagRe
 // Fix later: 
 // It should be subDistrict group by area, area: HK / KLN / NT
 export async function getSubDistrictsGroupByDistrict(preview: boolean, locale = 'zh'): Promise<DistrictResponse[]> {
-  const result: DistrictResponse[] = await getClient(preview)
+  const result: DistrictResponse[] = await SanityClient(preview)
   .fetch(`*[_type == 'district']{
     _id, 
     'name': name.${locale},
@@ -113,23 +108,23 @@ export async function getSubDistrictsGroupByDistrict(preview: boolean, locale = 
   return result;
 }
 
-export async function getCarparks(): Promise<DistrictResponse[]> {
-  return client.fetch(`*[_type == 'carpark']{
-    'type': _type,
-    name,
-    slug
-  }`)
-}
+// export async function getCarparks(): Promise<DistrictResponse[]> {
+//   return client.fetch(`*[_type == 'carpark']{
+//     'type': _type,
+//     name,
+//     slug
+//   }`)
+// }
 
-export async function getSubDistricts(): Promise<DistrictResponse[]> {
-  return client.fetch(`*[_type == 'subDistrict']{
-    'type': _type,
-    name,
-    slug
-  }`)
-}
+// export async function getSubDistricts(): Promise<DistrictResponse[]> {
+//   return client.fetch(`*[_type == 'subDistrict']{
+//     'type': _type,
+//     name,
+//     slug
+//   }`)
+// }
 // export async function getAllSubDistrictsWithSlug(locale = 'zh', subDistrict) {
-//   const data = await getClient(true).fetch(`*[_type == 'subDistrict']{
+//   const data = await SanityClient(true).fetch(`*[_type == 'subDistrict']{
 //     _id, 
 //     'name': name.${locale},
 //     'slug': slug.${locale}Slug.current
@@ -165,7 +160,7 @@ export async function getSubDistricts(): Promise<DistrictResponse[]> {
 // }
 
 // export async function getCarparkAndMoreCarparks(slug, preview, locale = 'zh') {
-//   const curClient = getClient(preview)
+//   const curClient = SanityClient(preview)
 //   const [carpark, moreCarparks] = await Promise.all([
 //     curClient
 //       .fetch(

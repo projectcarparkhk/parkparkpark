@@ -1,19 +1,20 @@
-import React from 'react'
-import { getPostsForHome, getSubDistrictsGroupByDistrict } from '../lib/api'
-import Image from 'next/image'
+import React, { useMemo } from 'react'
+import { getHotPosts, getLatestPosts } from '../lib/api'
 import Header from '../components/header'
 import { popularAreas, postItems } from '../mocks/constants'
 import { Button, Container, InputBase } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
-// import { PostResponse, DistrictResponse } from '../types'
 import Link from 'next/link'
-import { CarouselBanner } from '../components/carousel'
-import { PostSection, PostSectionProps } from '../components/PostSection'
+import { Section, SectionProps } from '../components/Section'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
+import { PostResponse } from '../types'
+import translations from '../locales/pages/index'
+import { useRouter } from 'next/router'
+import { imageBuilder } from '../lib/sanity'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    boxShadow: '3px 6px 15px -8px #000000;'
+    boxShadow: '3px 6px 15px -8px #000000;',
   },
   sloganContainer: {
     position: 'relative',
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   mainSlogan: {
     fontSize: '1.8rem',
-    fontWeight: 700
+    fontWeight: 700,
   },
   tagSelect: {
     borderRadius: '30px',
@@ -63,26 +64,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-// interface IProps {
-//   posts: PostResponse[]
-//   districts: DistrictResponse[]
-//   preview: boolean
-// }
+interface IProps {
+  latestPosts: PostResponse[]
+  hotPosts: PostResponse[]
+}
 
-export default function Index() {
+export default function Index({ latestPosts, hotPosts }: IProps) {
   const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
+  // const { locale as Loca } = useRouter()
 
-  const items = [
-    {
-      image: '/carousel1.jpeg',
-      postSlug: '/abc',
-    },
-    {
-      image: '/carousel2.jpeg',
-      postSlug: '/def',
-    },
-  ]
+  const fallBackLocale:  = locale || 'zh';
+  const tLatestPosts = useMemo(()=> {
+    return latestPosts.map((post) => ({...post, title: post[fallBackLocale].title}))
+  }, [latestPosts])
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
@@ -95,55 +90,40 @@ export default function Index() {
     },
   }))(Button)
 
-  const postSections: PostSectionProps[] = [
+
+  const {
+    mainSlogan,
+    subSlogan,
+    searchPlaceholder,
+    latestCarparkPromotions,
+    cheapestCarparkPromotions,
+    cheapestCarparks,
+    checkoutAll,
+  } = translations[locale || 'zh']
+
+  const sections: SectionProps[] = [
     {
-      sectionHeader: '最近瀏覽',
-      postItems: postItems,
+      sectionHeader: latestCarparkPromotions,
+      postItems: latestPosts,
+      slidingCard: true,
     },
     {
-      sectionHeader: '附近',
-      postItems: postItems,
-      limited: true,
-      renderSideLink: () => (
-        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
-      ),
-      renderButton: () => (
-        <Link href="/nearby">
-          <StyledButton variant="outlined" color="primary">
-            <StyledText size="h6" bold>
-              顯示全部
-            </StyledText>
-          </StyledButton>
-        </Link>
-      ),
-    },
-    {
-      sectionHeader: '熱門地區',
-      postItems: postItems,
-      limited: true,
-      renderSideLink: () => (
-        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
-      ),
-      renderButton: () => (
-        <Link href="/nearby">
-          <StyledButton variant="outlined" color="primary">
-            <StyledText size="h6" bold>
-              顯示全部
-            </StyledText>
-          </StyledButton>
-        </Link>
-      ),
-    },
-    {
-      sectionHeader: '熱門優惠',
+      sectionHeader: cheapestCarparkPromotions,
       postItems: popularAreas,
-      fullCarousel: true,
-      
+      slidingCard: true,
+    },
+    {
+      sectionHeader: cheapestCarparks,
+      postItems: postItems,
+      limited: true,
+      renderSideLink: () => (
+        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
+      ),
       renderButton: () => (
         <Link href="/nearby">
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
-              全部目的地
+              {checkoutAll}
             </StyledText>
           </StyledButton>
         </Link>
@@ -161,26 +141,21 @@ export default function Index() {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="搜尋地區 / 停車場"
+              placeholder={searchPlaceholder}
               className={searchBoxClasses.inputInput}
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
         </Link>
         <div className={classes.sloganContainer}>
-          <div className={classes.subSlogan}>輕鬆暢遊港九新界</div>
-          <div className={classes.mainSlogan}>搜索更慳優惠</div>
+          <div className={classes.subSlogan}>{subSlogan}</div>
+          <div className={classes.mainSlogan}>{mainSlogan}</div>
         </div>
-        </div>
+      </div>
       <Container maxWidth="lg">
-        <div className={classes.sectionContainer}>
-          <CarouselBanner items={items} />
-        </div>
-        {postSections.map((section) => (
+        {sections.map((section) => (
           <div key={section.sectionHeader} className={classes.sectionContainer}>
-            <PostSection 
-              {...section}
-            />
+            <Section {...section} />
           </div>
         ))}
       </Container>
@@ -188,11 +163,12 @@ export default function Index() {
   )
 }
 
-export async function getStaticProps({ preview = false }) {
-  const posts = await getPostsForHome(preview)
-  const districts = await getSubDistrictsGroupByDistrict(preview)
+export async function getStaticProps() {
+  const latestPosts = await getLatestPosts()
+  const hotPosts = await getHotPosts()
+  // const districts = await getSubDistrictsGroupByDistrict(preview)
   return {
-    props: { posts, districts, preview },
+    props: { latestPosts, hotPosts },
     revalidate: 1,
   }
 }
