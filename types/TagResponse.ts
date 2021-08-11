@@ -1,6 +1,4 @@
-export interface TagResponse {
-    _id: string;
-    name: string;
-    slug: string;
+import { SimpleLink } from "./common"
+export interface TagResponse extends SimpleLink {
     isHot: boolean;
 }

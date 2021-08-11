@@ -70,7 +70,11 @@ function SubDistrictList({ areas }: IProps) {
               return (
                 <Link 
                   key={subDistrict.slug}
-                  href={`/sub-districts/${subDistrict.slug}`}>
+                  href={{
+                    pathname: '/carparks',
+                    query: { subDistrict: subDistrict.name },
+                  }}
+                  >
                   <Button
                     className={classes.flexItem}
                     variant="outlined"

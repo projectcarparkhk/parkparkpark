@@ -1,5 +1,7 @@
 
 import { PostResponse, DistrictResponse, TagResponse } from '../types'
+import { Carpark } from '../types/Carpark'
+import { SubDistrict } from '../types/DistrictResponse'
 import client, { previewClient } from './sanity'
 
 const getUniquePosts = (posts: PostResponse[]) => {
@@ -113,12 +115,52 @@ export async function getSubDistrictsGroupByArea(preview: boolean, locale = 'zh'
   return result;
 }
 
-export async function getCarparks(): Promise<DistrictResponse[]> {
-  return client.fetch(`*[_type == 'carpark']{
-    'type': _type,
-    name,
-    slug
+export async function getCarparks(preview: boolean, locale = 'zh'): Promise<Carpark[]> {
+  const result: Carpark[] = await getClient(preview)
+  .fetch(`*[_type == 'carpark']{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.current,
+    'subDistricts': subDistrict[] -> { 
+      'name': name.${locale},
+      isHot
+    },
+    'tags': tag[] -> { 
+      'name': name.${locale},
+      isHot
+    },
   }`)
+  return result;
+}
+
+export async function getFilters(preview: boolean, locale = 'zh'): Promise<TagResponse[]> {
+  const tags: TagResponse[] = await getClient(preview)
+  .fetch(`*[_type == 'tag']{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.current
+  }`)
+  const subDistricts: SubDistrict[] = await getClient(preview)
+  .fetch(`*[_type == 'subDistrict']{
+    _id, 
+    'name': name.${locale},
+    'slug': slug.current
+  }`)
+  const filter = {
+    subDistricts: {},
+    tags: {}
+  }
+
+  for (const subDistrict of subDistricts) {
+    filter.subDistricts[subDistrict.name] = false
+  }
+
+  for (const tag of tags) {
+    filter.tags[tag.name] = false
+  }
+
+  
+  return filter
 }
 
 export async function getSubDistricts(): Promise<DistrictResponse[]> {

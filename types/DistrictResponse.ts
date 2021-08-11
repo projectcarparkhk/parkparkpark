@@ -1,7 +1,5 @@
-export interface SubDistrict {
-    _id: string;
-    name: string;
-    slug: string;
+import { SimpleLink } from "./common"
+export interface SubDistrict extends SimpleLink {
     isHot?: boolean
 }
 
