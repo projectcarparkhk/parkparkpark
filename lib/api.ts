@@ -123,10 +123,12 @@ export async function getCarparks(preview: boolean, locale = 'zh'): Promise<Carp
     'slug': slug.current,
     'subDistricts': subDistrict[] -> { 
       'name': name.${locale},
+      'slug': slug.current,
       isHot
     },
     'tags': tag[] -> { 
       'name': name.${locale},
+      'slug': slug.current,
       isHot
     },
   }`)
@@ -134,34 +136,26 @@ export async function getCarparks(preview: boolean, locale = 'zh'): Promise<Carp
 }
 
 export async function getFilters(preview: boolean, locale = 'zh'): Promise<TagResponse[]> {
-  const tags: TagResponse[] = await getClient(preview)
+  const tags = await getClient(preview)
   .fetch(`*[_type == 'tag']{
     _id, 
     'name': name.${locale},
     'slug': slug.current
   }`)
-  const subDistricts: SubDistrict[] = await getClient(preview)
-  .fetch(`*[_type == 'subDistrict']{
-    _id, 
-    'name': name.${locale},
-    'slug': slug.current
-  }`)
-  const filter = {
-    subDistricts: {},
-    tags: {}
-  }
 
-  for (const subDistrict of subDistricts) {
-    filter.subDistricts[subDistrict.name] = false
-  }
+  const areas = await getSubDistrictsGroupByArea(preview, locale = 'zh')
+  // Mock category for tags
+  const categories = [{
+    _id: 'mock',
+    name: 'mock',
+    slug: 'mock',
+    tags
+  }]
 
-  for (const tag of tags) {
-    filter.tags[tag.name] = false
+  return {
+    areas,
+    categories,
   }
-
-  
-  return filter
-}
 
 export async function getSubDistricts(): Promise<DistrictResponse[]> {
   return client.fetch(`*[_type == 'subDistrict']{

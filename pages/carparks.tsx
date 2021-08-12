@@ -5,12 +5,18 @@ import Header from '../components/header'
 import { StyledText } from '../components/StyledText'
 import { getCarparks, getFilters } from '../lib/api'
 import Container from '@material-ui/core/Container'
+import Drawer from '@material-ui/core/Drawer'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox'
 import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
 import { useRouter } from 'next/router'
 import { SubDistrict } from '../types/DistrictResponse';
+import CloseIcon from '@material-ui/icons/Close';
+import { useEffect } from 'react';
 
 interface PageProps {
     carparks: Carpark[]
@@ -32,37 +38,157 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(2),
         marginBottom: theme.spacing(2)
     },
-    filterOptionContainer: {
-
-    }
+    panelDrawer: {
+        '& .MuiDrawer-paper': {
+            height: '100vh',
+        }
+    },
 }))
 
-function Filters({ selectedFilters, onFilterClick }) {
-    const classes = useStyles()
+function FilterSection({ title, filterOptions, updateSelection }) {
+    console.log(`render FilterSection ${title}`)
+    const [selectedOptions, setSelectedOptions] = useState(filterOptions)
+
+    useEffect(() => {
+        updateSelection(selectedOptions)
+    }, [selectedOptions])
+
     return (
         <div>
-            {
-                Object.keys(selectedFilters).map(filterType => {
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={false}
+                        // onChange={handleChange}
+                        name="checkedF"
+                        indeterminate
+                    />
+                }
+                label={title}
+            />
+            <div>
+                {selectedOptions.map((option, i) => {
                     return (
-                        <div>
-                            <div>{filterType}</div>
-                            <div className={classes.filterOptionContainer}>
-                                {Object.keys(selectedFilters[filterType]).map(filterOption => {
-                                    return (
-                                        <Chip
-                                            onClick={() => onFilterClick(filterType, filterOption)}
-                                            variant={selectedFilters[filterType][filterOption] ? 'default' : 'outlined'}
-                                            size='small'
-                                            key={filterOption}
-                                            label={filterOption}
-                                        />
-                                    )
-                                })}
-                            </div>
-                        </div>
+                        <Chip
+                            onClick={() => {
+                                const newSelectOptions = [...selectedOptions]
+                                newSelectOptions[i].checked = !newSelectOptions[i].checked
+                                setSelectedOptions(newSelectOptions)
+                            }}
+                            variant={option.checked ? 'default' : 'outlined'}
+                            size='small'
+                            key={option.slug}
+                            label={option.name}
+                        />
                     )
-                })
-            }
+                })}
+            </div>
+        </div>
+    )
+}
+
+function FilterDrawer({ title, parent, child, applyFilters }) {
+    console.log('render FilterDrawer')
+    const classes = useStyles()
+
+    const initializeFilter = () => parent.map(parentItem => {
+        return {
+            ...parentItem,
+            checked: false,
+            partial: false,
+            [child]: parentItem[child].map(childItem => ({
+                ...childItem,
+                checked: false,
+            }))
+        }
+    })
+
+
+    const [isPanelOpen, setIsPanelOpen] = useState(true)
+    const [selectedFilter, setSelectedFilter] = useState(initializeFilter())
+
+
+    if (!isPanelOpen) {
+        return (
+            <div
+                onClick={() => setIsPanelOpen(true)}
+            >
+                {title}
+            </div>
+        )
+    }
+    return (
+        <Drawer className={classes.panelDrawer}
+            anchor={'bottom'}
+            open={isPanelOpen}
+            onClose={() => setIsPanelOpen(false)}
+        >
+            <div>
+                <CloseIcon onClick={() => setIsPanelOpen(false)} />
+            </div>
+            <div>
+                {
+                    selectedFilter.map((filter, i) => {
+                        return (
+                            <FilterSection
+                                title={filter.name}
+                                filterOptions={filter[child]}
+                                updateSelection={updateSelections => {
+                                    const newSelectedFilter = [...selectedFilter]
+                                    newSelectedFilter[i][child] = updateSelections
+                                    setSelectedFilter(newSelectedFilter)
+                                }}
+                            />
+                        )
+                    })
+                }
+            </div>
+            <div>
+                <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        applyFilters(selectedFilter)
+                        setIsPanelOpen(false)
+                    }}
+                >
+                    繼續
+                </Button>
+            </div>
+        </Drawer>
+    )
+}
+
+function Filters({ selectedFilters, onFilterChange }) {
+    const classes = useStyles()
+
+    const [groupedFilter, setGroupedFilter] = useState(selectedFilters)
+
+    useEffect(() => {
+        onFilterChange(groupedFilter)
+    }, [groupedFilter]);
+
+    return (
+        <div>
+            <FilterDrawer
+                title={'地區'}
+                parent={selectedFilters.areas}
+                child={'subDistricts'}
+                applyFilters={areaOptions => setGroupedFilter({
+                    ...groupedFilter,
+                    areas: areaOptions
+                })}
+            />
+            <FilterDrawer
+                title={'分類'}
+                parent={selectedFilters.categories}
+                child={'tags'}
+                applyFilters={categoryOptions => setGroupedFilter({
+                    ...groupedFilter,
+                    categories: categoryOptions
+                })}
+            />
         </div>
     )
 }
@@ -89,82 +215,70 @@ function CarparkListItem({ carpark }: IProps) {
 }
 
 
+
 function Carparks({ carparks, filters }: PageProps) {
     const router = useRouter()
 
-    const [selectedFilters, setSelectedFilters] = useState(router.query.subDistrict ? {
-        ...filters,
-        subDistricts: {
-            ...filters['subDistricts'],
-            [router.query.subDistrict]: true
-        }
-    } : filters)
+    const [masterFilter, setMasterfilter] = useState(filters)
+    console.log('mom knows:', masterFilter)
 
 
-    const allFilterClickListener = (filterType: string, filterProp: string) => {
-        setSelectedFilters({
-            ...selectedFilters,
-            [filterType]: {
-                ...selectedFilters[filterType],
-                [filterProp]: !selectedFilters[filterType][filterProp]
-            }
-        })
-    };
 
-
-    const filteredCollected = () => {
+    const filteredCollected = (filters) => {
         const collectedTrueKeys = {
             subDistricts: [],
             tags: [],
         };
-        const { subDistricts, tags } = selectedFilters
+        const { areas, categories } = filters
 
-        for (const subDistrictsKey in subDistricts) {
-            if (subDistricts[subDistrictsKey]) collectedTrueKeys.subDistricts.push(subDistrictsKey);
+        for (const area of areas) {
+            for (const subDistrict of area.subDistricts) {
+                if (subDistrict.checked) {
+                    collectedTrueKeys.subDistricts.push(subDistrict.slug)
+                }
+            }
         }
 
-        for (const tagsKey in tags) {
-            if (tags[tagsKey]) collectedTrueKeys.tags.push(tagsKey);
-        }
+        // for (const tagsKey in tags) {
+        //     if (tags[tagsKey]) collectedTrueKeys.tags.push(tagsKey);
+        // }
 
         return collectedTrueKeys
     };
 
 
 
-    const multiPropsFilter = (carparks: Carpark[], filters) => {
-        const filterKeys = Object.keys(filters);
+    const filterCarparks = (carparks: Carpark[], filters) => {
+
+        const filterKeys = ['subDistricts'] // Object.keys(filters);
+        const collectedFilters = filteredCollected(filters)
+        // console.log('collectedFilters', collectedFilters)
+        // console.log('filterKeys', filterKeys)
         return carparks.filter((carpark: Carpark) => {
-            return filterKeys.every(key => {
-                if (!filters[key].length) return true;
-                // Loops again if carpark[key] is an array
-                if (Array.isArray(carpark[key])) {
-                    return carpark[key].some((keyEle : KeyEleProps) => {
-                        return filters[key].includes(keyEle.name)
-                    });
-                }
-                return filters[key].includes(carpark[key]);
-            });
+            const carparkSlugKeys = carpark['subDistricts'].map(e => e.slug)
+            // return filterKeys.every(key => {
+            // console.log(filters['areas'])
+            // if (!filters[key].length) return true;
+            // // Loops again if carpark[key] is an array
+            if (Array.isArray(carparkSlugKeys)) {
+                // console.log(collectedFilters[filterKeys])
+                return carparkSlugKeys.some((keyEle: KeyEleProps) => {
+                    return collectedFilters[filterKeys[0]].includes(keyEle)
+                });
+            }
+            // });
         });
-    };
-
-    const filterCarparks = () => {
-        const filteredCarparks = multiPropsFilter(
-            carparks,
-            filteredCollected()
-        );
-
-        return filteredCarparks
     };
 
     return (
         <Container>
             <Header imageToTop={false} />
             <Filters
-                selectedFilters={selectedFilters}
-                onFilterClick={(filterType: string, filterProp: string) => allFilterClickListener(filterType, filterProp)} />
+                selectedFilters={masterFilter}
+                onFilterChange={e => setMasterfilter(e)}
+            />
             <div>
-                {filterCarparks().map((carpark: Carpark) => {
+                {filterCarparks(carparks, masterFilter).map((carpark: Carpark) => {
                     return (
                         <CarparkListItem
                             key={carpark._id}
