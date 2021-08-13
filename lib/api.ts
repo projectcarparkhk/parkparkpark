@@ -156,6 +156,7 @@ export async function getFilters(preview: boolean, locale = 'zh'): Promise<TagRe
     areas,
     categories,
   }
+}
 
 export async function getSubDistricts(): Promise<DistrictResponse[]> {
   return client.fetch(`*[_type == 'subDistrict']{
