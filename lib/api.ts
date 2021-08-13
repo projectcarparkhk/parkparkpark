@@ -106,7 +106,7 @@ export async function getSubDistrictsGroupByArea(preview: boolean, locale = 'zh'
     _id, 
     'name': name.${locale},
     'slug': slug.current,
-    'subDistricts': *[_type == 'subDistrict' && references(^._id)]{
+    'subDistricts': *[_type == 'subDistrict' && references(^._id)] | order(isHot desc) {
       'name': name.${locale}, 
       'slug': slug.current,
       'isHot': isHot,
@@ -146,9 +146,9 @@ export async function getFilters(preview: boolean, locale = 'zh'): Promise<TagRe
   const areas = await getSubDistrictsGroupByArea(preview, locale = 'zh')
   // Mock category for tags
   const categories = [{
-    _id: 'mock',
-    name: 'mock',
-    slug: 'mock',
+    _id: 'all',
+    name: '全部',
+    slug: 'all',
     tags
   }]
 

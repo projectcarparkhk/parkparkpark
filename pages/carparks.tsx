@@ -45,10 +45,25 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }))
 
-function FilterSection({ title, filterOptions, updateSelection }) {
-    console.log(`render FilterSection ${title}`)
-    const [selectedOptions, setSelectedOptions] = useState(filterOptions)
+const isAllChecked = options => options.every(option => option.checked)
+const isSomeChecked = options => options.some(option => option.checked)
 
+function FilterSection({ title, filterOptions, updateSelection }) {
+
+    // console.log(`render FilterSection ${title}`)
+
+    const [parentCheckBoxState, setParentCheckBoxState] = useState(() => {
+        if (isAllChecked(filterOptions)) {
+            return 'all'
+        }
+
+        if (isSomeChecked(filterOptions)) {
+            return 'some'
+        }
+        return 'none'
+    })
+
+    const [selectedOptions, setSelectedOptions] = useState(filterOptions)
     useEffect(() => {
         updateSelection(selectedOptions)
     }, [selectedOptions])
@@ -58,10 +73,38 @@ function FilterSection({ title, filterOptions, updateSelection }) {
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={false}
-                        // onChange={handleChange}
+                        checked={parentCheckBoxState === 'all'}
+                        onChange={() => {
+                            if (parentCheckBoxState === 'all') {
+                                setParentCheckBoxState('none')
+                                setSelectedOptions(selectedOptions.map(option => ({
+                                    ...option,
+                                    checked: false
+                                })))
+                            } else if (parentCheckBoxState === 'some') {
+                                if (!isAllChecked(selectedOptions) && !isSomeChecked(selectedOptions)) {
+                                    setParentCheckBoxState('all')
+                                    setSelectedOptions(selectedOptions.map(option => ({
+                                        ...option,
+                                        checked: true
+                                    })))
+                                }
+                                setParentCheckBoxState('none')
+                                setSelectedOptions(selectedOptions.map(option => ({
+                                    ...option,
+                                    checked: false
+                                })))
+                            } else {
+                                setParentCheckBoxState('all')
+                                setSelectedOptions(selectedOptions.map(option => ({
+                                    ...option,
+                                    checked: true
+                                })))
+                            }
+
+                        }}
                         name="checkedF"
-                        indeterminate
+                        indeterminate={parentCheckBoxState === 'some'}
                     />
                 }
                 label={title}
@@ -74,6 +117,15 @@ function FilterSection({ title, filterOptions, updateSelection }) {
                                 const newSelectOptions = [...selectedOptions]
                                 newSelectOptions[i].checked = !newSelectOptions[i].checked
                                 setSelectedOptions(newSelectOptions)
+
+                                if (isAllChecked(newSelectOptions)) {
+                                    setParentCheckBoxState('all')
+                                } else if (!isAllChecked(newSelectOptions) && !isSomeChecked(newSelectOptions)) {
+                                    setParentCheckBoxState('none')
+                                } else {
+                                    setParentCheckBoxState('some')
+                                }
+
                             }}
                             variant={option.checked ? 'default' : 'outlined'}
                             size='small'
@@ -88,9 +140,8 @@ function FilterSection({ title, filterOptions, updateSelection }) {
 }
 
 function FilterDrawer({ title, parent, child, applyFilters }) {
-    console.log('render FilterDrawer')
+    // console.log('render FilterDrawer')
     const classes = useStyles()
-
     const initializeFilter = () => parent.map(parentItem => {
         return {
             ...parentItem,
@@ -104,7 +155,7 @@ function FilterDrawer({ title, parent, child, applyFilters }) {
     })
 
 
-    const [isPanelOpen, setIsPanelOpen] = useState(true)
+    const [isPanelOpen, setIsPanelOpen] = useState(false)
     const [selectedFilter, setSelectedFilter] = useState(initializeFilter())
 
 
@@ -160,39 +211,6 @@ function FilterDrawer({ title, parent, child, applyFilters }) {
     )
 }
 
-function Filters({ selectedFilters, onFilterChange }) {
-    const classes = useStyles()
-
-    const [groupedFilter, setGroupedFilter] = useState(selectedFilters)
-
-    useEffect(() => {
-        onFilterChange(groupedFilter)
-    }, [groupedFilter]);
-
-    return (
-        <div>
-            <FilterDrawer
-                title={'地區'}
-                parent={selectedFilters.areas}
-                child={'subDistricts'}
-                applyFilters={areaOptions => setGroupedFilter({
-                    ...groupedFilter,
-                    areas: areaOptions
-                })}
-            />
-            <FilterDrawer
-                title={'分類'}
-                parent={selectedFilters.categories}
-                child={'tags'}
-                applyFilters={categoryOptions => setGroupedFilter({
-                    ...groupedFilter,
-                    categories: categoryOptions
-                })}
-            />
-        </div>
-    )
-}
-
 function CarparkListItem({ carpark }: IProps) {
     const classes = useStyles()
     return (
@@ -214,68 +232,93 @@ function CarparkListItem({ carpark }: IProps) {
     )
 }
 
+const filteredCollected = (filters) => {
+    const collectedTrueKeys = {
+        subDistricts: [],
+        tags: [],
+    };
+    const { areas, categories } = filters
 
+    for (const area of areas) {
+        for (const subDistrict of area.subDistricts) {
+            if (subDistrict.checked) {
+                collectedTrueKeys.subDistricts.push(subDistrict.slug)
+            }
+        }
+    }
 
-function Carparks({ carparks, filters }: PageProps) {
-    const router = useRouter()
+    for (const category of categories) {
+        for (const tag of category.tags) {
+            if (tag.checked) {
+                collectedTrueKeys.tags.push(tag.slug)
+            }
+        }
+    }
 
-    const [masterFilter, setMasterfilter] = useState(filters)
-    console.log('mom knows:', masterFilter)
+    return collectedTrueKeys
+};
 
+const filterCarparks = (carparks: Carpark[], filters) => {
+    const filterKeys = ['subDistricts', 'tags']
+    const collectedFilters = filteredCollected(filters)
+    return carparks.filter((carpark: Carpark) => {
+        return filterKeys.every(key => {
+            if (!collectedFilters[key].length) {
+                return true
+            }
+            return carpark[key].map(e => e.slug).some((keyEle: KeyEleProps) => {
+                return collectedFilters[key].includes(keyEle)
+            })
+        })
+    });
+};
 
-
-    const filteredCollected = (filters) => {
-        const collectedTrueKeys = {
-            subDistricts: [],
-            tags: [],
-        };
-        const { areas, categories } = filters
-
-        for (const area of areas) {
-            for (const subDistrict of area.subDistricts) {
-                if (subDistrict.checked) {
-                    collectedTrueKeys.subDistricts.push(subDistrict.slug)
+function presetFilter(filters, options) {
+    // TODO incorect logic, filter should be initialized in parent
+    const { areas } = filters
+    if (options['subDistrict']) {
+        console.log(options['subDistrict'])
+        for (const [i, area] of areas.entries()) {
+            for (const [j, subDistrict] of area['subDistricts'].entries()) {
+                if (subDistrict.slug === options['subDistrict']) {
+                    console.log(areas[i]['subDistricts'][j].checked = true)
+                    return {
+                        ...filters,
+                        areas
+                    }
                 }
             }
         }
 
-        // for (const tagsKey in tags) {
-        //     if (tags[tagsKey]) collectedTrueKeys.tags.push(tagsKey);
-        // }
+    }
+    return filters
+}
 
-        return collectedTrueKeys
-    };
+function Carparks({ carparks, filters }: PageProps) {
+    const router = useRouter()
 
-
-
-    const filterCarparks = (carparks: Carpark[], filters) => {
-
-        const filterKeys = ['subDistricts'] // Object.keys(filters);
-        const collectedFilters = filteredCollected(filters)
-        // console.log('collectedFilters', collectedFilters)
-        // console.log('filterKeys', filterKeys)
-        return carparks.filter((carpark: Carpark) => {
-            const carparkSlugKeys = carpark['subDistricts'].map(e => e.slug)
-            // return filterKeys.every(key => {
-            // console.log(filters['areas'])
-            // if (!filters[key].length) return true;
-            // // Loops again if carpark[key] is an array
-            if (Array.isArray(carparkSlugKeys)) {
-                // console.log(collectedFilters[filterKeys])
-                return carparkSlugKeys.some((keyEle: KeyEleProps) => {
-                    return collectedFilters[filterKeys[0]].includes(keyEle)
-                });
-            }
-            // });
-        });
-    };
+    const [masterFilter, setMasterfilter] = useState(presetFilter(filters, router.query))
 
     return (
         <Container>
             <Header imageToTop={false} />
-            <Filters
-                selectedFilters={masterFilter}
-                onFilterChange={e => setMasterfilter(e)}
+            <FilterDrawer
+                title={'地區'}
+                parent={masterFilter.areas}
+                child={'subDistricts'}
+                applyFilters={areaOptions => setMasterfilter({
+                    ...masterFilter,
+                    areas: areaOptions
+                })}
+            />
+            <FilterDrawer
+                title={'分類'}
+                parent={masterFilter.categories}
+                child={'tags'}
+                applyFilters={categoryOptions => setMasterfilter({
+                    ...masterFilter,
+                    categories: categoryOptions
+                })}
             />
             <div>
                 {filterCarparks(carparks, masterFilter).map((carpark: Carpark) => {
