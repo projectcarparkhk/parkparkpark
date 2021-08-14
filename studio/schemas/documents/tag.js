@@ -27,6 +27,14 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'mainImage',
+      title: 'Main image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    },
+    {
       name: 'category',
       title: 'Category',
       type: 'reference',
