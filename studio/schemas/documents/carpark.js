@@ -128,6 +128,18 @@ export default {
       type: 'string',
     },
   ],
+  initialValue: {
+    priceDetails: {
+      rows: [
+        {
+          cells: ['day', 'time', 'price', 'hr'],
+        },
+        {
+          cells: ['', '', '', ''],
+        },
+      ],
+    },
+  },
   preview: {
     select: {
       title: `name.${defaultLanguage}`,
