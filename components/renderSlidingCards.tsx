@@ -68,7 +68,7 @@ export const renderSlidingCards = (
                 index={i}
                 renderCaption={() => (
                   <div>
-                    <div style={{ color: 'white', padding: '1rem' }}>
+                    <div style={{ color: 'white' }}>
                       <StyledText size="h4" bold>
                         {title}
                       </StyledText>{' '}

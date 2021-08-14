@@ -1,3 +1,0 @@
-{"_type":"district","_id":"hong-kong-island-district","name":{"_type":"localeString","en":"Hong Kong Island","zh":"香港"},"slug":{"_type":"localeSlug","enSlug":{"_type":"slug","current":"hong-kong-island-district"},"zhSlug":{"_type":"slug","current":"香港區"}}}
-{"_type":"district","_id":"kowloon-district","name":{"_type":"localeString","en":"Kowloon","zh":"九龍"},"slug":{"_type":"localeSlug","enSlug":{"_type":"slug","current":"kowloon-district"},"zhSlug":{"_type":"slug","current":"九龍區"}}}
-{"_type":"district","_id":"new-territories-district","name":{"_type":"localeString","en":"New Territories","zh":"新界"},"slug":{"_type":"localeSlug","enSlug":{"_type":"slug","current":"new-territories-district"},"zhSlug":{"_type":"slug","current":"新界區"}}}

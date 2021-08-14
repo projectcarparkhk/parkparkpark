@@ -1,0 +1,3 @@
+{"_type":"area","_id":"hong-kong-island","name":{"_type":"localeString","en":"Hong Kong Island","zh":"香港"},"slug":{"_type":"slug","name":"hong-kong-island","current":"hong-kong-island"}}
+{"_type":"area","_id":"kowloon","name":{"_type":"localeString","en":"Kowloon","zh":"九龍"},"slug":{"_type":"slug","name":"kowloon","current":"kowloon"}}
+{"_type":"area","_id":"new-territories","name":{"_type":"localeString","en":"New Territories","zh":"新界"},"slug":{"_type":"slug","name":"new-territories","current":"new-territories"}}

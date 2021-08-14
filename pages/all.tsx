@@ -1,85 +1,149 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/header'
-import { getSubDistrictsGroupByDistrict } from '../sanityApi/subDistricts';
+import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts';
 import FullWidthTabs from '../components/tab/all'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
-import { DistrictResponse } from '../types'
-
+import { Area, SubDistrict } from '../types/DistrictResponse'
+import Button from '@material-ui/core/Button'
+import ButtonBase from '@material-ui/core/ButtonBase'
+import Container from '@material-ui/core/Container'
+import { useRouter } from 'next/router'
+import { StyledText } from '../components/StyledText'
+import { getArrayData } from '../sanityApi/helper'
 interface IProps {
-  districts: DistrictResponse[]
-  preview: boolean
+  areas: Area[]
+  preview?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
-  tagHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
+  content: {
+    marginTop: theme.spacing(3),
   },
-  tagSelect: {},
-  tagsContainer: {},
-  chip: {
+  flexItem: {
     margin: theme.spacing(0, 1, 1, 0),
   },
+  pageTypeButtonContainer: {
+    display: 'grid',
+    gridTemplateColumns: `1fr 1fr`,
+    width: '100%',
+    height: theme.spacing(5),
+    textAlign: 'center',
+  },
+  currentPageTypeButton: {
+    fontWeight: 700,
+    borderBottom: `2px solid ${theme.palette.primary.main}`
+  },
+  pageTypeButton: {
+    fontWeight: 700,
+    borderBottom: `2px solid ${theme.palette.divider}`
+  }
 }))
 
-function ShowTogglableTagList({ name, subDistricts }: DistrictResponse) {
-  const [isShowAll, setIsShowAll] = useState(false)
+function SubDistrictList({ areas }: IProps) {
   const classes = useStyles()
+  const router = useRouter()
+  const [selectedArea, setSelectedArea] = useState(router.query.area || areas[0]._id)
 
   return (
-    <div className={classes.tagsContainer}>
-      <div className={classes.tagHeader}>
-        <h3>{name}</h3>
-        <span onClick={() => setIsShowAll(!isShowAll)}>
-          {isShowAll ? '更少' : '更多'}
-        </span>
-      </div>
-      {subDistricts
-        .filter((subDistrict) => (isShowAll ? true : subDistrict.isHot))
-        .sort((a) => {
-          if (a.isHot) {
-            return -1
-          }
-          return 1
-        })
-        .map((subDistrict) => (
-          <Link href={`/sub-districts/${subDistrict.slug}`}>
-            <Chip
-              className={classes.chip}
-              key={subDistrict.name}
-              label={subDistrict.name}
-            />
-          </Link>
+    <>
+      <div>
+        {areas.map((area) => (
+          <Chip
+            key={area._id}
+            className={classes.flexItem}
+            color="primary"
+            label={area.name}
+            variant={area._id === selectedArea ? 'default' : 'outlined'}
+            onClick={() => setSelectedArea(area._id)}
+          />
         ))}
-    </div>
+      </div>
+      <div>
+        <StyledText size="h3" bold inline={false}>分區</StyledText>
+        {
+          getArrayData(areas
+            .find((area: Area) => area._id === selectedArea))
+            .subDistricts
+            .map((subDistrict: SubDistrict) => {
+              return (
+                <Link 
+                  key={subDistrict.slug}
+                  href={`/sub-districts/${subDistrict.slug}`}>
+                  <Button
+                    className={classes.flexItem}
+                    variant="outlined"
+                    color="primary"
+                  >
+                    {subDistrict.name}
+                  </Button>
+                </Link>
+
+              )
+            })
+        }
+      </div>
+    </>
   )
 }
 
-function All({ districts }: IProps) {
+function All({ areas }: IProps) {
+  const classes = useStyles()
+  const router = useRouter()
   const tabConfig = [
     {
-      label: '地區',
-      content: (
-        <>
-          {districts.map((district) => (
-            <ShowTogglableTagList {...district} />
-          ))}
-        </>
-      ),
+      type: 'sub-districts',
+      label: '地區'
     },
     {
-      label: '所有分類',
-      content: <>all Cat</>,
+      type: 'categories',
+      label: '所有分類'
     },
   ]
+
+
+  const [pageType, setPageType] = useState(tabConfig[0].type)
+
   return (
     <>
       <Header imageToTop={false} />
-      <FullWidthTabs tabs={tabConfig} />
+      <div className={classes.pageTypeButtonContainer}>
+        {tabConfig.map(tab => {
+          return (
+            <ButtonBase
+              key={tab.type}
+              className={pageType === tab.type ? classes.currentPageTypeButton : classes.pageTypeButton}
+              onClick={() => {
+                setPageType(tab.type)
+                router.push({
+                  query: { type: tab.type },
+                })
+
+              }}
+            >
+              {tab.label}
+            </ButtonBase>
+          )
+        })}
+      </div>
+      <Container className={classes.content} maxWidth="lg">
+        {
+          pageType === 'sub-districts' && <SubDistrictList areas={[
+            {
+              _id: 'all',
+              name: '全部',
+              slug: "all",
+              subDistricts: areas.reduce((a: SubDistrict[], c: Area) => [...a, ...c.subDistricts], [])
+            },
+            ...areas
+          ]} />
+        }
+        {
+          pageType === 'categories' && <>All cats</>
+        }
+      </Container>
     </>
   )
 }
@@ -87,9 +151,9 @@ function All({ districts }: IProps) {
 export default All
 
 export async function getStaticProps({ preview = false }) {
-  const districts = await getSubDistrictsGroupByDistrict(preview)
+  const areas = await getSubDistrictsGroupByArea(preview)
   return {
-    props: { districts, preview },
+    props: { areas, preview },
     revalidate: 1,
   }
 }

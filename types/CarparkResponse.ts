@@ -32,7 +32,7 @@ export interface CarparkContextToday {
   _id: string
   en: CarparkTranslation
   imagePath: string
-  priceDetail: PriceDetail
+  priceDetail?: PriceDetail
   zh: CarparkTranslation
   slug: string
 }

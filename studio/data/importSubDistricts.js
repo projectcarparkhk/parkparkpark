@@ -3,9 +3,8 @@ const fs = require('fs')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 
-const inputPath = '/Users/anthonysiu/parkparkpark/studio/data/districts.csv'
-const outputPath =
-  '/Users/anthonysiu/parkparkpark/studio/data/subDistrict.ndjson'
+const inputPath = `${__dirname}/districts.csv`
+const outputPath = `${__dirname}/subDistrict.ndjson`
 
 const hotSubDistricts = [
   'wan-chai',
@@ -15,20 +14,6 @@ const hotSubDistricts = [
   'central',
   'admiralty',
 ]
-const getDistrictIds = async () => {
-  const { stdout } = await exec(
-    `sanity documents query "*[_type == 'district']"`
-  )
-  const response = JSON.parse(stdout)
-  const districtIdMap = response.reduce(
-    (acc, district) => ({
-      ...acc,
-      [district.name.en]: district._id,
-    }),
-    {}
-  )
-  return districtIdMap
-}
 
 async function importSubDistrictData() {
   // const districtIdMap = await getDistrictIds()
@@ -42,18 +27,13 @@ async function importSubDistrictData() {
   }
 
   rl.on('line', (line) => {
-    const [subDistrictZh, subDistrictEn, _1, _2, _3, districtEn] =
-      line.split(',')
+    const [subDistrictZh, subDistrictEn, _1, _2, _3, areaEn] = line.split(',')
     const id = subDistrictEn
       .toLowerCase()
       .split(' ')
       .join('-')
       .replace(/[^a-z0-9-_]/g, '')
-    const zhSlug = subDistrictZh
-    const districtId = `${districtEn
-      .toLowerCase()
-      .split(' ')
-      .join('-')}-district`
+    const areaId = `${areaEn.toLowerCase().split(' ').join('-')}`
     const subDistrictData = {
       _type: 'subDistrict',
       _id: id,
@@ -63,19 +43,13 @@ async function importSubDistrictData() {
         zh: subDistrictZh,
       },
       slug: {
-        _type: 'localeSlug',
-        enSlug: {
-          _type: 'slug',
-          current: subDistrictEn.toLowerCase().split(' ').join('-'),
-        },
-        zhSlug: {
-          _type: 'slug',
-          current: zhSlug,
-        },
+        _type: 'slug',
+        name: subDistrictEn.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
+        current: subDistrictEn.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
       },
       isHot: hotSubDistricts.includes(id),
-      district: {
-        _ref: districtId,
+      area: {
+        _ref: areaId,
         _type: 'reference',
       },
     }

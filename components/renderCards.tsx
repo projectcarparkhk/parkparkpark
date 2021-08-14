@@ -51,6 +51,7 @@ export const renderCards = (
         (
           {
             slug,
+            subtitle,
             title,
             location,
             tags,
@@ -80,10 +81,11 @@ export const renderCards = (
                 header={location}
                 index={i}
                 renderCaption={() => (
-                  <div>
-                    <div style={{ color: 'black' }}>
-                      <StyledText size="h6">{shortDescription}</StyledText>
-                    </div>
+                  <div style={{ color: option?.fullImage ? 'white' : 'black'}}>
+                    <StyledText size="h4" bold>
+                      {subtitle}
+                    </StyledText>{' '}
+                    <StyledText size="h6">{shortDescription}</StyledText>
                   </div>
                 )}
               />

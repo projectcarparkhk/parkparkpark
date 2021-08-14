@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface PostItem {
   slug: string
-  title: string
+  title?: string
+  subtitle?: string
   location?: string
   comments?: number
   likes?: number

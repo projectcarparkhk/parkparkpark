@@ -1,8 +1,12 @@
-import { CarparkContextToday, CarparkResponse, PriceDetail } from '../../types/CarparkResponse'
+import {
+  CarparkContextToday,
+  CarparkResponse,
+  PriceDetail,
+} from '../../types/CarparkResponse'
 
 export const orderCarparkByPriceToday = (
   carparkResponse: CarparkResponse[]
-):CarparkContextToday[] => {
+): CarparkContextToday[] => {
   const week = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
   return carparkResponse
     .map((carpark) => {
@@ -22,10 +26,13 @@ export const orderCarparkByPriceToday = (
             const dates = day.split(',')
             return dates.some((date) => date === week[today])
           }
-        }) as PriceDetail,
+        }) as PriceDetail || null,
       }
     })
     .sort((a, b) => {
+      if (!a.priceDetail || !b.priceDetail) {
+        return 0
+      }
       const aHr = parseInt((a.priceDetail as PriceDetail).hr)
       const aPrice = parseInt((a.priceDetail as PriceDetail).price)
       const bHr = parseInt((b.priceDetail as PriceDetail).hr)

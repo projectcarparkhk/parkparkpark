@@ -31,6 +31,7 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
     position: 'absolute',
     bottom: 0,
     left: 0,
+    padding: '1rem'
   },
   fullImageMedia: {
     [theme.breakpoints.down('sm')]: {
@@ -92,7 +93,7 @@ export interface StyledCardProps {
   slug: string
   imagePath?: string
   fullImage?: boolean
-  subHeader: string
+  subHeader?: string
   header?: string
   tags?: { label: string }[]
   renderCaption: () => JSX.Element
