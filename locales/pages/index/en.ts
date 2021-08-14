@@ -4,7 +4,8 @@ const locale = {
   searchPlaceholder: 'Search for district / carpark',
   latestCarparkPromotions: 'Latest promotions',
   cheapestCarparkPromotions: 'Best promotions',
-  cheapestCarparks: 'Cheapest carparks',
+  cheapestCarparksHeader: 'Cheapest carparks',
+  hotCarparkTagsHeader: 'Hot carpark tags',
   checkoutAll: 'View all',
 }
 

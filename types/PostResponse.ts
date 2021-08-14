@@ -10,3 +10,11 @@ export interface PostResponse {
     slug: string;
     zh: PostTranslation;
 }
+
+export interface TranslatedPost {
+    _id: string;
+    shortDescription: string;
+    title: string;
+    imagePath: string;
+    slug: string;
+}

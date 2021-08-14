@@ -2,8 +2,9 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core'
 import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
-import { StyledCard } from './StyledCard'
 import { useMediaQuery } from '@material-ui/core'
+import { renderCards } from './renderCards'
+import { renderSlidingCards } from './renderSlidingCards'
 
 const useStyles = makeStyles((theme: Theme) => ({
   titleContainer: {
@@ -26,52 +27,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: 'pointer',
     },
   },
-  postContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  postContainerWrap: {
-    flexWrap: 'nowrap',
-    overflowX: 'scroll',
-  },
-  cardContainer: {
-    marginBottom: theme.spacing(2),
-  },
-  cardContainerWrap: {
-    display: 'flex',
-    justifyContent: 'center',
-    [theme.breakpoints.up('sm')]: {
-      flex: 1,
-      maxWidth: '25%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      width: '50%',
-    },
-  },
-  cardContainerEven: {
-    [theme.breakpoints.down('sm')]: {
-      marginRight: theme.spacing(0),
-    },
-  },
-  cardContainerFull: {
-    [theme.breakpoints.down('sm')]: {
-      minWidth: '100%',
-      margin: theme.spacing(1, 0),
-    },
-  },
-  cardContainerNoWrap: {
-    flexShrink: 0,
-    [theme.breakpoints.up('sm')]: {
-      width: '20%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      width: '90%',
-    },
-  },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
       height: theme.spacing(5),
     },
@@ -81,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-interface PostItem {
+export interface PostItem {
   slug: string
   title: string
   location?: string
@@ -93,9 +52,10 @@ interface PostItem {
 }
 export interface SectionProps {
   sectionHeader: string
+  postItems: PostItem[]
   fullWidth?: boolean
   slidingCard?: boolean
-  postItems: PostItem[]
+  fullImage?: boolean
   limited?: boolean
   renderButton?: () => JSX.Element
   renderSideLink?: () => JSX.Element
@@ -104,6 +64,7 @@ export const Section = ({
   sectionHeader,
   postItems,
   slidingCard = false,
+  fullImage = false,
   fullWidth = false,
   limited = false,
   renderSideLink,
@@ -128,69 +89,6 @@ export const Section = ({
 
   const smPosts = useMemo(() => postItems.slice(0, 4), [postItems])
 
-  const renderPosts = (
-    page: PostItem[],
-    option?: { fullImage: boolean; noWrap: boolean }
-  ) => {
-    return (
-      <div
-        className={`${classes.postContainer} ${
-          option?.noWrap && classes.postContainerWrap
-        }`}
-      >
-        {page.map(
-          ({
-            slug,
-            title,
-            location,
-            tags,
-            comments,
-            likes,
-            imagePath,
-            shortDescription,
-          }) => {
-            return (
-              <div
-                className={`
-                ${classes.cardContainer} 
-                ${!option?.noWrap && classes.cardContainerWrap} 
-                ${fullWidth && classes.cardContainerFull} 
-                ${option?.noWrap && classes.cardContainerNoWrap}
-                `}
-                key={slug}
-              >
-                <StyledCard
-                  slug={slug}
-                  imagePath={imagePath}
-                  subHeader={title}
-                  fullImage={option?.fullImage}
-                  tags={tags}
-                  likes={likes}
-                  comments={comments}
-                  header={location}
-                  renderCaption={() => (
-                    <div style={{color: 'white', padding: '1rem'}}>
-                      <StyledText size="h4" inline={smOrAbove || fullWidth} bold>
-                        {title}
-                      </StyledText>{' '}
-                      <StyledText
-                        size="h6"
-                        inline={smOrAbove || fullWidth}
-                        bold
-                      >
-                        {shortDescription && (shortDescription.slice(0,18) + '...')}
-                      </StyledText>
-                    </div>
-                  )}
-                />
-              </div>
-            )
-          }
-        )}
-      </div>
-    )
-  }
-
   return (
     <div>
       <div className={classes.titleContainer}>
@@ -200,7 +98,9 @@ export const Section = ({
         {renderSideLink && renderSideLink()}
       </div>
       {slidingCard ? (
-        <div>{renderPosts(postItems, { fullImage: true, noWrap: true })}</div>
+        <div>{renderSlidingCards(postItems, { fullImage: true })}</div>
+      ) : fullImage ? (
+        <div>{renderCards(postItems, { fullImage: true, fullWidth, smOrAbove })}</div>
       ) : smOrAbove ? (
         <Carousel
           swipe
@@ -210,11 +110,11 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page, i) => (
-            <div key={i}>{renderPosts(page)}</div>
+            <div key={i}>{renderCards(page, { fullImage, fullWidth, smOrAbove })}</div>
           ))}
         </Carousel>
       ) : (
-        <>{renderPosts(limited ? smPosts : postItems)}</>
+        <>{renderCards(limited ? smPosts : postItems, { fullImage, fullWidth, smOrAbove })}</>
       )}
       {renderButton && (
         <div className={classes.buttonContainer}>{renderButton()}</div>
@@ -222,3 +122,4 @@ export const Section = ({
     </div>
   )
 }
+

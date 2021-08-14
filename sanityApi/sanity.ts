@@ -1,6 +1,5 @@
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import {
-  groq,
   createClient,
   createImageUrlBuilder,
   createPreviewSubscriptionHook,

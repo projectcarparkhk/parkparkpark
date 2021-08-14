@@ -4,7 +4,8 @@ const locale = {
   searchPlaceholder: '搜尋地區 / 停車場',
   latestCarparkPromotions: '最新停車場優惠',
   cheapestCarparkPromotions: '最抵停車場優惠',
-  cheapestCarparks: '最抵停車場',
+  cheapestCarparksHeader: '最抵停車場',
+  hotCarparkTagsHeader: '熱門停車場分類',
   checkoutAll: '查看全部',
 }
 

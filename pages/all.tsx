@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/header'
-import { getSubDistrictsGroupByDistrict } from '../lib/api'
+import { getSubDistrictsGroupByDistrict } from '../sanityApi/subDistricts';
 import FullWidthTabs from '../components/tab/all'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-function ShowTogglableTagList({name, subDistricts}: DistrictResponse) {
+function ShowTogglableTagList({ name, subDistricts }: DistrictResponse) {
   const [isShowAll, setIsShowAll] = useState(false)
   const classes = useStyles()
 

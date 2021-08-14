@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
-import { getHotPosts, getLatestPosts } from '../lib/api'
+import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import Header from '../components/header'
-import { popularAreas, postItems } from '../mocks/constants'
 import { Button, Container, InputBase } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,11 +10,22 @@ import { Section, SectionProps } from '../components/Section'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
-import { PostResponse } from '../types'
+import {
+  CarparkContextToday,
+  PostResponse,
+  TagResponse,
+  TranslatedCarpark,
+} from '../types'
 import translations from '../locales/pages/index'
 import { useRouter } from 'next/router'
-import { imageBuilder } from '../lib/sanity'
-import { SupportedLanguages } from '../constants/SupportedLanguages'
+import { imageBuilder } from '../sanityApi/sanity'
+import {
+  SupportedLanguages,
+  durationTranslations,
+} from '../constants/SupportedLanguages'
+import { getCarparks } from '../sanityApi/carparks'
+import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
+import { getHotTags } from '../sanityApi/tags'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -68,33 +78,81 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface IProps {
   latestPosts: PostResponse[]
   hotPosts: PostResponse[]
+  orderedCarparks: CarparkContextToday[]
+  hotTags: TagResponse[]
 }
 
-export default function Index({ latestPosts, hotPosts }: IProps) {
+export default function Index({
+  latestPosts,
+  hotPosts,
+  orderedCarparks,
+  hotTags
+}: IProps) {
   const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
   const { locale } = useRouter()
   const fallBackLocale = (locale as SupportedLanguages) || 'zh'
-
   const translatedLatestPosts = useMemo(() => {
-    return latestPosts.map((post) => ({
-      ...post,
-      title: post[fallBackLocale].title,
-      shortDescription: post[fallBackLocale].shortDescription,
-      imagePath: imageBuilder(post.imagePath).toString() || '/hk.webp'
-    }))
-  }, [latestPosts])
+    return latestPosts.map((post) => {
+      const { title, shortDescription } = post[fallBackLocale]
+      const { _id, slug, imagePath } = post
+      return {
+        _id,
+        slug,
+        title,
+        shortDescription,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+      }
+    })
+  }, [latestPosts, fallBackLocale])
 
   const translatedHotPosts = useMemo(() => {
-    return hotPosts.map((post) => ({
-      ...post,
-      title: post[fallBackLocale].title,
-      shortDescription: post[fallBackLocale].shortDescription,
-      imagePath: imageBuilder(post.imagePath).toString() || '/hk.webp'
+    return hotPosts.map((post) => {
+      const { title, shortDescription } = post[fallBackLocale]
+      const { _id, slug, imagePath } = post
+      return {
+        _id,
+        slug,
+        title,
+        shortDescription,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+      }
+    })
+  }, [hotPosts, fallBackLocale])
 
+  const translatedCarparks: TranslatedCarpark[] = useMemo(() => {
+    return orderedCarparks.map((carpark) => {
+      const { tag, subDistrict, name } = carpark[fallBackLocale]
+      const { priceDetail, _id, imagePath, slug } = carpark
+      const shortDescription = `$${priceDetail.price} / ${
+        durationTranslations[
+          priceDetail.hr as keyof typeof durationTranslations
+        ][fallBackLocale]
+      }`
+      return {
+        _id,
+        title: name,
+        tags: tag.map((tag) => ({ label: tag.name })),
+        location: subDistrict.name,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        shortDescription,
+        slug,
+      }
+    })
+  }, [orderedCarparks, fallBackLocale])
 
-    }))
-  }, [hotPosts])
+  const translatedHotTags = useMemo(() => {
+    return hotTags.map((tag) => {
+      const { name } = tag[fallBackLocale];
+      const { _id, imagePath, slug } = tag;
+      return {
+        _id,
+        title: name,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        slug
+      }
+    })
+  }, [hotTags, fallBackLocale])
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
@@ -113,7 +171,8 @@ export default function Index({ latestPosts, hotPosts }: IProps) {
     searchPlaceholder,
     latestCarparkPromotions,
     cheapestCarparkPromotions,
-    cheapestCarparks,
+    cheapestCarparksHeader,
+    hotCarparkTagsHeader,
     checkoutAll,
   } = translations[locale || 'zh']
 
@@ -129,9 +188,27 @@ export default function Index({ latestPosts, hotPosts }: IProps) {
       slidingCard: true,
     },
     {
-      sectionHeader: cheapestCarparks,
-      postItems: postItems,
+      sectionHeader: cheapestCarparksHeader,
+      postItems: translatedCarparks,
       limited: true,
+      renderSideLink: () => (
+        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
+      ),
+      renderButton: () => (
+        <Link href="/nearby">
+          <StyledButton variant="outlined" color="primary">
+            <StyledText size="h6" bold>
+              {checkoutAll}
+            </StyledText>
+          </StyledButton>
+        </Link>
+      ),
+    },
+    {
+      sectionHeader: hotCarparkTagsHeader,
+      postItems: translatedHotTags,
+      limited: true,
+      fullImage: true,
       renderSideLink: () => (
         <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
       ),
@@ -182,9 +259,13 @@ export default function Index({ latestPosts, hotPosts }: IProps) {
 export async function getStaticProps() {
   const latestPosts = await getLatestPosts()
   const hotPosts = await getHotPosts()
-  // const districts = await getSubDistrictsGroupByDistrict(preview)
+  const carparks = await getCarparks()
+  const hotTags = await getHotTags(false);
+
+  // building once per day to reduce front-end's load
+  const orderedCarparks = orderCarparkByPriceToday(carparks)
   return {
-    props: { latestPosts, hotPosts },
+    props: { latestPosts, hotPosts, orderedCarparks, hotTags },
     revalidate: 1,
   }
 }
