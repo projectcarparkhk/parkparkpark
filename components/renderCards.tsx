@@ -36,15 +36,18 @@ const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   },
 }))
 
-export const renderCards = (
-  page: PostItem[],
+interface RenderCardsProps {
+  page: PostItem[]
   option?: {
     fullImage: boolean
     fullWidth: boolean
     smOrAbove: boolean
   }
-) => {
+}
+
+export const RenderCards = ({ page, option }: RenderCardsProps) => {
   const classes = usePostStyles()
+
   return (
     <div className={`${classes.postContainer}`}>
       {page.map(
@@ -62,7 +65,7 @@ export const renderCards = (
           },
           i
         ) => {
-          const classes = useCardStyles({ index: i })
+          const classes = useCardStyles({index: i})
           return (
             <div
               className={`${classes.cardContainer} ${
@@ -81,7 +84,7 @@ export const renderCards = (
                 header={location}
                 index={i}
                 renderCaption={() => (
-                  <div style={{ color: option?.fullImage ? 'white' : 'black'}}>
+                  <div style={{ color: option?.fullImage ? 'white' : 'black' }}>
                     <StyledText size="h4" bold>
                       {subtitle}
                     </StyledText>{' '}

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
 import { useMediaQuery } from '@material-ui/core'
-import { renderCards } from './renderCards'
+import { RenderCards } from './renderCards'
 import { renderSlidingCards } from './renderSlidingCards'
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -101,7 +101,7 @@ export const Section = ({
       {slidingCard ? (
         <div>{renderSlidingCards(postItems, { fullImage: true })}</div>
       ) : fullImage ? (
-        <div>{renderCards(postItems, { fullImage: true, fullWidth, smOrAbove })}</div>
+        <div><RenderCards page={postItems} option={ {fullImage: true, fullWidth, smOrAbove} } /></div>
       ) : smOrAbove ? (
         <Carousel
           swipe
@@ -111,11 +111,11 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page, i) => (
-            <div key={i}>{renderCards(page, { fullImage, fullWidth, smOrAbove })}</div>
+            <div key={i}><RenderCards page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
           ))}
         </Carousel>
       ) : (
-        <>{renderCards(limited ? smPosts : postItems, { fullImage, fullWidth, smOrAbove })}</>
+        <><RenderCards page={limited ? smPosts : postItems} option={{ fullImage, fullWidth, smOrAbove }}/></>
       )}
       {renderButton && (
         <div className={classes.buttonContainer}>{renderButton()}</div>
