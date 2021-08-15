@@ -1,7 +1,8 @@
 import { SanityClient } from './sanity'
 import { getSubDistrictsGroupByArea } from './subDistricts'
+import { FilterResponse } from '../types/FilterResponse'
 
-export async function getFilters(preview: boolean, locale = 'zh'): Promise<any[]> {
+export async function getFilters(preview: boolean, locale = 'zh'): Promise<FilterResponse> {
   const tags = await SanityClient(preview)
   .fetch(`*[_type == 'tag']{
     _id, 

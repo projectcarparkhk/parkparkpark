@@ -8,20 +8,27 @@ import { Theme, makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
 import { useRouter } from 'next/router'
 import { SubDistrict } from '../types/DistrictResponse';
+import {
+    FilterConfig,
+    SubFilterConfig,
+    FilterResponse, 
+    FilterOption,
+    FilterableItem,
+} from '../types/FilterResponse'
 import { FilterDrawer, initializeFilter, filterItems, FilterCatelogue } from '../components/FilterDrawer'
 
 
-const FILTER_CONFIG = {
+const FILTER_CONFIG: FilterConfig = {
     areas: 'subDistricts',
     categories: 'tags'
 }
 interface PageProps {
-    carparks: Carpark[]
+    carparks: FilterableItem[]
     filters: FilterResponse
 }
 interface IProps {
     key: string
-    carpark: Carpark
+    carpark: FilterableItem
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -54,9 +61,10 @@ function CarparkListItem({ carpark }: IProps) {
 }
 
 function Carparks({ carparks, filters }: PageProps) {
+
     const router = useRouter()
-    const [masterFilter, setMasterfilter] = useState(filters)
-    const [activePanel, setActivePanel] = useState('')
+    const [masterFilter, setMasterfilter] = useState<FilterResponse>(filters)
+    const [activePanel, setActivePanel] = useState<keyof FilterConfig>('')
 
     useEffect(() => {
         setMasterfilter(initializeFilter(filters, FILTER_CONFIG, router.query))
@@ -71,14 +79,14 @@ function Carparks({ carparks, filters }: PageProps) {
             {activePanel && <FilterDrawer
                 filters={masterFilter[activePanel]}
                 child={FILTER_CONFIG[activePanel]}
-                applyFilters={listOptions => setMasterfilter({
+                applyFilters={(listOptions: FilterOption[]) => setMasterfilter({
                     ...masterFilter,
                     [activePanel]: listOptions
                 })}
                 applyFilterCatelogue={(activeItem: string) => setActivePanel(activeItem)}
             />}
             <div>
-                {filterItems(carparks, masterFilter, FILTER_CONFIG).map((carpark: Carpark) => {
+                {filterItems(carparks, masterFilter, FILTER_CONFIG).map((carpark: FilterableItem) => {
                     return (
                         <CarparkListItem
                             key={carpark._id}

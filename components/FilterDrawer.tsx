@@ -8,6 +8,16 @@ import Chip from '@material-ui/core/Chip'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Theme, makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import {
+    FilterResponse,
+    FilterOption,
+    FilterConfig,
+    SubFilterConfig,
+    FilterCatelogueProps,
+    FilterSectionProps,
+    FilterDrawerProps,
+    FilterableItem,
+} from '../types/FilterResponse'
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
@@ -41,36 +51,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         }
     }
 }))
-
-interface FilterOption {
-    checked: boolean
-    isHot: boolean
-    name: string
-    slug: string
-}
-
-interface FilterSectionProps {
-    title: string
-    filterOptions: FilterOption[]
-    updateSelection(selectedOptions: FilterOption[]): string
-}
-
-// interface Filter {
-//     areas: 
-//     categories
-// }
-
-interface FilterConfig {
-    areas?: string,
-    categories?: string
-}
-
-
-interface FilterCatelogueProps {
-    config: FilterConfig
-    applyFilterCatelogue(activeItem: string): string
-}
-
 interface KeyEleProps {
     name: string
 }
@@ -139,7 +119,7 @@ function FilterSection({ title, filterOptions, updateSelection }: FilterSectionP
                 label={title}
             />
             <div className={classes.filterOptionContainer}>
-                {selectedOptions.map((option, i) => {
+                {selectedOptions.map((option, i: number) => {
                     return (
                         <Chip
                             onClick={() => {
@@ -168,8 +148,11 @@ function FilterSection({ title, filterOptions, updateSelection }: FilterSectionP
     )
 }
 
-function filteredCollected(filters: FilterConfig) {
-    const collectedTrueKeys = {
+function filteredCollected(filters: FilterResponse) {
+    const collectedTrueKeys: {
+        subDistricts: string[]
+        tags: string[]
+    } = {
         subDistricts: [],
         tags: [],
     };
@@ -218,10 +201,11 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
     )
 }
 
-export function initializeFilter(filters, config, prefill) {
-    const newFilters = { ...filters}
-    Object.keys(newFilters).forEach(parentKey => {
-        newFilters[parentKey] = newFilters[parentKey].map(parentItem => ({
+export function initializeFilter(filters: FilterResponse, config: FilterConfig, prefill: FilterConfig) {
+    const newFilters: FilterResponse = { ...filters}
+    console.log(Object.keys(newFilters))
+    Object.keys(newFilters).forEach((parentKey: keyof FilterConfig) => {
+        newFilters[parentKey] = newFilters[parentKey].map((parentItem) => ({
             ...parentItem,
             [config[parentKey]]: parentItem[config[parentKey]].map(childItem => {
                 const prefillValues = prefill[config[parentKey]] || ''
@@ -235,11 +219,11 @@ export function initializeFilter(filters, config, prefill) {
     return newFilters
 }
 
-export function filterItems(items, filters, config){
+export function filterItems(items: FilterableItem[], filters: FilterResponse, config: FilterConfig){
     const filterKeys = Object.values(config)
     const collectedFilters = filteredCollected(filters)
-    return items.filter((item) => {
-        return filterKeys.every(key => {
+    return items.filter((item: FilterableItem) => {
+        return filterKeys.every((key: keyof SubFilterConfig) => {
             if (!collectedFilters[key].length) {
                 return true
             }
@@ -250,12 +234,7 @@ export function filterItems(items, filters, config){
     });
 }
 
-interface FilterDrawerProps {
-    filters: FilterOption[]
-    child: string
-    applyFilters(option: FilterOption[]): FilterOption[]
-    applyFilterCatelogue(filterType: string): string
-}
+
 
 export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogue }: FilterDrawerProps) {
     const classes = useStyles()
@@ -297,6 +276,7 @@ export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogu
                                 filterOptions={filter[child]}
                                 updateSelection={(updateSelections: FilterOption[]) => {
                                     const newSelectedFilter: FilterOption[] = [...selectedFilter]
+                                    console.log(newSelectedFilter)
                                     newSelectedFilter[i][child] = updateSelections
                                     setSelectedFilter(newSelectedFilter)
                                 }}

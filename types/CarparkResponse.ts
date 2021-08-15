@@ -1,3 +1,5 @@
+import { SimpleLink } from './common'
+
 export interface Tag {
   name: string
 }
@@ -45,5 +47,4 @@ export interface TranslatedCarpark {
   imagePath: string
   shortDescription: string
   slug: string
-
 }
