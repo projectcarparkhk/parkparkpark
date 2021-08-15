@@ -4,12 +4,13 @@ import SearchInput from '../components/search/input'
 import { Suggestion } from '../components/search/type'
 import { TagResponse } from '../types'
 import Header from '../components/header'
-import { getHotTags } from '../lib/api'
+import { getHotTags } from '../sanityApi/tags'
 import Link from 'next/link'
 import Container from '@material-ui/core/Container'
 import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
+import { SupportedLanguages } from '../constants/SupportedLanguages';
 
 interface IProps {
   hotTags: TagResponse[]
@@ -28,6 +29,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Search({ hotTags }: IProps) {
   const router = useRouter()
   const classes = useStyles()
+  const {locale} = useRouter()
+  const fallBackLocale = (locale as SupportedLanguages) || 'zh'
 
   function onSuggestionClick(suggestion: Suggestion) {
     router.push(`/${suggestion.type}/${suggestion.slug}`, undefined, { shallow: true })
@@ -45,16 +48,16 @@ function Search({ hotTags }: IProps) {
             {hotTags
               .map((tag) => (
                 <Link 
-                  key={tag.name}
+                  key={tag[locale as SupportedLanguages].name}
                   href={{
                     pathname: '/carparks',
-                    query: { tags: tag.slug },
+                    query: { tags: tag[fallBackLocale].slug },
                   }}
-                  >
+                >
                   <Chip
                     className={classes.chip}
-                    key={tag.name}
-                    label={tag.name}
+                    key={tag[locale as SupportedLanguages].name}
+                    label={tag[locale as SupportedLanguages].name}
                   />
                 </Link>
               ))}

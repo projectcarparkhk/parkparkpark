@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import { StyledText } from '../components/StyledText'
+import translations from '../locales/components/header'
+import { useRouter } from 'next/router'
 
 type HeaderProps = {
   imageToTop: boolean
@@ -16,7 +18,8 @@ type AppBarStyleProps = HeaderProps
 const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
     height: theme.mixins.toolbar.minHeight,
-    color: props => props.imageToTop ? 'white' : theme.palette.primary.main,
+    paddingTop: theme.spacing(1),
+    color: (props) => (props.imageToTop ? 'white' : theme.palette.primary.main),
   },
   toolBar: {
     minHeight: theme.mixins.toolbar.minHeight,
@@ -24,35 +27,42 @@ const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   title: {
     flexGrow: 1,
   },
-  offset: theme.mixins.toolbar
+  offset: theme.mixins.toolbar,
 }))
 export default function Header({ imageToTop }: HeaderProps) {
   const classes = useStyles({
-    imageToTop
+    imageToTop,
   })
+  const { locale } = useRouter()
+  const { homeTitle } = translations[locale || 'zh']
   return (
     <>
-      <AppBar position='absolute' elevation={0} color='transparent' className={classes.appBar}>
+      <AppBar
+        position="absolute"
+        elevation={0}
+        color="transparent"
+        className={classes.appBar}
+      >
         <Toolbar className={classes.toolBar}>
-        <Link href="/all">
-        <IconButton edge="start" color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        </Link>
+          <Link href="/all">
+            <IconButton edge="start" color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+          </Link>
           <div className={classes.title}>
             <Link href="/">
               <span className="hover:underline">
-              <StyledText size="h1" bold>
-              ParkPark泊車資訊網
-            </StyledText>
-            </span>
+                <StyledText size="h1" bold>
+                  {homeTitle}
+                </StyledText>
+              </span>
             </Link>
           </div>
-        <Link href="/search">
-        <IconButton edge="end" color="inherit" aria-label="search">
-          <SearchIcon />
-        </IconButton>
-        </Link>
+          <Link href="/search">
+            <IconButton edge="end" color="inherit" aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </Link>
         </Toolbar>
       </AppBar>
       {!imageToTop && <div className={classes.offset} />}

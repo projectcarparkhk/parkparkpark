@@ -8,7 +8,6 @@ import Chip from '@material-ui/core/Chip'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Theme, makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import classNames from 'classnames';
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
@@ -196,7 +195,6 @@ function filteredCollected(filters: FilterConfig) {
 }
 
 export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogueProps) {
-    console.log({ config, applyFilterCatelogue })
     const classes = useStyles()
 
     return (

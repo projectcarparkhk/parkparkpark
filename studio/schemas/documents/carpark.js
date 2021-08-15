@@ -75,6 +75,11 @@ export default {
       type: 'localeBlockContent',
     },
     {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
+    },
+    {
       name: 'infoTables',
       title: 'Info tables',
       type: 'array',
@@ -128,6 +133,18 @@ export default {
       type: 'string',
     },
   ],
+  initialValue: {
+    priceDetails: {
+      rows: [
+        {
+          cells: ['day', 'time', 'price', 'hr'],
+        },
+        {
+          cells: ['', '', '', ''],
+        },
+      ],
+    },
+  },
   preview: {
     select: {
       title: `name.${defaultLanguage}`,

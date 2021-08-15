@@ -1,11 +1,6 @@
-import { PostResponse } from './PostResponse'
-import { Carpark } from './Carpark'
+import { PostResponse,TranslatedPost } from './PostResponse'
 import { DistrictResponse } from './DistrictResponse'
 import { TagResponse } from './TagResponse'
+import { CarparkResponse, TranslatedCarpark, CarparkContextToday} from './CarparkResponse'
 
-type FilterResponse = {
-    tags: any
-    subDistricts: any
-} 
-
-export type { FilterResponse, PostResponse, Carpark, DistrictResponse, TagResponse }
+export type { PostResponse, DistrictResponse, TagResponse, CarparkResponse, TranslatedCarpark,TranslatedPost, CarparkContextToday }

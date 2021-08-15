@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-export const CarouselBanner = ({ items, className: klasses = "" }: IProps) => {
+export const CarouselBanner = ({ items, className: klasses = '' }: IProps) => {
   const classes = useStyles()
   return (
     <div className={`${classes.carouselContainer} ${klasses}`}>

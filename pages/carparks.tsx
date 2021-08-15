@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { FilterResponse } from '../types'
-import { Carpark } from '../types/Carpark'
+import React, { useState, useEffect } from 'react'
 import Header from '../components/header'
 import { StyledText } from '../components/StyledText'
-import { getCarparks, getFilters } from '../lib/api'
+import { getCarparksforFilters } from '../sanityApi/carparks'
+import { getFilters } from '../sanityApi/filters'
 import Container from '@material-ui/core/Container'
 import { Theme, makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card';
@@ -94,7 +93,7 @@ function Carparks({ carparks, filters }: PageProps) {
 export default Carparks
 
 export async function getStaticProps({ preview = false }) {
-    const carparks = await getCarparks(preview)
+    const carparks = await getCarparksforFilters(preview)
     const filters = await getFilters(preview)
     return {
         props: { carparks, filters, preview },

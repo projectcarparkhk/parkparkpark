@@ -1,19 +1,33 @@
-import React from 'react'
-import { getPostsForHome, getSubDistrictsGroupByArea } from '../lib/api'
+import React, { useMemo } from 'react'
+import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
+import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import { Area } from '../types/DistrictResponse'
-import Image from 'next/image'
 import Header from '../components/header'
-import { popularAreas, postItems } from '../mocks/constants'
 import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
-import { CarouselBanner } from '../components/carousel'
-import { PostSection, PostSectionProps } from '../components/PostSection'
+import { Section, SectionProps } from '../components/Section'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
+import {
+  CarparkContextToday,
+  PostResponse,
+  TagResponse,
+  TranslatedCarpark,
+} from '../types'
+import translations from '../locales/pages/index'
+import { useRouter } from 'next/router'
+import { imageBuilder } from '../sanityApi/sanity'
+import {
+  SupportedLanguages,
+  durationTranslations,
+} from '../constants/SupportedLanguages'
+import { getCarparks } from '../sanityApi/carparks'
+import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
+import { getHotTags } from '../sanityApi/tags'
 import FilterHdrIcon from '@material-ui/icons/FilterHdr';
 import GestureIcon from '@material-ui/icons/Gesture'; 
 import NatureIcon from '@material-ui/icons/Nature';
@@ -26,25 +40,27 @@ interface IndexStyleProps {
 const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
-    height: '40vh',
+    height: '35vh',
     padding: theme.spacing(8, 2, 2, 2),
-    backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.jpeg')`,
+    backgroundImage: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    boxShadow: '3px 6px 15px -8px #000000;',
   },
   sloganContainer: {
     position: 'relative',
     color: 'white',
   },
   subSlogan: {
-    fontWeight: 700
+    fontWeight: 700,
+    fontSize: '1rem',
   },
   mainSlogan: {
-    fontSize: '1.5rem',
-    fontWeight: 700
+    fontSize: '1.8rem',
+    fontWeight: 700,
   },
   tagSelect: {
     borderRadius: '30px',
@@ -64,12 +80,13 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     margin: theme.spacing(0, 2, 1, 0),
   },
   sectionContainer: {
+    marginTop: theme.spacing(2),
     padding: theme.spacing(2, 0),
   },
   areaIconContainer: {
     margin: theme.spacing(2, 0),
     display: 'grid',
-    gridTemplateColumns: `repeat(4, 1fr)`,
+    gridTemplateColumns: 'repeat(4, 1fr)',
     width: '100%',
     textAlign: 'center',
     '& div': {
@@ -91,6 +108,14 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   }
 }))
 
+interface IProps {
+  latestPosts: PostResponse[]
+  hotPosts: PostResponse[]
+  orderedCarparks: CarparkContextToday[]
+  hotTags: TagResponse[]
+  areas: Area[]
+
+}
 interface AProps {
   areas: Area[]
 }
@@ -133,17 +158,16 @@ function IconCircle({ color, children }: IconCircleProps) {
 
 function AreaCategory({ areas }: AProps) {
   const classes = useStyles({})
-
   return (
     <div className={classes.sectionContainer}>
-      <StyledText size="h3" bold>
+      <StyledText size="h4" bold>
         地區分類
       </StyledText>
       <div className={classes.areaIconContainer}>
         {[...areas, {
           _id: 'more',
           name: '更多',
-          slug: ""
+          slug: ''
         }].map((area, i) => {
           return (
             <Link 
@@ -151,7 +175,7 @@ function AreaCategory({ areas }: AProps) {
                 pathname: '/all',
                 query: { area: area.slug },
               }}
-              key={area.slug}
+              key={area._id}
             >
               <div>
                 <IconCircle 
@@ -169,20 +193,76 @@ function AreaCategory({ areas }: AProps) {
   )
 }
 
-export default function Index({ areas }: AProps) {
+export default function Index({ latestPosts,
+  hotPosts,
+  orderedCarparks,
+  hotTags,
+  areas }: IProps) {
   const classes = useStyles({})
   const searchBoxClasses = useSearchBoxStyles()
+  const { locale } = useRouter()
+  const fallBackLocale = (locale as SupportedLanguages) || 'zh'
+  const translatedLatestPosts = useMemo(() => {
+    return latestPosts.map((post) => {
+      const { title, shortDescription } = post[fallBackLocale]
+      const { _id, slug, imagePath } = post
+      return {
+        _id,
+        slug,
+        title,
+        shortDescription,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+      }
+    })
+  }, [latestPosts, fallBackLocale])
 
-  const items = [
-    {
-      image: '/carousel1.jpeg',
-      postSlug: '/abc',
-    },
-    {
-      image: '/carousel2.jpeg',
-      postSlug: '/def',
-    },
-  ]
+  const translatedHotPosts = useMemo(() => {
+    return hotPosts.map((post) => {
+      const { title, shortDescription } = post[fallBackLocale]
+      const { _id, slug, imagePath } = post
+      return {
+        _id,
+        slug,
+        title,
+        shortDescription,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+      }
+    })
+  }, [hotPosts, fallBackLocale])
+
+  const translatedCarparks: TranslatedCarpark[] = useMemo(() => {
+    return orderedCarparks.map((carpark) => {
+      const { tag, subDistrict, name } = carpark[fallBackLocale]
+      const { priceDetail, _id, imagePath, slug } = carpark
+      const shortDescription = priceDetail ? `$${priceDetail.price} / ${
+        durationTranslations[
+          priceDetail.hr as keyof typeof durationTranslations
+        ][fallBackLocale]
+      }` : ''
+      return {
+        _id,
+        title: name,
+        tags: tag.map((tag) => ({ label: tag.name })),
+        location: subDistrict.name,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        shortDescription,
+        slug,
+      }
+    })
+  }, [orderedCarparks, fallBackLocale])
+
+  const translatedHotTags = useMemo(() => {
+    return hotTags.map((tag) => {
+      const { name } = tag[fallBackLocale];
+      const { _id, imagePath, slug } = tag;
+      return {
+        _id,
+        subtitle: name,
+        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        slug
+      }
+    })
+  }, [hotTags, fallBackLocale])
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
@@ -195,55 +275,58 @@ export default function Index({ areas }: AProps) {
     },
   }))(Button)
 
-  const postSections: PostSectionProps[] = [
+  const {
+    mainSlogan,
+    subSlogan,
+    searchPlaceholder,
+    latestCarparkPromotions,
+    cheapestCarparkPromotions,
+    cheapestCarparksHeader,
+    hotCarparkTagsHeader,
+    checkoutAll,
+  } = translations[locale || 'zh']
+
+  const postSections: SectionProps[] = [
     {
-      sectionHeader: '最近瀏覽',
-      postItems: postItems,
+      sectionHeader: latestCarparkPromotions,
+      postItems: translatedLatestPosts,
+      slidingCard: true,
     },
     {
-      sectionHeader: '附近',
-      postItems: postItems,
+      sectionHeader: cheapestCarparkPromotions,
+      postItems: translatedHotPosts,
+      slidingCard: true,
+    },
+    {
+      sectionHeader: cheapestCarparksHeader,
+      postItems: translatedCarparks,
       limited: true,
       renderSideLink: () => (
-        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
+        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
       ),
       renderButton: () => (
         <Link href="/nearby">
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
-              顯示全部
+              {checkoutAll}
             </StyledText>
           </StyledButton>
         </Link>
       ),
     },
     {
-      sectionHeader: '熱門地區',
-      postItems: postItems,
+      sectionHeader: hotCarparkTagsHeader,
+      postItems: translatedHotTags,
       limited: true,
+      fullImage: true,
       renderSideLink: () => (
-        <UndecoratedLink href="/nearby">探索香港</UndecoratedLink>
+        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
       ),
       renderButton: () => (
         <Link href="/nearby">
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
-              顯示全部
-            </StyledText>
-          </StyledButton>
-        </Link>
-      ),
-    },
-    {
-      sectionHeader: '熱門優惠',
-      postItems: popularAreas,
-      fullCarousel: true,
-      
-      renderButton: () => (
-        <Link href="/nearby">
-          <StyledButton variant="outlined" color="primary">
-            <StyledText size="h6" bold>
-              全部目的地
+              {checkoutAll}
             </StyledText>
           </StyledButton>
         </Link>
@@ -261,29 +344,24 @@ export default function Index({ areas }: AProps) {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="搜尋地區 / 停車場"
+              placeholder={searchPlaceholder}
               className={searchBoxClasses.inputInput}
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
         </Link>
         <div className={classes.sloganContainer}>
-          <div className={classes.subSlogan}>搜尋全港最新泊車優惠</div>
-          <div className={classes.mainSlogan}>幫你更快搵到位，慳錢慳時間</div>
+          <div className={classes.subSlogan}>{subSlogan}</div>
+          <div className={classes.mainSlogan}>{mainSlogan}</div>
         </div>
-        </div>
+      </div>
       <Container maxWidth="lg">
         <AreaCategory 
           areas={areas} 
         />
-        <div className={classes.sectionContainer}>
-          <CarouselBanner items={items} />
-        </div>
         {postSections.map((section) => (
           <div key={section.sectionHeader} className={classes.sectionContainer}>
-            <PostSection 
-              {...section}
-            />
+            <Section {...section} />
           </div>
         ))}
       </Container>
@@ -291,11 +369,17 @@ export default function Index({ areas }: AProps) {
   )
 }
 
-export async function getStaticProps({ preview = false }) {
-  const posts = await getPostsForHome(preview)
-  const areas = await getSubDistrictsGroupByArea(preview)
+export async function getStaticProps() {
+  const latestPosts = await getLatestPosts()
+  const hotPosts = await getHotPosts()
+  const carparks = await getCarparks()
+  const hotTags = await getHotTags(false);
+
+  // building once per day to reduce front-end's load
+  const orderedCarparks = orderCarparkByPriceToday(carparks)
+  const areas = await getSubDistrictsGroupByArea(false)
   return {
-    props: { posts, areas, preview },
+    props: { latestPosts, hotPosts, orderedCarparks, hotTags, areas },
     revalidate: 1,
   }
 }

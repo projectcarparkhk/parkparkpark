@@ -1,4 +1,5 @@
-import { getCarparks, getSubDistricts } from '../../lib/api.ts'
+import { getSubDistricts } from '../../sanityApi/subDistricts'
+import { getCarparks } from '../../sanityApi/carparks'
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/gi, '\\$&')

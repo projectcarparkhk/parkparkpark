@@ -1,4 +1,4 @@
-import { SimpleLink } from "./common"
+import { SimpleLink } from './common'
 export interface SubDistrict extends SimpleLink {
     isHot?: boolean
 }
