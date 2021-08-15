@@ -1,4 +1,4 @@
-import { useTheme, withStyles } from '@material-ui/core'
+import { useTheme } from '@material-ui/core'
 import Link from 'next/link'
 import React from 'react'
 
