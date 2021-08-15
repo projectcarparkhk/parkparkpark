@@ -4,7 +4,7 @@ import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
 import { useMediaQuery } from '@material-ui/core'
 import { RenderCards } from './RenderCards'
-import { renderSlidingCards } from './renderSlidingCards'
+import { RenderSlidingCards } from './RenderSlidingCards'
 
 const useStyles = makeStyles((theme: Theme) => ({
   titleContainer: {
@@ -99,7 +99,7 @@ export const Section = ({
         {renderSideLink && renderSideLink()}
       </div>
       {slidingCard ? (
-        <div>{renderSlidingCards(postItems, { fullImage: true })}</div>
+        <div><RenderSlidingCards page={postItems} option={{ fullImage: true }}/></div>
       ) : fullImage ? (
         <div><RenderCards page={postItems} option={ {fullImage: true, fullWidth, smOrAbove} } /></div>
       ) : smOrAbove ? (

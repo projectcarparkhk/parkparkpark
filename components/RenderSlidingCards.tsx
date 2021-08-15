@@ -30,12 +30,14 @@ const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   },
 }))
 
-export const renderSlidingCards = (
-  page: PostItem[],
+interface RenderCardsProps {
+  page: PostItem[]
   option?: {
     fullImage: boolean
   }
-) => {
+}
+
+export const RenderSlidingCards = ({ page, option }: RenderCardsProps) => {
   const classes = usePostStyles()
   return (
     <div className={`${classes.postContainer}`}>
