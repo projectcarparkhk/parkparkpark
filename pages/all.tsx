@@ -72,7 +72,7 @@ function SubDistrictList({ areas }: IProps) {
                   key={subDistrict.slug}
                   href={{
                     pathname: '/carparks',
-                    query: { subDistrict: subDistrict.slug },
+                    query: { subDistricts: subDistrict.slug },
                   }}
                   >
                   <Button

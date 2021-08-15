@@ -44,7 +44,13 @@ function Search({ hotTags }: IProps) {
           <div>
             {hotTags
               .map((tag) => (
-                <Link key={tag.name} href={`/tags/${tag.slug}`}>
+                <Link 
+                  key={tag.name}
+                  href={{
+                    pathname: '/carparks',
+                    query: { tags: tag.slug },
+                  }}
+                  >
                   <Chip
                     className={classes.chip}
                     key={tag.name}

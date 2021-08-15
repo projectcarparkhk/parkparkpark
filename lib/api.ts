@@ -93,7 +93,7 @@ export async function getHotTags(preview: boolean, locale = 'zh'): Promise<TagRe
   const result: TagResponse[] = await getClient(preview)
     .fetch(`*[_type == 'tag']{
       'name': name.${locale},
-      'slug': slug.${locale}Slug.current,
+      'slug': slug.current,
     }`)
   return result
 }
