@@ -30,7 +30,6 @@ function Search({ hotTags }: IProps) {
   const router = useRouter()
   const classes = useStyles()
   const {locale} = useRouter()
-  const fallBackLocale = (locale as SupportedLanguages) || 'zh'
 
   function onSuggestionClick(suggestion: Suggestion) {
     router.push(`/${suggestion.type}/${suggestion.slug}`, undefined, { shallow: true })
@@ -51,7 +50,7 @@ function Search({ hotTags }: IProps) {
                   key={tag[locale as SupportedLanguages].name}
                   href={{
                     pathname: '/carparks',
-                    query: { tags: tag[fallBackLocale].slug },
+                    query: { tags: tag.slug },
                   }}
                 >
                   <Chip
