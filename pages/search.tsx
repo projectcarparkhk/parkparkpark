@@ -4,12 +4,13 @@ import SearchInput from '../components/search/input'
 import { Suggestion } from '../components/search/type'
 import { TagResponse } from '../types'
 import Header from '../components/header'
-import { getHotTags } from '../lib/api'
+import { getHotTags } from '../sanityApi/tags'
 import Link from 'next/link'
 import Container from '@material-ui/core/Container'
 import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
+import { SupportedLanguages } from '../constants/SupportedLanguages';
 
 interface IProps {
   hotTags: TagResponse[]
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function Search({ hotTags }: IProps) {
   const router = useRouter()
   const classes = useStyles()
+  const {locale} = useRouter()
 
   function onSuggestionClick(suggestion: Suggestion) {
     router.push(`/${suggestion.type}/${suggestion.slug}`, undefined, { shallow: true })
@@ -44,11 +46,11 @@ function Search({ hotTags }: IProps) {
           <div>
             {hotTags
               .map((tag) => (
-                <Link key={tag.name} href={`/tags/${tag.slug}`}>
+                <Link key={tag[locale as SupportedLanguages].name} href={`/tags/${tag.slug}`}>
                   <Chip
                     className={classes.chip}
-                    key={tag.name}
-                    label={tag.name}
+                    key={tag[locale as SupportedLanguages].name}
+                    label={tag[locale as SupportedLanguages].name}
                   />
                 </Link>
               ))}

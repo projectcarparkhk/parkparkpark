@@ -14,17 +14,36 @@ import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
 import { Chip } from '@material-ui/core'
 import { useRouter } from 'next/router'
 
-const useStyles = makeStyles((theme: Theme) => ({
+interface StyleProps {
+  index: number
+}
+
+const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   card: {
-    width: '90%',
+    width: '100%',
     height: 'min-content',
   },
   media: {
-    height: 140,
+    height: 120,
+    position: 'relative',
+  },
+  cardOverlay: {
+    position: 'absolute',
+    width:'100%',
+    height: '100%',
+    top: '0',
+    left: '0',
+    zIndex: 1,
+    background: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)',
+    display: 'flex',
+    alignItems: 'flex-end'
+  },
+  mediaText: {
+    padding: '1rem',
   },
   fullImageMedia: {
     [theme.breakpoints.down('sm')]: {
-      height: '15rem',
+      height: '10rem',
     },
     [theme.breakpoints.up('sm')]: {
       height: '20rem',
@@ -82,18 +101,19 @@ export interface StyledCardProps {
   slug: string
   imagePath?: string
   fullImage?: boolean
-  subHeader: string
+  subHeader?: string
   header?: string
   tags?: { label: string }[]
   renderCaption: () => JSX.Element
   likes?: number
   comments?: number
+  index: number
 }
 
 const StyledChip = withStyles((theme: Theme) => ({
   root: {
     [theme.breakpoints.down('sm')]: {
-      height: '1.5rem',
+      height: '1.2rem',
     },
   },
   label: {
@@ -124,8 +144,9 @@ export const StyledCard = ({
   renderCaption,
   likes,
   comments,
+  index,
 }: StyledCardProps) => {
-  const classes = useStyles()
+  const classes = useStyles({index})
   const router = useRouter()
   return (
     <Card className={`${classes.card}`}>
@@ -134,7 +155,11 @@ export const StyledCard = ({
           className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
           image={imagePath}
         />
-        {!fullImage && (
+        {fullImage ? (
+          <div className={classes.cardOverlay}>
+            <div className={classes.mediaText}>{renderCaption()}</div>
+          </div>
+        ) : (
           <StyledCardContent>
             <StyledText size="body1">{header}</StyledText>
             <StyledText className={classes.titles} size="h6" bold>
@@ -154,20 +179,20 @@ export const StyledCard = ({
             <div className={classes.captionContainer}>
               {renderCaption()}
               <div className={classes.iconSection}>
-                <div
+               {likes && <div
                   className={`${classes.iconContainer} ${classes.iconContainerStart}`}
                 >
                   <div className={classes.icons}>
                     <FavoriteBorderIcon fontSize="inherit" />
                   </div>
                   <div>{likes}</div>
-                </div>
-                <div className={classes.iconContainer}>
+                </div>}
+                {comments && <div className={classes.iconContainer}>
                   <div className={classes.icons}>
                     <ChatBubbleOutlineIcon fontSize="inherit" />
                   </div>
                   <div>{comments}</div>
-                </div>
+                </div>}
               </div>
             </div>
           </StyledCardContent>

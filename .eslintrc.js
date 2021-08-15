@@ -26,6 +26,7 @@ module.exports = {
     'prefer-const': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    quotes: ['error', 'single'],
     // FIXME: "@typescript-eslint/no-explicit-any" should be using default, i.e. "warn".
     // however, there are too many usecases have to use "any" as type.
     // until the whole team adapt using "never" and "unknown" instead of "any",

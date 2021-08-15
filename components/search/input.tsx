@@ -24,7 +24,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     borderRadius: '30px',
     backgroundColor: '#EEEEEE',
-    height: '2rem',
+    height: '2.5rem',
+    display: 'flex',
+    alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
       height: '3rem',
       width: '50%',

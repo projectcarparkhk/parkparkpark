@@ -1,4 +1,3 @@
-import { baseLanguage } from '../components/localeString'
 import { defaultLanguage } from '../supportedLanguages'
 
 export default {

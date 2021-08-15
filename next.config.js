@@ -3,6 +3,14 @@
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
+  i18n: {
+    locales: ['en', 'zh'],
+    defaultLocale: 'zh',
+    localeDetection: false,
+  },
+  images: {
+    domains: ['cdn.sanity.io'],
+  },
   /**
    * Custom Webpack Config
    * https://nextjs.org/docs/api-reference/next.config.js/custom-webpack-config

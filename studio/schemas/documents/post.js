@@ -15,7 +15,7 @@ export default {
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'name.en',
+        source: 'title.en',
         maxLength: 96,
         slugify: (input) =>
           input.toLowerCase().replace(/\s+/g, '-').slice(0, 200),
@@ -54,6 +54,11 @@ export default {
       title: 'Tag',
       type: 'array',
       of: [{ type: 'reference', to: { type: 'tag' } }],
+    },
+    {
+      name: 'isHot',
+      title: 'Is Hot',
+      type: 'boolean',
     },
     {
       name: 'externalLink',

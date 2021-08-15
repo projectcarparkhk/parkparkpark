@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/header'
-import { getSubDistrictsGroupByArea } from '../lib/api'
+import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts';
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
@@ -11,7 +11,7 @@ import ButtonBase from '@material-ui/core/ButtonBase'
 import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
 import { StyledText } from '../components/StyledText'
-import { getArrayData } from '../lib/helper'
+import { getArrayData } from '../sanityApi/helper'
 interface IProps {
   areas: Area[]
   preview?: boolean
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   pageTypeButtonContainer: {
     display: 'grid',
-    gridTemplateColumns: `1fr 1fr`,
+    gridTemplateColumns: '1fr 1fr',
     width: '100%',
     height: theme.spacing(5),
     textAlign: 'center',
@@ -133,7 +133,7 @@ function All({ areas }: IProps) {
             {
               _id: 'all',
               name: '全部',
-              slug: "all",
+              slug: 'all',
               subDistricts: areas.reduce((a: SubDistrict[], c: Area) => [...a, ...c.subDistricts], [])
             },
             ...areas
