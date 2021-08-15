@@ -8,7 +8,6 @@
     "start:web": "next start",
     "lint": "eslint --ignore-path .gitignore . --ext ts --ext tsx ",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "build:sanity": "cd studio && sanity build ../public/studio -y && cd ..",
     "start:sanity": "cp .env ./studio/.env.development && cd studio && sanity start",
     "postinstall": "lerna bootstrap",
@@ -67,7 +66,7 @@
   },
   "lint-staged": {
     "*.{js,css,json,md}": [
-      "yarn format"
+      "yarn lint:fix"
     ]
   }
 }

@@ -42,7 +42,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     zIndex: -1,
     height: '35vh',
     padding: theme.spacing(8, 2, 2, 2),
-    backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.png')`,
+    backgroundImage: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     display: 'flex',
@@ -86,7 +86,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   areaIconContainer: {
     margin: theme.spacing(2, 0),
     display: 'grid',
-    gridTemplateColumns: `repeat(4, 1fr)`,
+    gridTemplateColumns: 'repeat(4, 1fr)',
     width: '100%',
     textAlign: 'center',
     '& div': {
@@ -168,7 +168,7 @@ function AreaCategory({ areas }: AProps) {
         {[...areas, {
           _id: 'more',
           name: '更多',
-          slug: ""
+          slug: ''
         }].map((area, i) => {
           return (
             <Link 
