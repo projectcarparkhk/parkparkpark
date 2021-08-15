@@ -161,7 +161,7 @@ function AreaCategory({ areas }: AProps) {
 
   return (
     <div className={classes.sectionContainer}>
-      <StyledText size="h3" bold>
+      <StyledText size="h4" bold>
         地區分類
       </StyledText>
       <div className={classes.areaIconContainer}>
@@ -176,7 +176,7 @@ function AreaCategory({ areas }: AProps) {
                 pathname: '/all',
                 query: { area: area.slug },
               }}
-              key={area.slug}
+              key={area._id}
             >
               <div>
                 <IconCircle 

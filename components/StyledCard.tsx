@@ -27,15 +27,23 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
     height: 120,
     position: 'relative',
   },
-  mediaText: {
+  cardOverlay: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    padding: '1rem'
+    width:'100%',
+    height: '100%',
+    top: '0',
+    left: '0',
+    zIndex: 1,
+    background: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)',
+    display: 'flex',
+    alignItems: 'flex-end'
+  },
+  mediaText: {
+    padding: '1rem',
   },
   fullImageMedia: {
     [theme.breakpoints.down('sm')]: {
-      height: '11rem',
+      height: '10rem',
     },
     [theme.breakpoints.up('sm')]: {
       height: '20rem',
@@ -145,15 +153,12 @@ export const StyledCard = ({
       <CardActionArea onClick={() => router.push(`/${slug}`)}>
         <CardMedia
           className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
-          style={{
-            background: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%), url('${imagePath}')`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}
+          image={imagePath}
         />
         {fullImage ? (
-          <div className={classes.mediaText}>{renderCaption()}</div>
+          <div className={classes.cardOverlay}>
+            <div className={classes.mediaText}>{renderCaption()}</div>
+          </div>
         ) : (
           <StyledCardContent>
             <StyledText size="body1">{header}</StyledText>

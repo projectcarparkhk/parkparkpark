@@ -20,18 +20,18 @@ export const StyledText = ({
   inline,
 }: IProps) => {
   return (
-    <Typography
-      variant={size}
-      className={klasses}
-      display={inline ? 'inline' : 'block'}
+    <Box
+      display="inline"
+      fontWeight={bold ? 'fontWeightBold' : 'fontWeightRegular'}
+      style={style}
     >
-      <Box
-        display="inline"
-        fontWeight={bold ? 'fontWeightBold' : 'fontWeightRegular'}
-        style={style}
+      <Typography
+        variant={size}
+        className={klasses}
+        display={inline ? 'inline' : 'block'}
       >
         {children}
-      </Box>
-    </Typography>
+      </Typography>
+    </Box>
   )
 }

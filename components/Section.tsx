@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import { StyledText } from './StyledText'
 import { useMediaQuery } from '@material-ui/core'
-import { RenderCards } from './renderCards'
+import { RenderCards } from './RenderCards'
 import { renderSlidingCards } from './renderSlidingCards'
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -111,7 +111,7 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page, i) => (
-            <div key={i}><RenderCards page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
+            <div key={page[i].slug}><RenderCards page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
           ))}
         </Carousel>
       ) : (

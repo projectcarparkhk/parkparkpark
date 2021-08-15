@@ -18,7 +18,7 @@ interface StyleProps {
 const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   cardContainer: {
     marginBottom: theme.spacing(2),
-    marginRight: (props) => (props.index % 2 === 0 ? theme.spacing(2) : '0'),
+    marginRight: (props) => (props.index % 2 === 0 ? theme.spacing(1.5) : '0'),
     display: 'flex',
     justifyContent: 'center',
     [theme.breakpoints.up('sm')]: {
