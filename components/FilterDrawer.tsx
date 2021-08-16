@@ -9,6 +9,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Theme, makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import {
+    Area,
+    Category,
     FilterResponse,
     FilterOption,
     FilterConfig,
@@ -51,9 +53,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         }
     }
 }))
-interface KeyEleProps {
-    name: string
-}
 
 const isAllChecked = (options: FilterOption[]) => options.every(option => option.checked)
 const isSomeChecked = (options: FilterOption[]) => options.some(option => option.checked)
@@ -183,7 +182,7 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
     return (
         <div className={classes.filterCatelogue}>
             {
-                Object.keys(config).map(value => {
+                Object.keys(config).map((value: string) => {
                     return (
                         <div 
                             className={classes.filterTypeButton}    
@@ -203,11 +202,10 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
 
 export function initializeFilter(filters: FilterResponse, config: FilterConfig, prefill: FilterConfig) {
     const newFilters: FilterResponse = { ...filters}
-    console.log(Object.keys(newFilters))
-    Object.keys(newFilters).forEach((parentKey: keyof FilterConfig) => {
-        newFilters[parentKey] = newFilters[parentKey].map((parentItem) => ({
+    Object.keys(newFilters).forEach((parentKey: string) => {
+        newFilters[parentKey] = newFilters[parentKey].map((parentItem: (Area | Category)[]) => ({
             ...parentItem,
-            [config[parentKey]]: parentItem[config[parentKey]].map(childItem => {
+            [config[parentKey]]: parentItem[config[parentKey]].map((childItem: FilterOption) => {
                 const prefillValues = prefill[config[parentKey]] || ''
                 return {
                     ...childItem,
@@ -227,7 +225,7 @@ export function filterItems(items: FilterableItem[], filters: FilterResponse, co
             if (!collectedFilters[key].length) {
                 return true
             }
-            return item[key].map(e => e.slug).some((keyEle: KeyEleProps) => {
+            return item[key].map(e => e.slug).some((keyEle: string) => {
                 return collectedFilters[key].includes(keyEle)
             })
         })
@@ -238,17 +236,17 @@ export function filterItems(items: FilterableItem[], filters: FilterResponse, co
 
 export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogue }: FilterDrawerProps) {
     const classes = useStyles()
-    const [selectedFilter, setSelectedFilter] = useState(filters)
+    const [selectedFilter, setSelectedFilter] = useState<(Area | Category)[] | null>(filters)
     
     return (
         <Drawer className={classes.panelDrawer}
             anchor={'bottom'}
             open={true}
-            onClose={() => applyFilterCatelogue('')}
+            onClose={() => applyFilterCatelogue(null)}
         >
             <Container maxWidth="lg">
             <div className={classes.filterDrawerHeader}>
-                <CloseIcon onClick={() => applyFilterCatelogue('')} />
+                <CloseIcon onClick={() => applyFilterCatelogue(null)} />
                 {/* <Button
                     variant="outlined"
                     onClick={() => {
@@ -268,17 +266,18 @@ export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogu
             </div>
             <div>
                 {
-                    selectedFilter.map((filter: FilterOption, i: number) => {
+                    selectedFilter && selectedFilter.map((filter: (Area | Category), i: number) => {
                         return (
                             <FilterSection
                                 key={filter.name}
                                 title={filter.name}
-                                filterOptions={filter[child]}
+                                filterOptions={child && filter[child]}
                                 updateSelection={(updateSelections: FilterOption[]) => {
-                                    const newSelectedFilter: FilterOption[] = [...selectedFilter]
-                                    console.log(newSelectedFilter)
-                                    newSelectedFilter[i][child] = updateSelections
-                                    setSelectedFilter(newSelectedFilter)
+                                    const newSelectedFilter: (Area | Category)[] = [...selectedFilter]
+                                    if (child) {
+                                        newSelectedFilter[i][child] = updateSelections
+                                        setSelectedFilter(newSelectedFilter)
+                                    }
                                 }}
                             />
                         )
@@ -292,7 +291,7 @@ export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogu
                     color="primary"
                     onClick={() => {
                         applyFilters(selectedFilter)
-                        applyFilterCatelogue('')
+                        applyFilterCatelogue(null)
                     }}
                 >
                     繼續

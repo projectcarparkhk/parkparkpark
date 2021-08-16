@@ -9,6 +9,8 @@ import Card from '@material-ui/core/Card';
 import { useRouter } from 'next/router'
 import { SubDistrict } from '../types/DistrictResponse';
 import {
+    Area,
+    Category,
     FilterConfig,
     SubFilterConfig,
     FilterResponse, 
@@ -64,7 +66,7 @@ function Carparks({ carparks, filters }: PageProps) {
 
     const router = useRouter()
     const [masterFilter, setMasterfilter] = useState<FilterResponse>(filters)
-    const [activePanel, setActivePanel] = useState<keyof FilterConfig>('')
+    const [activePanel, setActivePanel] = useState<null | keyof FilterConfig>(null)
 
     useEffect(() => {
         setMasterfilter(initializeFilter(filters, FILTER_CONFIG, router.query))
@@ -74,16 +76,16 @@ function Carparks({ carparks, filters }: PageProps) {
         <Container>
             <Header imageToTop={false} />
             <FilterCatelogue
-                applyFilterCatelogue={(activeItem: string) => setActivePanel(activeItem)}
+                applyFilterCatelogue={(activeItem: keyof FilterConfig) => setActivePanel(activeItem)}
                 config={FILTER_CONFIG} />
             {activePanel && <FilterDrawer
-                filters={masterFilter[activePanel]}
-                child={FILTER_CONFIG[activePanel]}
-                applyFilters={(listOptions: FilterOption[]) => setMasterfilter({
+                filters={activePanel && masterFilter[activePanel]}
+                child={activePanel && FILTER_CONFIG[activePanel]}
+                applyFilters={(listOptions: Area[] | Category[] | null) => setMasterfilter({
                     ...masterFilter,
                     [activePanel]: listOptions
                 })}
-                applyFilterCatelogue={(activeItem: string) => setActivePanel(activeItem)}
+                applyFilterCatelogue={(activeItem: keyof FilterConfig) => setActivePanel(activeItem)}
             />}
             <div>
                 {filterItems(carparks, masterFilter, FILTER_CONFIG).map((carpark: FilterableItem) => {

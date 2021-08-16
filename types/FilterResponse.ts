@@ -6,24 +6,29 @@ export interface FilterOption {
     slug: string
     isHot?: boolean
     checked?: boolean
+    [key: string]: any
 }
 
 export interface Area {
     subDistricts: FilterOption[];
+    [key: string]: any
 }
 export interface Category {
     tags: FilterOption[];
+    [key: string]: any
 }
 
 export interface FilterResponse {
     areas: Area[]
     categories: Category[]
+    [key: string]: any
 }
 
 
 export interface FilterConfig {
     areas?: string,
     categories?: string
+    [key: string]: any
 }
 
 export interface SubFilterConfig {
@@ -34,20 +39,20 @@ export interface SubFilterConfig {
 
 export interface FilterCatelogueProps {
     config: FilterConfig
-    applyFilterCatelogue(activeItem: string): void
+    applyFilterCatelogue(activeItem?: keyof FilterConfig | string | null): void
 }
 
 export interface FilterSectionProps {
     title: string
     filterOptions: FilterOption[]
-    updateSelection(selectedOptions: FilterOption[]): void
+    updateSelection(selectedOptions?: FilterOption[]): void
 }
 
 export interface FilterDrawerProps {
-    filters: FilterOption[]
-    child: keyof SubFilterConfig
-    applyFilters(option: FilterOption[]): void
-    applyFilterCatelogue(filterType: string): void
+    filters: Area[] | Category[] | null
+    child: keyof FilterOption | string | undefined 
+    applyFilters(option: (Area | Category)[] | null): void
+    applyFilterCatelogue(filterType: keyof FilterConfig | string | null): void
 }
 
 export interface FilterableItem {
