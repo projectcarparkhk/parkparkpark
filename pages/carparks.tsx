@@ -19,7 +19,6 @@ import {
 } from '../types/FilterResponse'
 import { FilterDrawer, initializeFilter, filterItems, FilterCatelogue } from '../components/FilterDrawer'
 
-
 const FILTER_CONFIG: FilterConfig = {
     areas: 'subDistricts',
     categories: 'tags'

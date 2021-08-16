@@ -20,6 +20,8 @@ import {
     FilterDrawerProps,
     FilterableItem,
 } from '../types/FilterResponse'
+import translations from '../locales/components/filterDrawer'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
@@ -178,7 +180,7 @@ function filteredCollected(filters: FilterResponse) {
 
 export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogueProps) {
     const classes = useStyles()
-
+    const { locale } = useRouter()
     return (
         <div className={classes.filterCatelogue}>
             {
@@ -189,7 +191,7 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
                             onClick={() => applyFilterCatelogue(value)}
                         >
                             <div>
-                                {value}
+                                {translations[locale || 'zh'][value]}
                             </div>
                             <ExpandMoreIcon />
                         </div>
