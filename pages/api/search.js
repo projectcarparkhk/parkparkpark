@@ -1,5 +1,4 @@
-import { getSubDistricts } from '../../sanityApi/subDistricts'
-import { getCarparks } from '../../sanityApi/carparks'
+import { getCarparks, getSubDistricts } from '../../sanityApi/search'
 
 function escapeRegexCharacters(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/gi, '\\$&')
@@ -10,7 +9,6 @@ async function constructSearchResult() {
     getCarparks(),
     getSubDistricts(),
   ])
-
   return [...allCarparks, ...allSubDistricts]
 }
 
@@ -27,7 +25,7 @@ export default async (req, res) => {
     .map((dat) => ({
       ...dat,
       name: dat.name[locale],
-      slug: dat.slug[`${locale}Slug`].current,
+      slug: dat.slug.current,
     }))
 
   res.statusCode = 200

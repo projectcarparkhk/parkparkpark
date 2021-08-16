@@ -1,6 +1,6 @@
 const locale = {
   areas: 'Areas',
-  subDistricts: 'Sub districts',
+  subDistricts: 'Districts',
   categories: 'Categories',
   tags: 'Tags',
 }

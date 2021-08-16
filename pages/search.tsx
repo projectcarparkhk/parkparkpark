@@ -11,6 +11,7 @@ import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import { SupportedLanguages } from '../constants/SupportedLanguages';
+import translations from '../locales/pages/search'
 
 interface IProps {
   hotTags: TagResponse[]
@@ -27,12 +28,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 function Search({ hotTags }: IProps) {
-  const router = useRouter()
+  const { push, locale } = useRouter()
+
+  const {
+    hot,
+  } = translations[locale || 'zh']
+
   const classes = useStyles()
-  const {locale} = useRouter()
 
   function onSuggestionClick(suggestion: Suggestion) {
-    router.push(`/${suggestion.type}/${suggestion.slug}`, undefined, { shallow: true })
+    switch (suggestion.type) {
+      case 'subDistrict':
+        push({
+          pathname: '/carparks',
+          query: { subDistricts: suggestion.slug },
+        })
+        break
+      case 'carpark':
+        push({
+          pathname: `/carparks/${suggestion.slug}`
+        })
+        break
+    }
   }
   return (
     <Container>
@@ -42,7 +59,7 @@ function Search({ hotTags }: IProps) {
         onSuggestionClick={onSuggestionClick}
       >
         <>
-          <h3>熱門</h3>
+          <h3>{hot}</h3>
           <div>
             {hotTags
               .map((tag) => (
