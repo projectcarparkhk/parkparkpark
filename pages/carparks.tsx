@@ -51,9 +51,11 @@ function CarparkListItem({ carpark }: IProps) {
             <div>
                 {carpark.subDistricts.map((subDistrict: SubDistrict) => {
                     return (
-                        <StyledText size="body1" inline={true}>
-                            {subDistrict.name}
-                        </StyledText>
+                        <span key={subDistrict.name}>
+                            <StyledText size="body1" inline={true}>
+                                {subDistrict.name}
+                            </StyledText>
+                        </span>
                     )
                 })}
             </div>

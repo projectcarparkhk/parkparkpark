@@ -187,6 +187,7 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
                 Object.keys(config).map((value: string) => {
                     return (
                         <div 
+                            key={value}
                             className={classes.filterTypeButton}    
                             onClick={() => applyFilterCatelogue(value)}
                         >
