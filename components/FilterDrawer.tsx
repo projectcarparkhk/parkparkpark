@@ -51,6 +51,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         cursor: 'pointer',
     },
+    checkedItem: {
+        color: theme.palette.primary.main,
+        fontWeight: 700,
+    },
     filterOptionContainer: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -182,21 +186,25 @@ function filteredCollected(filters: FilterResponse) {
     return collectedTrueKeys
 }
 
-export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogueProps) {
+export function FilterCatelogue({ config, applyFilterCatelogue, filters }: FilterCatelogueProps) {
     const classes = useStyles()
     const { locale } = useRouter()
+
     return (
         <div className={classes.filterCatelogue}>
             {
                 Object.keys(config).map((value: string) => {
+                    const checkedItemCount = filters[value].reduce((a: number, c: FilterConfig) => {
+                        return a + c[config[value]].filter((item: FilterOption) => item.checked).length
+                    }, 0)
                     return (
                         <div 
                             key={value}
-                            className={classes.filterTypeButton}    
+                            className={`${classes.filterTypeButton} ${checkedItemCount && classes.checkedItem}`}    
                             onClick={() => applyFilterCatelogue(value)}
                         >
                             <div>
-                                {translations[locale || 'zh'][value]}
+                                {translations[locale || 'zh'][value]} {checkedItemCount ? `(${checkedItemCount})` : ''}
                             </div>
                             <ExpandMoreIcon />
                         </div>

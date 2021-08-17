@@ -39,7 +39,8 @@ export interface SubFilterConfig {
 
 export interface FilterCatelogueProps {
     config: FilterConfig
-    applyFilterCatelogue(activeItem?: keyof FilterConfig | string | null): void
+    applyFilterCatelogue(activeItem?: keyof FilterConfig | string | null): void,
+    filters: FilterResponse,
 }
 
 export interface FilterSectionProps {

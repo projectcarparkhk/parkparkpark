@@ -77,6 +77,7 @@ function Carparks({ carparks, filters }: PageProps) {
         <Container>
             <Header imageToTop={false} />
             <FilterCatelogue
+                filters={masterFilter}
                 applyFilterCatelogue={(activeItem: keyof FilterConfig) => setActivePanel(activeItem)}
                 config={FILTER_CONFIG} />
             {activePanel && <FilterDrawer
