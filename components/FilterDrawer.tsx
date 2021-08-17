@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button'
 import Drawer from '@material-ui/core/Drawer'
@@ -59,20 +59,32 @@ const useStyles = makeStyles((theme: Theme) => ({
 const isAllChecked = (options: FilterOption[]) => options.every(option => option.checked)
 const isSomeChecked = (options: FilterOption[]) => options.some(option => option.checked)
 
-function FilterSection({ title, filterOptions, updateSelection }: FilterSectionProps) {
+function FilterSection({ title, selection, updateSelection }: FilterSectionProps) {
     const classes = useStyles()
-    const [parentCheckBoxState, setParentCheckBoxState] = useState(() => {
-        if (isAllChecked(filterOptions)) {
-            return 'all'
-        }
+    //const [parentCheckBoxState, setParentCheckBoxState] = useState(() => {
+    //    if (isAllChecked(selection)) {
+    //        return 'all'
+    //    }
 
-        if (isSomeChecked(filterOptions)) {
-            return 'some'
-        }
+    //    if (isSomeChecked(selection)) {
+    //        return 'some'
+    //    }
+    //    return 'none'
+    //})
+
+    // i think the selection should be the only source of truth and should govern the "prop" of the parent checkbox
+    // therefore should not have its own state
+    const parentCheckBoxStatus = useMemo(() => {
+      if (selection.every(option => option.checked)) {
+        return 'all'
+      } else if (selection.some(option => option.checked)){
+        return 'some'
+      } else {
         return 'none'
-    })
+      }
+    }, [selection])
 
-    const [selectedOptions, setSelectedOptions] = useState(filterOptions)
+    const [selectedOptions, setSelectedOptions] = useState(selection)
     useEffect(() => {
         updateSelection(selectedOptions)
     }, [selectedOptions])
@@ -83,29 +95,19 @@ function FilterSection({ title, filterOptions, updateSelection }: FilterSectionP
                 control={
                     <Checkbox
                         color="primary"
-                        checked={parentCheckBoxState === 'all'}
+                        checked={parentCheckBoxStatus === 'all'}
                         onChange={() => {
-                            if (parentCheckBoxState === 'all') {
-                                setParentCheckBoxState('none')
+                            if (parentCheckBoxStatus === 'all') {
                                 setSelectedOptions(selectedOptions.map(option => ({
                                     ...option,
                                     checked: false
                                 })))
-                            } else if (parentCheckBoxState === 'some') {
-                                if (!isAllChecked(selectedOptions) && !isSomeChecked(selectedOptions)) {
-                                    setParentCheckBoxState('all')
-                                    setSelectedOptions(selectedOptions.map(option => ({
-                                        ...option,
-                                        checked: true
-                                    })))
-                                }
-                                setParentCheckBoxState('none')
+                            } else if (parentCheckBoxStatus === 'some') {
                                 setSelectedOptions(selectedOptions.map(option => ({
                                     ...option,
                                     checked: false
                                 })))
                             } else {
-                                setParentCheckBoxState('all')
                                 setSelectedOptions(selectedOptions.map(option => ({
                                     ...option,
                                     checked: true
@@ -114,7 +116,7 @@ function FilterSection({ title, filterOptions, updateSelection }: FilterSectionP
 
                         }}
                         name="checkedF"
-                        indeterminate={parentCheckBoxState === 'some'}
+                        indeterminate={parentCheckBoxStatus === 'some'}
                     />
                 }
                 label={title}
@@ -127,15 +129,6 @@ function FilterSection({ title, filterOptions, updateSelection }: FilterSectionP
                                 const newSelectOptions = [...selectedOptions]
                                 newSelectOptions[i].checked = !newSelectOptions[i].checked
                                 setSelectedOptions(newSelectOptions)
-
-                                if (isAllChecked(newSelectOptions)) {
-                                    setParentCheckBoxState('all')
-                                } else if (!isAllChecked(newSelectOptions) && !isSomeChecked(newSelectOptions)) {
-                                    setParentCheckBoxState('none')
-                                } else {
-                                    setParentCheckBoxState('some')
-                                }
-
                             }}
                             variant={option.checked ? 'default' : 'outlined'}
                             size='small'
@@ -184,7 +177,7 @@ export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogu
     return (
         <div className={classes.filterCatelogue}>
             {
-                Object.keys(config).map((value: string) => {
+                Object.keys(config).map((value) => {
                     return (
                         <div 
                             key={value}
@@ -217,6 +210,7 @@ export function initializeFilter(filters: FilterResponse, config: FilterConfig, 
             })
         }))
     })
+    console.log("newFilters",newFilters)
     return newFilters
 }
 
@@ -274,7 +268,7 @@ export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogu
                             <FilterSection
                                 key={filter.name}
                                 title={filter.name}
-                                filterOptions={child && filter[child]}
+                                selection={child && filter[child]}
                                 updateSelection={(updateSelections: FilterOption[]) => {
                                     const newSelectedFilter: (Area | Category)[] = [...selectedFilter]
                                     if (child) {

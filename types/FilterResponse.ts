@@ -28,7 +28,6 @@ export interface FilterResponse {
 export interface FilterConfig {
     areas?: string,
     categories?: string
-    [key: string]: any
 }
 
 export interface SubFilterConfig {
@@ -44,7 +43,7 @@ export interface FilterCatelogueProps {
 
 export interface FilterSectionProps {
     title: string
-    filterOptions: FilterOption[]
+    selection: FilterOption[]
     updateSelection(selectedOptions?: FilterOption[]): void
 }
 

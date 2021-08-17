@@ -66,6 +66,7 @@ function CarparkListItem({ carpark }: IProps) {
 function Carparks({ carparks, filters }: PageProps) {
 
     const router = useRouter()
+    console.log('fulters', filters)
     const [masterFilter, setMasterfilter] = useState<FilterResponse>(filters)
     const [activePanel, setActivePanel] = useState<null | keyof FilterConfig>(null)
 
