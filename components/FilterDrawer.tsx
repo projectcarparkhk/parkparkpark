@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     filterDrawerHeader: {
         height: theme.spacing(6),
-        padding: theme.spacing(1.5 ,1.5 ,1.5, 0)
+        padding: theme.spacing(1.5 ,1.5 ,1.5, 0),
+        '& svg': {
+            cursor: 'pointer',
+        }
     },
     filterCatelogue: {
         display: 'flex',
@@ -45,7 +48,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(1),
         '& .MuiFormControlLabel-label': {
             fontSize: '1rem',
-        }
+        },
+        cursor: 'pointer',
     },
     filterOptionContainer: {
         display: 'flex',
