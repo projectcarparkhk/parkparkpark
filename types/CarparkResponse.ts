@@ -1,5 +1,3 @@
-import { SimpleLink } from './common'
-
 export interface Tag {
   name: string
 }
@@ -23,11 +21,12 @@ export interface CarparkTranslation {
 
 export interface CarparkResponse {
   _id: string
-  en: CarparkTranslation
   imagePath: string
-  priceDetails: PriceDetail[]
-  zh: CarparkTranslation
   slug: string
+  name: { [key: string]: string }
+  subDistricts: { _id: string; name: { [key: string]: string } }[]
+  tags: { _id: string; name: { [key: string]: string } }[]
+  priceDetails: PriceDetail[]
 }
 
 export interface CarparkContextToday {
@@ -42,7 +41,7 @@ export interface CarparkContextToday {
 export interface TranslatedCarpark {
   _id: string
   title: string
-  tags: {label: string}[]
+  tags: { label: string }[]
   location: string
   imagePath: string
   shortDescription: string

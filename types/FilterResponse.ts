@@ -1,12 +1,8 @@
 import { SimpleLink } from './common'
 
-export interface FilterOption {
+interface FilterOption {
     _id: string
-    name: string
-    slug: string
-    isHot?: boolean
-    checked?: boolean
-    [key: string]: any
+    name: { [key: string]: string }
 }
 
 export interface Area {
@@ -36,22 +32,17 @@ export interface SubFilterConfig {
 }
 
 
-export interface FilterCatelogueProps {
+export interface FilterCatalogueProps {
     config: FilterConfig
-    applyFilterCatelogue(activeItem?: keyof FilterConfig | string | null): void
+    applyFilterCatalogue(activeItem?: keyof FilterConfig | string | null): void
 }
 
 export interface FilterSectionProps {
     title: string
-    selection: FilterOption[]
-    updateSelection(selectedOptions?: FilterOption[]): void
-}
-
-export interface FilterDrawerProps {
-    filters: Area[] | Category[] | null
-    child: keyof FilterOption | string | undefined 
-    applyFilters(option: (Area | Category)[] | null): void
-    applyFilterCatelogue(filterType: keyof FilterConfig | string | null): void
+    subFilterState: boolean[]
+    index: number
+    subFilters: FilterOption[]
+    updateFilters(subFilterState: boolean[], index: number): void
 }
 
 export interface FilterableItem {

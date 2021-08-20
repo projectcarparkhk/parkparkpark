@@ -1,42 +1,51 @@
-import {
-  CarparkContextToday,
-  CarparkResponse,
-  PriceDetail,
-} from '../../types/CarparkResponse'
+import { CarparkResponse } from '../../types'
+import { AreaResponse } from '../../types/AreaResponse'
+import { TagFilterResponse } from '../../types/TagResponse'
 
-export const orderCarparkByPriceToday = (
-  carparkResponse: CarparkResponse[]
-): CarparkContextToday[] => {
-  const week = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-  return carparkResponse
-    .map((carpark) => {
-      return {
-        ...carpark,
-        priceDetail: carpark.priceDetails?.find((item) => {
-          const { day } = item
-          const today = new Date().getDay()
-          if (day === 'all') {
-            return true
-          } else if (day.includes('-')) {
-            const [startDay, endDay] = day.split('-')
-            return (
-              today >= week.indexOf(startDay) && today <= week.indexOf(endDay)
-            )
-          } else {
-            const dates = day.split(',')
-            return dates.some((date) => date === week[today])
-          }
-        }) as PriceDetail || null,
-      }
+export interface FilterSection {
+  _id: string
+  name: { [key: string]: string }
+  subFilters: FilterOption[]
+}
+
+export interface FilterOption {
+  _id: string
+  name: { [key: string]: string }
+}
+
+export interface Filters {
+  areas: FilterSection[]
+  categories: FilterSection[]
+}
+
+export const structureFilters = (
+  tagsFilterResponse: TagFilterResponse[],
+  areaResponse: AreaResponse[]
+) => {
+  const categories: FilterSection = {
+    name: {
+      en: 'All',
+      zh: '全部',
+    },
+    subFilters: tagsFilterResponse.map((tag) => ({ ...tag, checked: false })),
+  }
+  const areas: FilterSection[] = areaResponse.map(
+    ({ _id, name, subDistricts }) => ({
+      _id,
+      name,
+      subFilters: subDistricts.map((subDistrict) => ({
+        ...subDistrict,
+        checked: false,
+      })),
     })
-    .sort((a, b) => {
-      if (!a.priceDetail || !b.priceDetail) {
-        return 0
-      }
-      const aHr = parseInt((a.priceDetail as PriceDetail).hr)
-      const aPrice = parseInt((a.priceDetail as PriceDetail).price)
-      const bHr = parseInt((b.priceDetail as PriceDetail).hr)
-      const bPrice = parseInt((b.priceDetail as PriceDetail).price)
-      return aPrice / aHr - bPrice / bHr
-    })
+  )
+  return { areas, categories: [categories] }
+}
+
+export const structureCarparks = (carparkResponse: CarparkResponse[]) => {
+  return carparkResponse.map(({ name, subDistricts, tags }) => ({
+    name,
+    subDistricts,
+    tags,
+  }))
 }

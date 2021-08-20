@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import SearchInput from '../components/search/input'
 import { Suggestion } from '../components/search/type'
-import { TagResponse } from '../types'
+import { HotTagResponse } from '../types'
 import Header from '../components/header'
 import { getHotTags } from '../sanityApi/tags'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ import { SupportedLanguages } from '../constants/SupportedLanguages';
 import translations from '../locales/pages/search'
 
 interface IProps {
-  hotTags: TagResponse[]
+  hotTags: HotTagResponse[]
 }
 
 

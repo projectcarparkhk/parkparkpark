@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
-import { Area } from '../types/DistrictResponse'
 import Header from '../components/header'
 import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
@@ -15,7 +14,7 @@ import UndecoratedLink from '../components/UndecoratedLink'
 import {
   CarparkContextToday,
   PostResponse,
-  TagResponse,
+  HotTagResponse,
   TranslatedCarpark,
 } from '../types'
 import translations from '../locales/pages/index'
@@ -26,7 +25,7 @@ import {
   durationTranslations,
 } from '../constants/SupportedLanguages'
 import { getCarparks } from '../sanityApi/carparks'
-import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
+import { orderCarparkByPriceToday } from '../sanityApi/toApplication'
 import { getHotTags } from '../sanityApi/tags'
 import FilterHdrIcon from '@material-ui/icons/FilterHdr';
 import GestureIcon from '@material-ui/icons/Gesture'; 
@@ -112,12 +111,12 @@ interface IProps {
   latestPosts: PostResponse[]
   hotPosts: PostResponse[]
   orderedCarparks: CarparkContextToday[]
-  hotTags: TagResponse[]
-  areas: Area[]
+  hotTags: HotTagResponse[]
+  areas: any[]
 
 }
 interface AProps {
-  areas: Area[]
+  areas: any[]
 }
 
 const areaConfig = [

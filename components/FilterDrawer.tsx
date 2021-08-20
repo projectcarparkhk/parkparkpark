@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import CloseIcon from '@material-ui/icons/Close';
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import CloseIcon from '@material-ui/icons/Close'
 import Button from '@material-ui/core/Button'
 import Drawer from '@material-ui/core/Drawer'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -9,242 +9,231 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { Theme, makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import {
-    Area,
-    Category,
-    FilterResponse,
-    FilterOption,
-    FilterConfig,
-    SubFilterConfig,
-    FilterCatelogueProps,
-    FilterSectionProps,
-    FilterDrawerProps,
-    FilterableItem,
+  Area,
+  Category,
+  FilterResponse,
+  FilterConfig,
+  SubFilterConfig,
+  FilterCatalogueProps,
+  FilterSectionProps,
+  FilterableItem,
 } from '../types/FilterResponse'
 import translations from '../locales/components/filterDrawer'
 import { useRouter } from 'next/router'
+import { FilterSection } from '../sanityApi/toApplication/carparks'
 
 const useStyles = makeStyles((theme: Theme) => ({
-    card: {
-        padding: theme.spacing(2),
-        marginBottom: theme.spacing(2)
+  card: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  panelDrawer: {
+    '& .MuiDrawer-paper': {
+      height: '100vh',
     },
-    panelDrawer: {
-        '& .MuiDrawer-paper': {
-            height: '100vh',
-        }
+  },
+  filterDrawerHeader: {
+    height: theme.spacing(6),
+    padding: theme.spacing(1.5, 1.5, 1.5, 0),
+  },
+  filterCatalogue: {
+    display: 'flex',
+  },
+  filterTypeButton: {
+    display: 'flex',
+    padding: theme.spacing(1),
+    '& .MuiFormControlLabel-label': {
+      fontSize: '1rem',
     },
-    filterDrawerHeader: {
-        height: theme.spacing(6),
-        padding: theme.spacing(1.5 ,1.5 ,1.5, 0)
+  },
+  filterOptionContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& .MuiChip-root': {
+      margin: theme.spacing(0, 1, 0.75, 0),
     },
-    filterCatelogue: {
-        display: 'flex',
-    },
-    filterTypeButton: {
-        display: 'flex',
-        padding: theme.spacing(1),
-        '& .MuiFormControlLabel-label': {
-            fontSize: '1rem',
-        }
-    },
-    filterOptionContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        '& .MuiChip-root': {
-            margin: theme.spacing(0, 1, 0.75, 0),
-        }
-    }
+  },
 }))
 
-const isAllChecked = (options: FilterOption[]) => options.every(option => option.checked)
-const isSomeChecked = (options: FilterOption[]) => options.some(option => option.checked)
+// const isAllChecked = (options: FilterOption[]) => options.every(option => option.checked)
+// const isSomeChecked = (options: FilterOption[]) => options.some(option => option.checked)
 
-function FilterSection({ title, selection, updateSelection }: FilterSectionProps) {
-    const classes = useStyles()
-    //const [parentCheckBoxState, setParentCheckBoxState] = useState(() => {
-    //    if (isAllChecked(selection)) {
-    //        return 'all'
-    //    }
+function FilterSectionx({
+  title,
+  subFilterState,
+  subFilters,
+  index,
+  updateFilters,
+}: FilterSectionProps) {
+  const classes = useStyles()
+  const {locale} = useRouter();
 
-    //    if (isSomeChecked(selection)) {
-    //        return 'some'
-    //    }
-    //    return 'none'
-    //})
+  const fallbackLocale = locale || 'zh'
+  // i think the selection should be the only source of truth and should govern the "prop" of the parent checkbox
+  // therefore should not have its own state
+  const parentCheckBoxStatus = useMemo(() => {
+    if (subFilterState.every((checked) => checked)) {
+      return 'all'
+    } else if (subFilterState.some((checked) => checked)) {
+      return 'some'
+    } else {
+      return 'none'
+    }
+  }, [subFilterState])
 
-    // i think the selection should be the only source of truth and should govern the "prop" of the parent checkbox
-    // therefore should not have its own state
-    const parentCheckBoxStatus = useMemo(() => {
-      if (selection.every(option => option.checked)) {
-        return 'all'
-      } else if (selection.some(option => option.checked)){
-        return 'some'
-      } else {
-        return 'none'
-      }
-    }, [selection])
+  const onFilterUpdate = useCallback(() => {
+    if (parentCheckBoxStatus === 'all' || parentCheckBoxStatus === 'some') {
+      updateFilters(
+        subFilterState.map((_) => false),
+        index
+      )
+    } else {
+      updateFilters(
+        subFilterState.map((_) => true),
+        index
+      )
+    }
+  }, [subFilterState, parentCheckBoxStatus, index])
 
-    const [selectedOptions, setSelectedOptions] = useState(selection)
-    useEffect(() => {
-        updateSelection(selectedOptions)
-    }, [selectedOptions])
+  const onSubFilterUpdate = useCallback((index: number, subIndex: number) => {
+    const newSubFilterState = subFilterState.slice();
+    newSubFilterState[subIndex] = !newSubFilterState[subIndex];
+    updateFilters(newSubFilterState, index);
 
-    return (
-        <div>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        color="primary"
-                        checked={parentCheckBoxStatus === 'all'}
-                        onChange={() => {
-                            if (parentCheckBoxStatus === 'all') {
-                                setSelectedOptions(selectedOptions.map(option => ({
-                                    ...option,
-                                    checked: false
-                                })))
-                            } else if (parentCheckBoxStatus === 'some') {
-                                setSelectedOptions(selectedOptions.map(option => ({
-                                    ...option,
-                                    checked: false
-                                })))
-                            } else {
-                                setSelectedOptions(selectedOptions.map(option => ({
-                                    ...option,
-                                    checked: true
-                                })))
-                            }
+  }, [subFilterState, index])
 
-                        }}
-                        name="checkedF"
-                        indeterminate={parentCheckBoxStatus === 'some'}
-                    />
-                }
-                label={title}
+  return (
+    <div>
+      <FormControlLabel
+        control={
+          <Checkbox
+            color="primary"
+            checked={parentCheckBoxStatus === 'all'}
+            onChange={onFilterUpdate}
+            name="checkedF"
+            indeterminate={parentCheckBoxStatus === 'some'}
+          />
+        }
+        label={title}
+      />
+      <div className={classes.filterOptionContainer}>
+        {subFilters.map((subFilter, subIndex: number) => {
+          return (
+            <Chip
+              onClick={()=>onSubFilterUpdate(index, subIndex)}
+              variant={subFilterState[subIndex] ? 'default' : 'outlined'}
+              size="small"
+              key={subFilter._id}
+              label={subFilter.name[fallbackLocale]}
             />
-            <div className={classes.filterOptionContainer}>
-                {selectedOptions.map((option, i: number) => {
-                    return (
-                        <Chip
-                            onClick={() => {
-                                const newSelectOptions = [...selectedOptions]
-                                newSelectOptions[i].checked = !newSelectOptions[i].checked
-                                setSelectedOptions(newSelectOptions)
-                            }}
-                            variant={option.checked ? 'default' : 'outlined'}
-                            size='small'
-                            key={option.slug}
-                            label={option.name}
-                        />
-                    )
-                })}
-            </div>
-        </div>
-    )
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 function filteredCollected(filters: FilterResponse) {
-    const collectedTrueKeys: {
-        subDistricts: string[]
-        tags: string[]
-    } = {
-        subDistricts: [],
-        tags: [],
-    };
-    const { areas, categories } = filters
+  const collectedTrueKeys: {
+    subDistricts: string[]
+    tags: string[]
+  } = {
+    subDistricts: [],
+    tags: [],
+  }
+  const { areas, categories } = filters
 
-    for (const area of areas) {
-        for (const subDistrict of area.subDistricts) {
-            if (subDistrict.checked) {
-                collectedTrueKeys.subDistricts.push(subDistrict.slug)
-            }
-        }
+  for (const area of areas) {
+    for (const subDistrict of area.subDistricts) {
+      if (subDistrict.checked) {
+        collectedTrueKeys.subDistricts.push(subDistrict.slug)
+      }
     }
+  }
 
-    for (const category of categories) {
-        for (const tag of category.tags) {
-            if (tag.checked) {
-                collectedTrueKeys.tags.push(tag.slug)
-            }
-        }
+  for (const category of categories) {
+    for (const tag of category.tags) {
+      if (tag.checked) {
+        collectedTrueKeys.tags.push(tag.slug)
+      }
     }
+  }
 
-    return collectedTrueKeys
+  return collectedTrueKeys
 }
 
-export function FilterCatelogue({ config, applyFilterCatelogue }: FilterCatelogueProps) {
-    const classes = useStyles()
-    const { locale } = useRouter()
-    return (
-        <div className={classes.filterCatelogue}>
-            {
-                Object.keys(config).map((value) => {
-                    return (
-                        <div 
-                            key={value}
-                            className={classes.filterTypeButton}    
-                            onClick={() => applyFilterCatelogue(value)}
-                        >
-                            <div>
-                                {translations[locale || 'zh'][value]}
-                            </div>
-                            <ExpandMoreIcon />
-                        </div>
-                    )
-                })
-            }
-        </div>
-    )
+export function FilterCatalogue({
+  config,
+  applyFilters,
+}: FilterCatalogueProps) {
+  const classes = useStyles()
+  const { locale } = useRouter()
+  return (
+    <div className={classes.filterCatalogue}>
+      {Object.keys(config).map((value) => {
+        return (
+          <div
+            key={value}
+            className={classes.filterTypeButton}
+            onClick={() => applyFilters(value)}
+          >
+            <div>{translations[locale || 'zh'][value]}</div>
+            <ExpandMoreIcon />
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
-export function initializeFilter(filters: FilterResponse, config: FilterConfig, prefill: FilterConfig) {
-    const newFilters: FilterResponse = { ...filters}
-    Object.keys(newFilters).forEach((parentKey: string) => {
-        newFilters[parentKey] = newFilters[parentKey].map((parentItem: (Area | Category)[]) => ({
-            ...parentItem,
-            [config[parentKey]]: parentItem[config[parentKey]].map((childItem: FilterOption) => {
-                const prefillValues = prefill[config[parentKey]] || ''
-                return {
-                    ...childItem,
-                    checked: prefillValues.split(',').includes(childItem.slug) ? true : false,
-                }
-            })
-        }))
-    })
-    console.log("newFilters",newFilters)
-    return newFilters
-}
-
-export function filterItems(items: FilterableItem[], filters: FilterResponse, config: FilterConfig){
-    const filterKeys = Object.values(config)
-    const collectedFilters = filteredCollected(filters)
-    return items.filter((item: FilterableItem) => {
-        return filterKeys.every((key: keyof SubFilterConfig) => {
-            if (!collectedFilters[key].length) {
-                return true
-            }
-            return item[key].map(e => e.slug).some((keyEle: string) => {
-                return collectedFilters[key].includes(keyEle)
-            })
+export function filterItems(
+  items: FilterableItem[],
+  filters: FilterResponse,
+  config: FilterConfig
+) {
+  const filterKeys = Object.values(config)
+  const collectedFilters = filteredCollected(filters)
+  return items.filter((item: FilterableItem) => {
+    return filterKeys.every((key: keyof SubFilterConfig) => {
+      if (!collectedFilters[key].length) {
+        return true
+      }
+      return item[key]
+        .map((e) => e.slug)
+        .some((keyEle: string) => {
+          return collectedFilters[key].includes(keyEle)
         })
-    });
+    })
+  })
 }
 
+export interface FilterDrawerProps {
+  filters: FilterSection[]
+  filterState: boolean[][]
+  updateFilters(subFilters: boolean[], index: number): void
+  applyFilters(filterType: keyof FilterConfig | null): void
+}
 
-
-export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogue }: FilterDrawerProps) {
-    const classes = useStyles()
-    const [selectedFilter, setSelectedFilter] = useState<(Area | Category)[] | null>(filters)
-    
-    return (
-        <Drawer className={classes.panelDrawer}
-            anchor={'bottom'}
-            open={true}
-            onClose={() => applyFilterCatelogue(null)}
-        >
-            <Container maxWidth="lg">
-            <div className={classes.filterDrawerHeader}>
-                <CloseIcon onClick={() => applyFilterCatelogue(null)} />
-                {/* <Button
+export function FilterDrawer({
+  filters,
+  filterState,
+  updateFilters,
+  applyFilters,
+}: FilterDrawerProps) {
+  const classes = useStyles()
+  const { locale } = useRouter()
+  const fallbackLocale = locale || 'zh'
+  return (
+    <Drawer
+      className={classes.panelDrawer}
+      anchor={'bottom'}
+      open={true}
+      onClose={() => applyFilters(null)}
+    >
+      <Container maxWidth="lg">
+        <div className={classes.filterDrawerHeader}>
+          <CloseIcon onClick={() => applyFilters(null)} />
+          {/* <Button
                     variant="outlined"
                     onClick={() => {
                         const newSelectedFilters = selectedFilter.map(parentItem => ({
@@ -255,46 +244,37 @@ export function FilterDrawer({ filters, child, applyFilters, applyFilterCatelogu
                             }))
                         }))
                         setSelectedFilter(newSelectedFilters)
-                        applyFilters(newSelectedFilters)
+                        updateFilters(newSelectedFilters)
                     }}
                 >
                     清除
                 </Button> */}
-            </div>
-            <div>
-                {
-                    selectedFilter && selectedFilter.map((filter: (Area | Category), i: number) => {
-                        return (
-                            <FilterSection
-                                key={filter.name}
-                                title={filter.name}
-                                selection={child && filter[child]}
-                                updateSelection={(updateSelections: FilterOption[]) => {
-                                    const newSelectedFilter: (Area | Category)[] = [...selectedFilter]
-                                    if (child) {
-                                        newSelectedFilter[i][child] = updateSelections
-                                        setSelectedFilter(newSelectedFilter)
-                                    }
-                                }}
-                            />
-                        )
-                    })
-                }
-            </div>
-            <div>
-                <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                        applyFilters(selectedFilter)
-                        applyFilterCatelogue(null)
-                    }}
-                >
-                    繼續
-                </Button>
-            </div>
-            </Container>
-        </Drawer>
-    )
+        </div>
+        <div>
+          {filters.map((filter, i) => {
+            return (
+              <FilterSectionx
+                key={filter.name[fallbackLocale]}
+                title={filter.name[fallbackLocale]}
+                subFilters={filter.subFilters}
+                subFilterState={filterState[i]}
+                index={i}
+                updateFilters={updateFilters}
+              />
+            )
+          })}
+        </div>
+        <div>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={() => applyFilters(null)}
+          >
+            繼續
+          </Button>
+        </div>
+      </Container>
+    </Drawer>
+  )
 }

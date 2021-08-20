@@ -5,16 +5,9 @@ const carparkFields = `
   _id,
   'imagePath': mainImage.asset._ref,
   'slug': slug.current,
-  'en': {
-    'name': name.en,
-    'subDistrict': subDistrict[0]->{'name': name.en},
-    'tag': tag[0..1]->{'name':name.en}
-  },
-  'zh': {
-    'name': name.zh,
-    'subDistrict': subDistrict[0]->{'name': name.zh},
-    'tag': tag[0..1]->{'name':name.zh}
-  },
+  name,
+  'subDistricts': subDistrict[] -> {name, _id},
+  'tags': tag[] -> {name, _id},
   'priceDetails': priceDetails.rows[1...10]{
     'day': cells[0],
     'time': cells[1],
@@ -32,22 +25,3 @@ export async function getCarparks(
     }`)
 }
 
-
-export async function getCarparksforFilters(preview: boolean, locale = 'zh'): Promise<CarparkResponse[]> {
-  return SanityClient(preview)
-    .fetch(`*[_type == 'carpark'] | order(publishedAt desc){
-      _id, 
-    'name': name.${locale},
-    'slug': slug.current,
-    'subDistricts': subDistrict[] -> { 
-      'name': name.${locale},
-      'slug': slug.current,
-      isHot
-    },
-    'tags': tag[] -> { 
-      'name': name.${locale},
-      'slug': slug.current,
-      isHot
-    },
-  }`)
-}
