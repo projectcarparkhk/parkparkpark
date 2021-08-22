@@ -2,12 +2,29 @@ import { CarparkResponse } from '../types'
 import { SanityClient } from './sanity'
 
 const carparkFields = `
-  _id,
+  _id, 
   'imagePath': mainImage.asset._ref,
   'slug': slug.current,
-  name,
-  'subDistricts': subDistrict[] -> {name, _id},
-  'tags': tag[] -> {name, _id},
+  'name': {
+    'en': name.en,
+    'zh': name.zh
+  },
+  'subDistricts': subDistrict[] -> {
+    _id,
+    'name': {
+      'en': name.en,
+      'zh': name.zh,
+    },
+    'slug': slug.current
+  },
+  'tags': tag[] -> {
+    _id,
+    'name': {
+      'en': name.en,
+      'zh': name.zh,
+    },
+    'slug': slug.current
+  },
   'priceDetails': priceDetails.rows[1...10]{
     'day': cells[0],
     'time': cells[1],
@@ -24,4 +41,3 @@ export async function getCarparks(
       ${carparkFields}
     }`)
 }
-

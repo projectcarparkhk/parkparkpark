@@ -1,92 +1,52 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import Header from '../components/header'
-import { StyledText } from '../components/StyledText'
-import { getCarparks, getCarparksforFilters } from '../sanityApi/carparks'
+import { getCarparks} from '../sanityApi/carparks'
 import Container from '@material-ui/core/Container'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
 import { useRouter } from 'next/router'
 import { cloneDeep } from 'lodash'
-import { FilterConfig, FilterableItem } from '../types/FilterResponse'
 import {
   FilterDrawer,
-  filterItems,
-  FilterCatalogue,
 } from '../components/FilterDrawer'
-import { getTags } from '../sanityApi/tags'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import {
-  Filters,
   structureCarparks,
   structureFilters,
 } from '../sanityApi/toApplication/carparks'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
+import CarparkListItem from '../components/filter/CarparkListItem'
+import { FilterCatalogue } from '../components/filter/FilterCatalogue'
+import { CarparkItem, FilterSection } from '../types/filters'
+import { getTags } from '../sanityApi/tags'
 
-const FILTER_CONFIG: FilterConfig = {
-  areas: 'subDistricts',
-  categories: 'tags',
-}
+const FILTER_TYPES: Array<keyof Filters> = ['areas', 'categories']
 
-interface CarparkItem {
-  name: {
-    [key: string]: string
-  }
-  subDistricts: {
-    name: {
-      [key: string]: string
-    }
-  }[]
-}
-
-interface CarparkListProps {
-  carpark: CarparkItem
-  locale: SupportedLanguages
+export interface Filters {
+  areas: FilterSection[]
+  categories: FilterSection[]
 }
 interface IProps {
   filters: Filters
   carparks: CarparkItem[]
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  card: {
-    padding: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
-}))
-
-function CarparkListItem({ carpark, locale }: CarparkListProps) {
-  const classes = useStyles()
-  return (
-    <Card className={classes.card}>
-      <StyledText size="h4" bold inline={false}>
-        {carpark.name[locale]}
-      </StyledText>
-
-      <div>
-        {carpark.subDistricts.map((subDistrict) => {
-          return (
-            <span key={subDistrict.name[locale]}>
-              <StyledText size="body1" inline={true}>
-                {subDistrict.name[locale]}
-              </StyledText>
-            </span>
-          )
-        })}
-      </div>
-    </Card>
-  )
+interface FilterState {
+  areas: boolean[][]
+  categories: boolean[][]
 }
 
 function Carparks({ carparks, filters }: IProps) {
-  const [filterState, setFilterState] = useState({
+  const [filterState, setFilterState] = useState<FilterState>({
     areas: filters.areas.map((area) => area.subFilters.map((_) => false)),
     categories: filters.categories.map((category) =>
       category.subFilters.map((_) => false)
     ),
   })
-  const [activePanel, setActivePanel] = useState<null | keyof FilterConfig>(
+  const [activePanel, setActivePanel] = useState<null | keyof FilterState>(
     null
   )
+
+  const { locale } = useRouter()
+  const fallbackLocale = locale || 'zh'
 
   const onFilterUpdate = useCallback(
     (subFilters: boolean[], index: number) => {
@@ -96,17 +56,65 @@ function Carparks({ carparks, filters }: IProps) {
         setFilterState(newFilterState)
       }
     },
-    [filterState]
+    [filterState, activePanel]
   )
+
+  const filteredCarparkList = useMemo(() => {
+    const filterKeys = Object.keys(filterState) as Array<keyof FilterState>
+    const filteredIds: { areas: string[]; categories: string[] } = {
+      areas: [],
+      categories: [],
+    }
+    for (const key of filterKeys) {
+      const subSections = filters[key]
+      for (let index = 0; index < subSections.length; index++) {
+        const subFilters = subSections[index].subFilters
+        const filteredSubFilters = subFilters.filter(
+          (_, subIndex) => filterState[key][index][subIndex]
+        )
+        filteredIds[key].push(
+          ...filteredSubFilters.map((subFilter) => subFilter._id)
+        )
+      }
+    }
+
+    let filteredCarparks
+
+    if (!filteredIds.areas.length && !filteredIds.categories.length) {
+      filteredCarparks = carparks
+    } else if (!filteredIds.categories.length) {
+      filteredCarparks = carparks.filter((carpark) =>
+        carpark.subDistricts.some((district) =>
+          filteredIds.areas.includes(district._id)
+        )
+      )
+    } else if (!filteredIds.areas.length) {
+      filteredCarparks = carparks.filter((carpark) =>
+        carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+      )
+    } else {
+      filteredCarparks = carparks
+        .filter((carpark) =>
+          carpark.subDistricts.some((district) =>
+            filteredIds.areas.includes(district._id)
+          )
+        )
+        .filter((carpark) =>
+          carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+        )
+    }
+    return filteredCarparks
+  }, [filterState, filters, carparks])
 
   return (
     <Container>
       <Header imageToTop={false} />
       <FilterCatalogue
-        applyFilterCatalogue={(activeItem: keyof FilterConfig) =>
+        applyFilterCatalogue={(activeItem: keyof Filters) =>
           setActivePanel(activeItem)
         }
-        config={FILTER_CONFIG}
+        filterTypes={FILTER_TYPES}
+        locale = {fallbackLocale as SupportedLanguages}
       />
       {activePanel && (
         <FilterDrawer
@@ -114,14 +122,17 @@ function Carparks({ carparks, filters }: IProps) {
           filterState={activePanel && filterState[activePanel]}
           updateFilters={onFilterUpdate}
           applyFilters={setActivePanel}
+          locale = {fallbackLocale as SupportedLanguages}
         />
       )}
       <div>
-        {filterItems(carparks, masterFilter, FILTER_CONFIG).map(
-          (carpark: FilterableItem) => {
-            return <CarparkListItem key={carpark._id} carpark={carpark} />
-          }
-        )}
+        {filteredCarparkList.map((carpark) => (
+          <CarparkListItem
+            key={carpark._id}
+            carpark={carpark}
+            locale={fallbackLocale as SupportedLanguages}
+          />
+        ))}
       </div>
     </Container>
   )

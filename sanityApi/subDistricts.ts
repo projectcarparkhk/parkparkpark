@@ -1,6 +1,6 @@
 // Fix later:
 
-import { AreaResponse } from '../types/AreaResponse'
+import { AreaResponse } from '../types/api/AreaResponse'
 import { SanityClient } from './sanity'
 
 // It should be subDistrict group by area, area: HK / KLN / NT
@@ -19,7 +19,8 @@ export async function getSubDistrictsGroupByArea(
         'name': {
           'en': name.en,
           'zh': name.zh
-        }
+        },
+        'slug': slug.current
       }
     }`)
   return result

@@ -1,5 +1,5 @@
-import { HotTagResponse } from '../types'
-import { TagFilterResponse } from '../types/TagResponse'
+
+import { HotTagResponse, TagFilterResponse } from '../types/api/TagResponse'
 import { SanityClient } from './sanity'
 
 const tagFields = `

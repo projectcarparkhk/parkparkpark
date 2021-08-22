@@ -11,7 +11,7 @@ import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import { SupportedLanguages } from '../constants/SupportedLanguages';
-import translations from '../locales/pages/search'
+import translations from '../locales';
 
 interface IProps {
   hotTags: HotTagResponse[]

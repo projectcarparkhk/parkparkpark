@@ -5,16 +5,18 @@ import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts';
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
-import { Area, SubDistrict } from '../types/DistrictResponse'
 import Button from '@material-ui/core/Button'
 import ButtonBase from '@material-ui/core/ButtonBase'
 import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
 import { StyledText } from '../components/StyledText'
 import { getArrayData } from '../sanityApi/helper'
+import { SupportedLanguages } from '../constants/SupportedLanguages';
+import { AreaResponse } from '../types/api/AreaResponse';
 interface IProps {
-  areas: Area[]
+  areas: AreaResponse[]
   preview?: boolean
+  locale: SupportedLanguages
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,11 +43,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-function SubDistrictList({ areas }: IProps) {
+function SubDistrictList({ areas, locale }: IProps) {
   const classes = useStyles()
   const { query } = useRouter()
   const [selectedArea, setSelectedArea] = useState(query.area || areas[0]._id)
-
   return (
     <>
       <div>
@@ -54,7 +55,7 @@ function SubDistrictList({ areas }: IProps) {
             key={area._id}
             className={classes.flexItem}
             color="primary"
-            label={area.name}
+            label={area.name[locale]}
             variant={area._id === selectedArea ? 'default' : 'outlined'}
             onClick={() => setSelectedArea(area._id)}
           />
@@ -64,9 +65,9 @@ function SubDistrictList({ areas }: IProps) {
         <StyledText size="h3" bold inline={false}>分區</StyledText>
         {
           getArrayData(areas
-            .find((area: Area) => area._id === selectedArea))
+            .find((area) => area._id === selectedArea))
             .subDistricts
-            .map((subDistrict: SubDistrict) => {
+            .map((subDistrict) => {
               return (
                 <Link 
                   key={subDistrict.slug}
@@ -80,7 +81,7 @@ function SubDistrictList({ areas }: IProps) {
                     variant="outlined"
                     color="primary"
                   >
-                    {subDistrict.name}
+                    {subDistrict.name[locale]}
                   </Button>
                 </Link>
 
@@ -92,7 +93,7 @@ function SubDistrictList({ areas }: IProps) {
   )
 }
 
-function All({ areas }: IProps) {
+function SearchAll({ areas }: IProps) {
   const classes = useStyles()
   const router = useRouter()
   const tabConfig = [
@@ -106,6 +107,7 @@ function All({ areas }: IProps) {
     },
   ]
 
+  const fallbackLocale = router.locale || 'zh'
 
   const [pageType, setPageType] = useState(tabConfig[0].type)
 
@@ -136,12 +138,15 @@ function All({ areas }: IProps) {
           pageType === 'sub-districts' && <SubDistrictList areas={[
             {
               _id: 'all',
-              name: '全部',
+              name: {
+                en: 'All',
+                zh:  '全部',
+              },
               slug: 'all',
-              subDistricts: areas.reduce((a: SubDistrict[], c: Area) => [...a, ...c.subDistricts], [])
+              subDistricts: areas.reduce((acc: { _id: string; name: { [key: string]: string }, slug: string }[], area: AreaResponse) => [...acc, ...area.subDistricts], [])
             },
             ...areas
-          ]} />
+          ]} locale={fallbackLocale as SupportedLanguages}/>
         }
         {
           pageType === 'categories' && <>All cats</>
@@ -151,7 +156,7 @@ function All({ areas }: IProps) {
   )
 }
 
-export default All
+export default SearchAll
 
 export async function getStaticProps({ preview = false }) {
   const areas = await getSubDistrictsGroupByArea(preview)

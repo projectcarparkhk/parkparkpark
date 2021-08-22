@@ -24,17 +24,18 @@ export interface CarparkResponse {
   imagePath: string
   slug: string
   name: { [key: string]: string }
-  subDistricts: { _id: string; name: { [key: string]: string } }[]
-  tags: { _id: string; name: { [key: string]: string } }[]
+  subDistricts: { _id: string; name: { [key: string]: string }, slug: string }[]
+  tags: { _id: string; name: { [key: string]: string }, slug: string }[]
   priceDetails: PriceDetail[]
 }
 
 export interface CarparkContextToday {
   _id: string
-  en: CarparkTranslation
+  tags: { _id: string; name: { [key: string]: string } }[]
+  subDistrict: { _id: string; name: { [key: string]: string } }
+  name: { [key: string]: string }
   imagePath: string
   priceDetail?: PriceDetail
-  zh: CarparkTranslation
   slug: string
 }
 

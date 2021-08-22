@@ -1,6 +1,6 @@
-import { PostResponse,TranslatedPost } from './PostResponse'
-import { AreaResponse } from './AreaResponse'
-import { HotTagResponse } from './TagResponse'
-import { CarparkResponse, TranslatedCarpark, CarparkContextToday} from './CarparkResponse'
+import { PostResponse,TranslatedPost } from './api/PostResponse'
+import { CarparkResponse, TranslatedCarpark, CarparkContextToday} from './api/CarparkResponse'
+import { DistrictResponse } from './api/DistrictResponse'
+import { HotTagResponse } from './api/TagResponse'
 
-export type { PostResponse, AreaResponse, HotTagResponse, CarparkResponse, TranslatedCarpark,TranslatedPost, CarparkContextToday }
+export type { PostResponse, DistrictResponse, HotTagResponse, CarparkResponse, TranslatedCarpark,TranslatedPost, CarparkContextToday }

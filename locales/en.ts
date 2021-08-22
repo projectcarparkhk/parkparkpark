@@ -1,4 +1,9 @@
 const locale = {
+  areas: 'Areas',
+  subDistricts: 'Districts',
+  categories: 'Categories',
+  tags: 'Tags',
+  homeTitle: 'ParkParkPark',
   mainSlogan: 'Search for sweeter deals',
   subSlogan: 'Travel around the city',
   searchPlaceholder: 'Search for district / carpark',
@@ -7,6 +12,12 @@ const locale = {
   cheapestCarparksHeader: 'Cheapest carparks',
   hotCarparkTagsHeader: 'Hot carpark tags',
   checkoutAll: 'View all',
+  hot: 'Hot',
+  subDistrict: 'District',
+  carpark: 'Carpark',
+  areaSelection: 'Select area',
+  filterContinueBtnLabel: 'Continue'
 }
 
-export default locale
+
+export default locale;
