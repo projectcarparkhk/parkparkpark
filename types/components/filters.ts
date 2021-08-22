@@ -13,12 +13,6 @@ export interface Filters {
   areas: FilterSection[]
   categories: FilterSection[]
 }
-
-export interface SubFilterConfig {
-  subDistricts?: string,
-  tags?: string
-}
-
 export interface CarparkItem extends FilterOption{
   subDistricts: FilterOption[]
   tags: FilterOption[]

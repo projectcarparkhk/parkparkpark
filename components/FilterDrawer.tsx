@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container'
 import translations from '../locales'
 import { useRouter } from 'next/router'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
-import { FilterOption, Filters, FilterSection } from '../types/filters'
+import { FilterOption, Filters, FilterSection } from '../types/components/filters'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {

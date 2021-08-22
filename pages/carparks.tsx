@@ -15,7 +15,7 @@ import {
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import CarparkListItem from '../components/filter/CarparkListItem'
 import { FilterCatalogue } from '../components/filter/FilterCatalogue'
-import { CarparkItem, FilterSection } from '../types/filters'
+import { CarparkItem, FilterSection } from '../types/components/filters'
 import { getTags } from '../sanityApi/tags'
 
 const FILTER_TYPES: Array<keyof Filters> = ['areas', 'categories']

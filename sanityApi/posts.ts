@@ -1,5 +1,5 @@
 
-import { PostResponse } from '../types'
+import { PostResponse } from '../types/pages'
 import {SanityClient} from './sanity'
 
 const postFields = `

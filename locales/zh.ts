@@ -16,7 +16,9 @@ const locale = {
   subDistrict: '分區',
   carpark: '停車場',
   filterContinueBtnLabel: '繼續',
-  areaSelection: '地區分類'
+  areaSelection: '地區分類',
+  allCategories: '所有分類',
+  allSubDistricts: '所有分區'
 }
 
 export default locale

@@ -16,7 +16,7 @@ import {
   PostResponse,
   HotTagResponse,
   TranslatedCarpark,
-} from '../types'
+} from '../types/pages'
 import translations from '../locales'
 import { useRouter } from 'next/router'
 import { imageBuilder } from '../sanityApi/sanity'

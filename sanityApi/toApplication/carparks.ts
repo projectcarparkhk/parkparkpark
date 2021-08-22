@@ -1,8 +1,8 @@
-import { CarparkContextToday } from '../../types'
+import { CarparkContextToday } from '../../types/pages'
 import { PriceDetail } from '../../types/api/CarparkResponse'
-import { CarparkResponse } from '../../types'
+import { CarparkResponse } from '../../types/pages'
 import { TagFilterResponse } from '../../types/api/TagResponse'
-import { FilterSection } from '../../types/filters'
+import { FilterSection } from '../../types/components/filters'
 import { AreaResponse } from '../../types/api/AreaResponse'
 
 export const orderCarparkByPriceToday = (

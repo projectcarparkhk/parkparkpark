@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import SearchInput from '../components/search/input'
 import { Suggestion } from '../components/search/type'
-import { HotTagResponse } from '../types'
+import { HotTagResponse } from '../types/pages'
 import Header from '../components/header'
 import { getHotTags } from '../sanityApi/tags'
 import Link from 'next/link'

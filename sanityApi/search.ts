@@ -1,6 +1,6 @@
 // Fix later:
 
-import { CarparkResponse } from '../types'
+import { CarparkResponse } from '../types/pages'
 import { SanityClient } from './sanity'
 
 

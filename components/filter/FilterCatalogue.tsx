@@ -3,7 +3,7 @@ import translations from '../../locales'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles, Theme } from '@material-ui/core'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
-import { Filters } from '../../types/filters'
+import { Filters } from '../../types/components/filters'
 
 export interface FilterCatalogueProps {
   filterTypes: (keyof Filters)[]

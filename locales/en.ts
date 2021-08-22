@@ -16,7 +16,9 @@ const locale = {
   subDistrict: 'District',
   carpark: 'Carpark',
   areaSelection: 'Select area',
-  filterContinueBtnLabel: 'Continue'
+  filterContinueBtnLabel: 'Continue',
+  allCategories: 'All Categories',
+  allSubDistricts: 'All Subdistricts',
 }
 
 

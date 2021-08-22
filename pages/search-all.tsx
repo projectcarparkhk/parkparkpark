@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/header'
-import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts';
+import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
@@ -11,8 +11,10 @@ import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
 import { StyledText } from '../components/StyledText'
 import { getArrayData } from '../sanityApi/helper'
-import { SupportedLanguages } from '../constants/SupportedLanguages';
-import { AreaResponse } from '../types/api/AreaResponse';
+import { SupportedLanguages } from '../constants/SupportedLanguages'
+import { AreaResponse } from '../types/api/AreaResponse'
+import translations from '../locales'
+import { ResponseElement } from '../types/api/ResponseElement'
 interface IProps {
   areas: AreaResponse[]
   preview?: boolean
@@ -35,18 +37,26 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   currentPageTypeButton: {
     fontWeight: 700,
-    borderBottom: `2px solid ${theme.palette.primary.main}`
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
   },
   pageTypeButton: {
     fontWeight: 700,
-    borderBottom: `2px solid ${theme.palette.divider}`
-  }
+    borderBottom: `2px solid ${theme.palette.divider}`,
+  },
 }))
 
 function SubDistrictList({ areas, locale }: IProps) {
   const classes = useStyles()
   const { query } = useRouter()
   const [selectedArea, setSelectedArea] = useState(query.area || areas[0]._id)
+
+  const { subDistricts: subDistrictsLabel } = translations[locale]
+  const subDistricts = useMemo(
+    () =>
+      getArrayData(areas.find((area) => area._id === selectedArea))
+        .subDistricts,
+    [areas, selectedArea]
+  )
   return (
     <>
       <div>
@@ -62,32 +72,26 @@ function SubDistrictList({ areas, locale }: IProps) {
         ))}
       </div>
       <div>
-        <StyledText size="h3" bold inline={false}>分區</StyledText>
-        {
-          getArrayData(areas
-            .find((area) => area._id === selectedArea))
-            .subDistricts
-            .map((subDistrict) => {
-              return (
-                <Link 
-                  key={subDistrict.slug}
-                  href={{
-                    pathname: '/carparks',
-                    query: { subDistricts: subDistrict.slug },
-                  }}
-                  >
-                  <Button
-                    className={classes.flexItem}
-                    variant="outlined"
-                    color="primary"
-                  >
-                    {subDistrict.name[locale]}
-                  </Button>
-                </Link>
-
-              )
-            })
-        }
+        <StyledText size="h3" bold inline={false}>
+          {subDistrictsLabel}
+        </StyledText>
+        {subDistricts.map((subDistrict) => (
+          <Link
+            key={subDistrict.slug}
+            href={{
+              pathname: '/carparks',
+              query: { subDistricts: subDistrict.slug },
+            }}
+          >
+            <Button
+              className={classes.flexItem}
+              variant="outlined"
+              color="primary"
+            >
+              {subDistrict.name[locale]}
+            </Button>
+          </Link>
+        ))}
       </div>
     </>
   )
@@ -96,36 +100,53 @@ function SubDistrictList({ areas, locale }: IProps) {
 function SearchAll({ areas }: IProps) {
   const classes = useStyles()
   const router = useRouter()
+  const fallbackLocale = router.locale || 'zh'
+  const { allSubDistricts, allCategories } = translations[fallbackLocale]
   const tabConfig = [
     {
       type: 'sub-districts',
-      label: '地區'
+      label: allSubDistricts,
     },
     {
       type: 'categories',
-      label: '所有分類'
+      label: allCategories,
     },
   ]
 
-  const fallbackLocale = router.locale || 'zh'
-
   const [pageType, setPageType] = useState(tabConfig[0].type)
 
+  const areaList = useMemo(() => {
+    const allSubDistricts: ResponseElement[] = []
+    areas.forEach((area) => allSubDistricts.push(...area.subDistricts))
+    const all = {
+      _id: 'all',
+      name: {
+        en: 'All',
+        zh: '全部',
+      },
+      slug: 'all',
+      subDistricts: allSubDistricts,
+    }
+    return [all, ...areas]
+  }, [areas])
   return (
     <>
       <Header imageToTop={false} />
       <div className={classes.pageTypeButtonContainer}>
-        {tabConfig.map(tab => {
+        {tabConfig.map((tab) => {
           return (
             <ButtonBase
               key={tab.type}
-              className={pageType === tab.type ? classes.currentPageTypeButton : classes.pageTypeButton}
+              className={
+                pageType === tab.type
+                  ? classes.currentPageTypeButton
+                  : classes.pageTypeButton
+              }
               onClick={() => {
                 setPageType(tab.type)
                 router.push({
                   query: { type: tab.type },
                 })
-
               }}
             >
               {tab.label}
@@ -134,23 +155,13 @@ function SearchAll({ areas }: IProps) {
         })}
       </div>
       <Container className={classes.content} maxWidth="lg">
-        {
-          pageType === 'sub-districts' && <SubDistrictList areas={[
-            {
-              _id: 'all',
-              name: {
-                en: 'All',
-                zh:  '全部',
-              },
-              slug: 'all',
-              subDistricts: areas.reduce((acc: { _id: string; name: { [key: string]: string }, slug: string }[], area: AreaResponse) => [...acc, ...area.subDistricts], [])
-            },
-            ...areas
-          ]} locale={fallbackLocale as SupportedLanguages}/>
-        }
-        {
-          pageType === 'categories' && <>All cats</>
-        }
+        {pageType === 'sub-districts' && (
+          <SubDistrictList
+            areas={areaList}
+            locale={fallbackLocale as SupportedLanguages}
+          />
+        )}
+        {pageType === 'categories' && <>All cats</>}
       </Container>
     </>
   )
