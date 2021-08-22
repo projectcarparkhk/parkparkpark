@@ -36,9 +36,9 @@ interface FilterState {
 
 function Carparks({ carparks, filters }: IProps) {
   const [filterState, setFilterState] = useState<FilterState>({
-    areas: filters.areas.map((area) => area.subFilters.map((_) => false)),
+    areas: filters.areas.map((area) => area.subFilters.map(() => false)),
     categories: filters.categories.map((category) =>
-      category.subFilters.map((_) => false)
+      category.subFilters.map(() => false)
     ),
   })
   const [activePanel, setActivePanel] = useState<null | keyof FilterState>(

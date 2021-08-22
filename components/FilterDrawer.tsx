@@ -80,12 +80,12 @@ function SubFilterSection({
   const onFilterUpdate = useCallback(() => {
     if (parentCheckBoxStatus === 'all' || parentCheckBoxStatus === 'some') {
       updateFilters(
-        subFilterState.map((_) => false),
+        subFilterState.map(() => false),
         index
       )
     } else {
       updateFilters(
-        subFilterState.map((_) => true),
+        subFilterState.map(() => true),
         index
       )
     }
