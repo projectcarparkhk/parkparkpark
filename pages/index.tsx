@@ -172,9 +172,7 @@ function AreaCategory({ areas, locale }: AProps) {
             },
             slug: 'more',
           },
-        ].map((area, i) => {
-          console.log('sluggg', area.slug)
-          return(
+        ].map((area, i) => (
           <Link
             href={{
               pathname: '/search-all',
@@ -189,7 +187,7 @@ function AreaCategory({ areas, locale }: AProps) {
               {area.name[locale]}
             </div>
           </Link>
-        )})}
+        ))}
       </div>
     </div>
   )
