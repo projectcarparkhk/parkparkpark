@@ -24,18 +24,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   filterDrawerHeader: {
     height: theme.spacing(6),
-    padding: theme.spacing(1.5, 1.5, 1.5, 0),
+    padding: theme.spacing(1.5 ,1.5 ,1.5, 0),
+    '& svg': {
+        cursor: 'pointer',
+    }
   },
   filterCatalogue: {
     display: 'flex',
   },
-  filterTypeButton: {
-    display: 'flex',
-    padding: theme.spacing(1),
-    '& .MuiFormControlLabel-label': {
-      fontSize: '1rem',
-    },
-  },
+
   filterOptionContainer: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -43,6 +40,19 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(0, 1, 0.75, 0),
     },
   },
+    filterTypeButton: {
+        display: 'flex',
+        padding: theme.spacing(1),
+        '& .MuiFormControlLabel-label': {
+            fontSize: '1rem',
+        },
+        cursor: 'pointer',
+    },
+    checkedItem: {
+        color: theme.palette.primary.main,
+        fontWeight: 700,
+    },
+   
 }))
 
 
@@ -128,7 +138,6 @@ function SubFilterSection({
     </div>
   )
 }
-
 
 export interface FilterDrawerProps {
   filters: FilterSection[]

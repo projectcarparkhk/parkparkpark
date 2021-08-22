@@ -14,6 +14,7 @@ export async function getSubDistrictsGroupByArea(
         'en': name.en,
         'zh': name.zh
       },
+      'slug': slug.current,
       'subDistricts': *[_type == 'subDistrict' && references(^._id)]{
         _id,
         'name': {

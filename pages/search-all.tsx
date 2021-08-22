@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function SubDistrictList({ areas, locale }: IProps) {
   const classes = useStyles()
   const { query } = useRouter()
-  const [selectedArea, setSelectedArea] = useState(query.area || areas[0]._id)
+  const [selectedArea, setSelectedArea] = useState(query['sub-district'] || areas[0]._id)
 
   const { subDistricts: subDistrictsLabel } = translations[locale]
   const subDistricts = useMemo(
