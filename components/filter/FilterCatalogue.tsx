@@ -1,9 +1,9 @@
-import React from 'react'
-import translations from '../../locales'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import { makeStyles, Theme } from '@material-ui/core'
-import { SupportedLanguages } from '../../constants/SupportedLanguages'
-import { Filters } from '../../types/components/filters'
+import React from "react"
+import translations from "../../locales"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import { makeStyles, Theme } from "@material-ui/core"
+import { SupportedLanguages } from "../../constants/SupportedLanguages"
+import { Filters } from "../../types/components/filters"
 
 export interface FilterCatalogueProps {
   filterTypes: (keyof Filters)[]
@@ -13,13 +13,13 @@ export interface FilterCatalogueProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   filterCatalogue: {
-    display: 'flex',
+    display: "flex",
   },
   filterTypeButton: {
-    display: 'flex',
+    display: "flex",
     padding: theme.spacing(1),
-    '& .MuiFormControlLabel-label': {
-      fontSize: '1rem',
+    "& .MuiFormControlLabel-label": {
+      fontSize: "1rem",
     },
   },
 }))

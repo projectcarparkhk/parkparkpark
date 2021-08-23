@@ -1,37 +1,37 @@
-import React, { useMemo } from 'react'
-import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
-import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
-import Header from '../components/header'
-import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { makeStyles } from '@material-ui/core/styles'
-import SearchIcon from '@material-ui/icons/Search'
-import Link from 'next/link'
-import { Section, SectionProps } from '../components/Section'
-import { useStyles as useSearchBoxStyles } from '../components/search/input'
-import { StyledText } from '../components/StyledText'
-import UndecoratedLink from '../components/UndecoratedLink'
+import React, { useMemo } from "react"
+import { getHotPosts, getLatestPosts } from "../sanityApi/posts"
+import { getSubDistrictsGroupByArea } from "../sanityApi/subDistricts"
+import Header from "../components/header"
+import { Button, Container, InputBase, SvgIconProps } from "@material-ui/core"
+import { Theme, withStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles"
+import SearchIcon from "@material-ui/icons/Search"
+import Link from "next/link"
+import { Section, SectionProps } from "../components/Section"
+import { useStyles as useSearchBoxStyles } from "../components/search/input"
+import { StyledText } from "../components/StyledText"
+import UndecoratedLink from "../components/UndecoratedLink"
 import {
   CarparkContextToday,
   PostResponse,
   HotTagResponse,
   TranslatedCarpark,
-} from '../types/pages'
-import translations from '../locales'
-import { useRouter } from 'next/router'
-import { imageBuilder } from '../sanityApi/sanity'
+} from "../types/pages"
+import translations from "../locales"
+import { useRouter } from "next/router"
+import { imageBuilder } from "../sanityApi/sanity"
 import {
   SupportedLanguages,
   durationTranslations,
-} from '../constants/SupportedLanguages'
-import { getCarparks } from '../sanityApi/carparks'
-import { getHotTags } from '../sanityApi/tags'
-import FilterHdrIcon from '@material-ui/icons/FilterHdr'
-import GestureIcon from '@material-ui/icons/Gesture'
-import NatureIcon from '@material-ui/icons/Nature'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
-import { AreaResponse } from '../types/api/AreaResponse'
+} from "../constants/SupportedLanguages"
+import { getCarparks } from "../sanityApi/carparks"
+import { getHotTags } from "../sanityApi/tags"
+import FilterHdrIcon from "@material-ui/icons/FilterHdr"
+import GestureIcon from "@material-ui/icons/Gesture"
+import NatureIcon from "@material-ui/icons/Nature"
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz"
+import { orderCarparkByPriceToday } from "../sanityApi/toApplication/carparks"
+import { AreaResponse } from "../types/api/AreaResponse"
 
 interface IndexStyleProps {
   iconColor?: string
@@ -40,39 +40,39 @@ interface IndexStyleProps {
 const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
-    height: '35vh',
+    height: "35vh",
     padding: theme.spacing(8, 2, 2, 2),
     backgroundImage:
-      'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    boxShadow: '3px 6px 15px -8px #000000;',
+      "linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url('/backdrop.png')",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    boxShadow: "3px 6px 15px -8px #000000;",
   },
   sloganContainer: {
-    position: 'relative',
-    color: 'white',
+    position: "relative",
+    color: "white",
   },
   subSlogan: {
     fontWeight: 700,
-    fontSize: '1rem',
+    fontSize: "1rem",
   },
   mainSlogan: {
-    fontSize: '1.8rem',
+    fontSize: "1.8rem",
     fontWeight: 700,
   },
   tagSelect: {
-    borderRadius: '30px',
-    backgroundColor: 'white',
-    width: '100%',
+    borderRadius: "30px",
+    backgroundColor: "white",
+    width: "100%",
     marginTop: theme.spacing(2),
     padding: theme.spacing(2, 3),
   },
   tagSelectHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
   },
   tagsContainer: {
     padding: theme.spacing(1, 0),
@@ -86,14 +86,14 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   },
   areaIconContainer: {
     margin: theme.spacing(2, 0),
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    width: '100%',
-    textAlign: 'center',
-    '& div': {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    width: "100%",
+    textAlign: "center",
+    "& div": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
     },
   },
   icon: {
@@ -101,10 +101,10 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(6),
     background: (props) => props.iconColor,
-    '& svg': {
-      fill: '#666',
-      width: '0.95rem',
-      height: '0.95rem',
+    "& svg": {
+      fill: "#666",
+      width: "0.95rem",
+      height: "0.95rem",
     },
   },
 }))
@@ -124,19 +124,19 @@ interface AProps {
 const areaConfig = [
   {
     icon: <FilterHdrIcon />,
-    color: '#e4f3ea',
+    color: "#e4f3ea",
   },
   {
     icon: <GestureIcon />,
-    color: '#ffece8',
+    color: "#ffece8",
   },
   {
     icon: <NatureIcon />,
-    color: '#fff6e4',
+    color: "#fff6e4",
   },
   {
     icon: <MoreHorizIcon />,
-    color: '#f0edfc',
+    color: "#f0edfc",
   },
 ]
 
@@ -165,18 +165,18 @@ function AreaCategory({ areas, locale }: AProps) {
         {[
           ...areas,
           {
-            _id: 'more',
+            _id: "more",
             name: {
-              en: 'More',
-              zh: '更多',
+              en: "More",
+              zh: "更多",
             },
-            slug: 'more',
+            slug: "more",
           },
         ].map((area, i) => (
           <Link
             href={{
-              pathname: '/search-all',
-              query: { ['sub-district']: area.slug },
+              pathname: "/search-all",
+              query: { ["sub-district"]: area.slug },
             }}
             key={area._id}
           >
@@ -203,7 +203,7 @@ export default function Index({
   const classes = useStyles({})
   const searchBoxClasses = useSearchBoxStyles()
   const { locale } = useRouter()
-  const fallbackLocale = (locale as SupportedLanguages) || 'zh'
+  const fallbackLocale = (locale as SupportedLanguages) || "zh"
 
   const translatedLatestPosts = useMemo(() => {
     return latestPosts.map((post) => {
@@ -214,7 +214,7 @@ export default function Index({
         slug,
         title,
         shortDescription,
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        imagePath: imageBuilder(imagePath).toString() || "/hk.webp",
       }
     })
   }, [latestPosts, fallbackLocale])
@@ -228,7 +228,7 @@ export default function Index({
         slug,
         title,
         shortDescription,
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        imagePath: imageBuilder(imagePath).toString() || "/hk.webp",
       }
     })
   }, [hotPosts, fallbackLocale])
@@ -243,13 +243,13 @@ export default function Index({
               priceDetail.hr as keyof typeof durationTranslations
             ][fallbackLocale]
           }`
-        : ''
+        : ""
       return {
         _id,
         title: name[fallbackLocale],
         tags: tags.map((tag) => ({ label: tag.name[fallbackLocale] })),
         location: subDistrict.name[fallbackLocale],
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        imagePath: imageBuilder(imagePath).toString() || "/hk.webp",
         shortDescription,
         slug,
       }
@@ -263,7 +263,7 @@ export default function Index({
       return {
         _id,
         subtitle: name,
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
+        imagePath: imageBuilder(imagePath).toString() || "/hk.webp",
         slug,
       }
     })
@@ -271,11 +271,11 @@ export default function Index({
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
-      [theme.breakpoints.down('sm')]: {
-        width: '100%',
+      [theme.breakpoints.down("sm")]: {
+        width: "100%",
       },
-      [theme.breakpoints.up('sm')]: {
-        width: '30%',
+      [theme.breakpoints.up("sm")]: {
+        width: "30%",
       },
     },
   }))(Button)
@@ -289,7 +289,7 @@ export default function Index({
     cheapestCarparksHeader,
     hotCarparkTagsHeader,
     checkoutAll,
-  } = translations[locale || 'zh']
+  } = translations[locale || "zh"]
 
   const postSections: SectionProps[] = [
     {
@@ -351,7 +351,7 @@ export default function Index({
             <InputBase
               placeholder={searchPlaceholder}
               className={searchBoxClasses.inputInput}
-              inputProps={{ 'aria-label': 'search' }}
+              inputProps={{ "aria-label": "search" }}
             />
           </div>
         </Link>

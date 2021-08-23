@@ -1,14 +1,14 @@
-import { CarparkContextToday } from '../../types/pages'
-import { PriceDetail } from '../../types/api/CarparkResponse'
-import { CarparkResponse } from '../../types/pages'
-import { TagFilterResponse } from '../../types/api/TagResponse'
-import { FilterSection } from '../../types/components/filters'
-import { AreaResponse } from '../../types/api/AreaResponse'
+import { CarparkContextToday } from "../../types/pages"
+import { PriceDetail } from "../../types/api/CarparkResponse"
+import { CarparkResponse } from "../../types/pages"
+import { TagFilterResponse } from "../../types/api/TagResponse"
+import { FilterSection } from "../../types/components/filters"
+import { AreaResponse } from "../../types/api/AreaResponse"
 
 export const orderCarparkByPriceToday = (
   carparkResponse: CarparkResponse[]
 ): CarparkContextToday[] => {
-  const week = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+  const week = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
   return carparkResponse
     .map(({ _id, tags, subDistricts, name, imagePath, priceDetails, slug }) => {
       return {
@@ -16,21 +16,21 @@ export const orderCarparkByPriceToday = (
         tags,
         subDistrict: subDistricts[0],
         name,
-        imagePath: imagePath || '',
-        slug: slug || '',
+        imagePath: imagePath || "",
+        slug: slug || "",
         priceDetail:
           (priceDetails?.find((item) => {
             const { day } = item
             const today = new Date().getDay()
-            if (day === 'all') {
+            if (day === "all") {
               return true
-            } else if (day.includes('-')) {
-              const [startDay, endDay] = day.split('-')
+            } else if (day.includes("-")) {
+              const [startDay, endDay] = day.split("-")
               return (
                 today >= week.indexOf(startDay) && today <= week.indexOf(endDay)
               )
             } else {
-              const dates = day.split(',')
+              const dates = day.split(",")
               return dates.some((date) => date === week[today])
             }
           }) as PriceDetail) || null,
@@ -53,10 +53,10 @@ export const structureFilters = (
   areaResponse: AreaResponse[]
 ) => {
   const categories: FilterSection = {
-    _id: 'all',
+    _id: "all",
     name: {
-      en: 'All',
-      zh: '全部',
+      en: "All",
+      zh: "全部",
     },
     subFilters: tagsFilterResponse.map((tag) => ({ ...tag, checked: false })),
   }

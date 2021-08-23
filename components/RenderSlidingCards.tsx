@@ -1,14 +1,14 @@
-import { makeStyles, Theme } from '@material-ui/core'
-import React from 'react'
-import { PostItem } from './Section'
-import { StyledCard } from './StyledCard'
-import { StyledText } from './StyledText'
+import { makeStyles, Theme } from "@material-ui/core"
+import React from "react"
+import { PostItem } from "./Section"
+import { StyledCard } from "./StyledCard"
+import { StyledText } from "./StyledText"
 
 const usePostStyles = makeStyles(() => ({
   postContainer: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    overflowX: 'scroll',
+    display: "flex",
+    flexWrap: "nowrap",
+    overflowX: "scroll",
   },
 }))
 
@@ -21,11 +21,11 @@ const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
     marginBottom: theme.spacing(2),
     marginRight: theme.spacing(2),
     flexShrink: 0,
-    [theme.breakpoints.up('sm')]: {
-      width: '20%',
+    [theme.breakpoints.up("sm")]: {
+      width: "20%",
     },
-    [theme.breakpoints.down('sm')]: {
-      width: '90%',
+    [theme.breakpoints.down("sm")]: {
+      width: "90%",
     },
   },
 }))
@@ -70,13 +70,13 @@ export const RenderSlidingCards = ({ page, option }: RenderCardsProps) => {
                 index={i}
                 renderCaption={() => (
                   <div>
-                    <div style={{ color: 'white' }}>
+                    <div style={{ color: "white" }}>
                       <StyledText size="h4" bold>
                         {title}
-                      </StyledText>{' '}
+                      </StyledText>{" "}
                       <StyledText size="h6" bold>
                         {shortDescription &&
-                          shortDescription.slice(0, 35) + '...'}
+                          shortDescription.slice(0, 35) + "..."}
                       </StyledText>
                     </div>
                   </div>

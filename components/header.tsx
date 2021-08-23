@@ -1,13 +1,13 @@
-import Link from 'next/link'
-import { AppBar, Toolbar } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { Theme } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
-import { StyledText } from '../components/StyledText'
-import translations from '../locales'
-import { useRouter } from 'next/router'
+import Link from "next/link"
+import { AppBar, Toolbar } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core/styles"
+import { Theme } from "@material-ui/core/styles"
+import IconButton from "@material-ui/core/IconButton"
+import MenuIcon from "@material-ui/icons/Menu"
+import SearchIcon from "@material-ui/icons/Search"
+import { StyledText } from "../components/StyledText"
+import translations from "../locales"
+import { useRouter } from "next/router"
 
 type HeaderProps = {
   imageToTop: boolean
@@ -19,7 +19,7 @@ const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
     height: theme.mixins.toolbar.minHeight,
     paddingTop: theme.spacing(1),
-    color: (props) => (props.imageToTop ? 'white' : theme.palette.primary.main),
+    color: (props) => (props.imageToTop ? "white" : theme.palette.primary.main),
   },
   toolBar: {
     minHeight: theme.mixins.toolbar.minHeight,
@@ -34,7 +34,7 @@ export default function Header({ imageToTop }: HeaderProps) {
     imageToTop,
   })
   const { locale } = useRouter()
-  const { homeTitle } = translations[locale || 'zh']
+  const { homeTitle } = translations[locale || "zh"]
   return (
     <>
       <AppBar

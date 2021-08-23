@@ -1,9 +1,9 @@
-import { Paper } from '@material-ui/core'
-import React from 'react'
-import Carousel from 'react-material-ui-carousel'
-import Image from 'next/image'
-import { makeStyles } from '@material-ui/core/styles'
-import Link from 'next/link'
+import { Paper } from "@material-ui/core"
+import React from "react"
+import Carousel from "react-material-ui-carousel"
+import Image from "next/image"
+import { makeStyles } from "@material-ui/core/styles"
+import Link from "next/link"
 
 interface IProps {
   items: {
@@ -14,20 +14,20 @@ interface IProps {
 }
 const useStyles = makeStyles(() => ({
   carousel: {
-    height: '25vh',
-    width: '100%',
-    '&:hover': {
-      cursor: 'pointer',
+    height: "25vh",
+    width: "100%",
+    "&:hover": {
+      cursor: "pointer",
     },
 
   },
   carouselContainer: {
-    display: 'flex',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
   },
 }))
 
-export const CarouselBanner = ({ items, className: klasses = '' }: IProps) => {
+export const CarouselBanner = ({ items, className: klasses = "" }: IProps) => {
   const classes = useStyles()
   return (
     <div className={`${classes.carouselContainer} ${klasses}`}>

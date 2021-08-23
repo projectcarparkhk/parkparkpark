@@ -1,10 +1,10 @@
-import { Box, Typography } from '@material-ui/core'
-import { Variant } from '@material-ui/core/styles/createTypography'
-import React from 'react'
+import { Box, Typography } from "@material-ui/core"
+import { Variant } from "@material-ui/core/styles/createTypography"
+import React from "react"
 
 interface IProps {
   className?: string
-  size: 'inherit' | Variant
+  size: "inherit" | Variant
   children: React.ReactNode
   bold?: boolean
   inline?: boolean
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 export const StyledText = ({
-  className: klasses = '',
+  className: klasses = "",
   style,
   size,
   children,
@@ -22,13 +22,13 @@ export const StyledText = ({
   return (
     <Box
       display="inline"
-      fontWeight={bold ? 'fontWeightBold' : 'fontWeightRegular'}
+      fontWeight={bold ? "fontWeightBold" : "fontWeightRegular"}
       style={style}
     >
       <Typography
         variant={size}
         className={klasses}
-        display={inline ? 'inline' : 'block'}
+        display={inline ? "inline" : "block"}
       >
         {children}
       </Typography>

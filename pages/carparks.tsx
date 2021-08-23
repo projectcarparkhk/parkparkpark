@@ -1,21 +1,21 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import Header from '../components/header'
-import { getCarparks } from '../sanityApi/carparks'
-import Container from '@material-ui/core/Container'
-import { useRouter } from 'next/router'
-import { FilterDrawer } from '../components/FilterDrawer'
-import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
+import React, { useState, useMemo, useCallback, useEffect } from "react"
+import Header from "../components/header"
+import { getCarparks } from "../sanityApi/carparks"
+import Container from "@material-ui/core/Container"
+import { useRouter } from "next/router"
+import { FilterDrawer } from "../components/FilterDrawer"
+import { getSubDistrictsGroupByArea } from "../sanityApi/subDistricts"
 import {
   structureCarparks,
   structureFilters,
-} from '../sanityApi/toApplication/carparks'
-import { SupportedLanguages } from '../constants/SupportedLanguages'
-import CarparkListItem from '../components/filter/CarparkListItem'
-import { FilterCatalogue } from '../components/filter/FilterCatalogue'
-import { CarparkItem, FilterSection } from '../types/components/filters'
-import { getTags } from '../sanityApi/tags'
+} from "../sanityApi/toApplication/carparks"
+import { SupportedLanguages } from "../constants/SupportedLanguages"
+import CarparkListItem from "../components/filter/CarparkListItem"
+import { FilterCatalogue } from "../components/filter/FilterCatalogue"
+import { CarparkItem, FilterSection } from "../types/components/filters"
+import { getTags } from "../sanityApi/tags"
 
-const FILTER_TYPES: Array<keyof Filters> = ['areas', 'categories']
+const FILTER_TYPES: Array<keyof Filters> = ["areas", "categories"]
 
 export interface Filters {
   areas: FilterSection[]
@@ -87,8 +87,8 @@ function Carparks({ carparks, filters }: IProps) {
   const { subDistricts: subDistrictsString, categories: categoriesString } =
     query
 
-  const subDistricts = ((subDistrictsString as string) || '').split(',')
-  const categories = ((categoriesString as string) || '').split(',')
+  const subDistricts = ((subDistrictsString as string) || "").split(",")
+  const categories = ((categoriesString as string) || "").split(",")
 
   const [filterState, setFilterState] = useState<FilterState>({
     areas: filters.areas.map((area) => area.subFilters.map(() => false)),
@@ -112,7 +112,7 @@ function Carparks({ carparks, filters }: IProps) {
 
   const [activePanel, setActivePanel] = useState<null | keyof FilterState>(null)
 
-  const fallbackLocale = locale || 'zh'
+  const fallbackLocale = locale || "zh"
 
   const filteredCarparks = useMemo(
     () => filterCarparks(filters, filterState, carparks),

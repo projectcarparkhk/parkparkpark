@@ -1,7 +1,7 @@
 // Fix later:
 
-import { AreaResponse } from '../types/api/AreaResponse'
-import { SanityClient } from './sanity'
+import { AreaResponse } from "../types/api/AreaResponse"
+import { SanityClient } from "./sanity"
 
 // It should be subDistrict group by area, area: HK / KLN / NT
 export async function getSubDistrictsGroupByArea(

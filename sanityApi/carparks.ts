@@ -1,5 +1,5 @@
-import { CarparkResponse } from '../types/pages'
-import { SanityClient } from './sanity'
+import { CarparkResponse } from "../types/pages"
+import { SanityClient } from "./sanity"
 
 const carparkFields = `
   _id, 

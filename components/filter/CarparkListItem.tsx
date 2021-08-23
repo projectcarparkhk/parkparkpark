@@ -1,9 +1,9 @@
-import { Theme, makeStyles } from '@material-ui/core'
-import React from 'react'
-import Card from '@material-ui/core/Card'
-import { StyledText } from '../StyledText'
-import { SupportedLanguages } from '../../constants/SupportedLanguages'
-import { CarparkItem } from '../../types/components/filters'
+import { Theme, makeStyles } from "@material-ui/core"
+import React from "react"
+import Card from "@material-ui/core/Card"
+import { StyledText } from "../StyledText"
+import { SupportedLanguages } from "../../constants/SupportedLanguages"
+import { CarparkItem } from "../../types/components/filters"
 
 
 interface CarparkListProps {

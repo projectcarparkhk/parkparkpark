@@ -1,20 +1,20 @@
-import React, { useMemo, useState } from 'react'
-import Link from 'next/link'
-import Header from '../components/header'
-import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
-import { Theme } from '@material-ui/core/styles'
-import { makeStyles } from '@material-ui/core/styles'
-import Chip from '@material-ui/core/Chip'
-import Button from '@material-ui/core/Button'
-import ButtonBase from '@material-ui/core/ButtonBase'
-import Container from '@material-ui/core/Container'
-import { useRouter } from 'next/router'
-import { StyledText } from '../components/StyledText'
-import { getArrayData } from '../sanityApi/helper'
-import { SupportedLanguages } from '../constants/SupportedLanguages'
-import { AreaResponse } from '../types/api/AreaResponse'
-import translations from '../locales'
-import { ResponseElement } from '../types/api/ResponseElement'
+import React, { useMemo, useState } from "react"
+import Link from "next/link"
+import Header from "../components/header"
+import { getSubDistrictsGroupByArea } from "../sanityApi/subDistricts"
+import { Theme } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles"
+import Chip from "@material-ui/core/Chip"
+import Button from "@material-ui/core/Button"
+import ButtonBase from "@material-ui/core/ButtonBase"
+import Container from "@material-ui/core/Container"
+import { useRouter } from "next/router"
+import { StyledText } from "../components/StyledText"
+import { getArrayData } from "../sanityApi/helper"
+import { SupportedLanguages } from "../constants/SupportedLanguages"
+import { AreaResponse } from "../types/api/AreaResponse"
+import translations from "../locales"
+import { ResponseElement } from "../types/api/ResponseElement"
 interface IProps {
   areas: AreaResponse[]
   preview?: boolean
@@ -29,11 +29,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0, 1, 1, 0),
   },
   pageTypeButtonContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    width: '100%',
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    width: "100%",
     height: theme.spacing(5),
-    textAlign: 'center',
+    textAlign: "center",
   },
   currentPageTypeButton: {
     fontWeight: 700,
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 function SubDistrictList({ areas, locale }: IProps) {
   const classes = useStyles()
   const { query } = useRouter()
-  const [selectedArea, setSelectedArea] = useState(query['sub-district'] || areas[0]._id)
+  const [selectedArea, setSelectedArea] = useState(query["sub-district"] || areas[0]._id)
 
   const { subDistricts: subDistrictsLabel } = translations[locale]
   const subDistricts = useMemo(
@@ -66,7 +66,7 @@ function SubDistrictList({ areas, locale }: IProps) {
             className={classes.flexItem}
             color="primary"
             label={area.name[locale]}
-            variant={area._id === selectedArea ? 'default' : 'outlined'}
+            variant={area._id === selectedArea ? "default" : "outlined"}
             onClick={() => setSelectedArea(area._id)}
           />
         ))}
@@ -79,7 +79,7 @@ function SubDistrictList({ areas, locale }: IProps) {
           <Link
             key={subDistrict.slug}
             href={{
-              pathname: '/carparks',
+              pathname: "/carparks",
               query: { subDistricts: subDistrict.slug },
             }}
           >
@@ -100,15 +100,15 @@ function SubDistrictList({ areas, locale }: IProps) {
 function SearchAll({ areas }: IProps) {
   const classes = useStyles()
   const router = useRouter()
-  const fallbackLocale = router.locale || 'zh'
+  const fallbackLocale = router.locale || "zh"
   const { allSubDistricts, allCategories } = translations[fallbackLocale]
   const tabConfig = [
     {
-      type: 'sub-districts',
+      type: "sub-districts",
       label: allSubDistricts,
     },
     {
-      type: 'categories',
+      type: "categories",
       label: allCategories,
     },
   ]
@@ -119,12 +119,12 @@ function SearchAll({ areas }: IProps) {
     const allSubDistricts: ResponseElement[] = []
     areas.forEach((area) => allSubDistricts.push(...area.subDistricts))
     const all = {
-      _id: 'all',
+      _id: "all",
       name: {
-        en: 'All',
-        zh: '全部',
+        en: "All",
+        zh: "全部",
       },
-      slug: 'all',
+      slug: "all",
       subDistricts: allSubDistricts,
     }
     return [all, ...areas]
@@ -155,13 +155,13 @@ function SearchAll({ areas }: IProps) {
         })}
       </div>
       <Container className={classes.content} maxWidth="lg">
-        {pageType === 'sub-districts' && (
+        {pageType === "sub-districts" && (
           <SubDistrictList
             areas={areaList}
             locale={fallbackLocale as SupportedLanguages}
           />
         )}
-        {pageType === 'categories' && <>All cats</>}
+        {pageType === "categories" && <>All cats</>}
       </Container>
     </>
   )
