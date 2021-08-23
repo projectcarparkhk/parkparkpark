@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 export function FilterCatalogue({
-  filterTypes,
   applyFilterCatalogue,
+  filterTypes,
   locale,
 }: FilterCatalogueProps) {
   const classes = useStyles()

@@ -1,12 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import Header from '../components/header'
-import { getCarparks} from '../sanityApi/carparks'
+import { getCarparks } from '../sanityApi/carparks'
 import Container from '@material-ui/core/Container'
 import { useRouter } from 'next/router'
-import { cloneDeep } from 'lodash'
-import {
-  FilterDrawer,
-} from '../components/FilterDrawer'
+import { FilterDrawer } from '../components/FilterDrawer'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import {
   structureCarparks,
@@ -29,82 +26,108 @@ interface IProps {
   carparks: CarparkItem[]
 }
 
-interface FilterState {
+export interface FilterState {
   areas: boolean[][]
   categories: boolean[][]
 }
 
+function filterCarparks(
+  filters: Filters,
+  filterState: FilterState,
+  carparks: CarparkItem[]
+) {
+  const filteredIds: { areas: string[]; categories: string[] } = {
+    areas: [],
+    categories: [],
+  }
+  const filterKeys = Object.keys(filterState) as Array<keyof FilterState>
+  for (const key of filterKeys) {
+    const subSections = filters[key]
+    for (let index = 0; index < subSections.length; index++) {
+      const subFilters = subSections[index].subFilters
+      const filteredSubFilters = subFilters.filter(
+        (_, subIndex) => filterState[key][index][subIndex]
+      )
+      filteredIds[key].push(
+        ...filteredSubFilters.map((subFilter) => subFilter._id)
+      )
+    }
+  }
+
+  let filteredCarparks
+
+  if (!filteredIds.areas.length && !filteredIds.categories.length) {
+    filteredCarparks = carparks
+  } else if (!filteredIds.categories.length) {
+    filteredCarparks = carparks.filter((carpark) =>
+      carpark.subDistricts.some((district) =>
+        filteredIds.areas.includes(district._id)
+      )
+    )
+  } else if (!filteredIds.areas.length) {
+    filteredCarparks = carparks.filter((carpark) =>
+      carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+    )
+  } else {
+    filteredCarparks = carparks
+      .filter((carpark) =>
+        carpark.subDistricts.some((district) =>
+          filteredIds.areas.includes(district._id)
+        )
+      )
+      .filter((carpark) =>
+        carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+      )
+  }
+  return filteredCarparks
+}
+
 function Carparks({ carparks, filters }: IProps) {
+  const { locale, query } = useRouter()
+  const { subDistricts: subDistrictsString, categories: categoriesString } =
+    query
+
+  const subDistricts = ((subDistrictsString as string) || '').split(',')
+  const categories = ((categoriesString as string) || '').split(',')
+
   const [filterState, setFilterState] = useState<FilterState>({
     areas: filters.areas.map((area) => area.subFilters.map(() => false)),
     categories: filters.categories.map((category) =>
       category.subFilters.map(() => false)
     ),
   })
-  const [activePanel, setActivePanel] = useState<null | keyof FilterState>(
-    null
-  )
 
-  const { locale } = useRouter()
+  useEffect(() => {
+    setFilterState({
+      areas: filters.areas.map((area) =>
+        area.subFilters.map((subFilter) => subDistricts.includes(subFilter._id))
+      ),
+      categories: filters.categories.map((category) =>
+        category.subFilters.map((subFilter) =>
+          categories.includes(subFilter._id)
+        )
+      ),
+    })
+  }, [filters, query])
+
+  const [activePanel, setActivePanel] = useState<null | keyof FilterState>(null)
+
   const fallbackLocale = locale || 'zh'
 
-  const onFilterUpdate = useCallback(
-    (subFilters: boolean[], index: number) => {
+  const filteredCarparks = useMemo(
+    () => filterCarparks(filters, filterState, carparks),
+    [filterState, filters, carparks]
+  )
+
+  const onFilterCarparks = useCallback(
+    (subFilterState: boolean[][]) => {
       if (activePanel) {
-        const newFilterState = cloneDeep(filterState)
-        newFilterState[activePanel][index] = subFilters
+        const newFilterState = { ...filterState, [activePanel]: subFilterState }
         setFilterState(newFilterState)
       }
     },
-    [filterState, activePanel]
+    [activePanel, filterState]
   )
-
-  const filteredCarparkList = useMemo(() => {
-    const filterKeys = Object.keys(filterState) as Array<keyof FilterState>
-    const filteredIds: { areas: string[]; categories: string[] } = {
-      areas: [],
-      categories: [],
-    }
-    for (const key of filterKeys) {
-      const subSections = filters[key]
-      for (let index = 0; index < subSections.length; index++) {
-        const subFilters = subSections[index].subFilters
-        const filteredSubFilters = subFilters.filter(
-          (_, subIndex) => filterState[key][index][subIndex]
-        )
-        filteredIds[key].push(
-          ...filteredSubFilters.map((subFilter) => subFilter._id)
-        )
-      }
-    }
-
-    let filteredCarparks
-
-    if (!filteredIds.areas.length && !filteredIds.categories.length) {
-      filteredCarparks = carparks
-    } else if (!filteredIds.categories.length) {
-      filteredCarparks = carparks.filter((carpark) =>
-        carpark.subDistricts.some((district) =>
-          filteredIds.areas.includes(district._id)
-        )
-      )
-    } else if (!filteredIds.areas.length) {
-      filteredCarparks = carparks.filter((carpark) =>
-        carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
-      )
-    } else {
-      filteredCarparks = carparks
-        .filter((carpark) =>
-          carpark.subDistricts.some((district) =>
-            filteredIds.areas.includes(district._id)
-          )
-        )
-        .filter((carpark) =>
-          carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
-        )
-    }
-    return filteredCarparks
-  }, [filterState, filters, carparks])
 
   return (
     <Container>
@@ -114,19 +137,19 @@ function Carparks({ carparks, filters }: IProps) {
           setActivePanel(activeItem)
         }
         filterTypes={FILTER_TYPES}
-        locale = {fallbackLocale as SupportedLanguages}
+        locale={fallbackLocale as SupportedLanguages}
       />
       {activePanel && (
         <FilterDrawer
           filters={activePanel && filters[activePanel]}
-          filterState={activePanel && filterState[activePanel]}
-          updateFilters={onFilterUpdate}
+          filterStateProps={activePanel && filterState[activePanel]}
+          onFilterCarparks={onFilterCarparks}
           applyFilters={setActivePanel}
-          locale = {fallbackLocale as SupportedLanguages}
+          locale={fallbackLocale as SupportedLanguages}
         />
       )}
       <div>
-        {filteredCarparkList.map((carpark) => (
+        {filteredCarparks.map((carpark) => (
           <CarparkListItem
             key={carpark._id}
             carpark={carpark}

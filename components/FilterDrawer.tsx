@@ -11,6 +11,7 @@ import translations from '../locales'
 import { useRouter } from 'next/router'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import { FilterOption, Filters, FilterSection } from '../types/components/filters'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -61,7 +62,7 @@ interface SubFilterSectionProps {
   subFilterState: boolean[]
   index: number
   subFilters: FilterOption[]
-  updateFilters(subFilterState: boolean[], index: number): void
+  onFilterStateUpdate(subFilterState: boolean[], index: number): void
 }
 
 function SubFilterSection({
@@ -69,7 +70,7 @@ function SubFilterSection({
   subFilterState,
   subFilters,
   index,
-  updateFilters,
+  onFilterStateUpdate,
 }: SubFilterSectionProps) {
   const classes = useStyles()
   const {locale} = useRouter();
@@ -89,12 +90,12 @@ function SubFilterSection({
 
   const onFilterUpdate = useCallback(() => {
     if (parentCheckBoxStatus === 'all' || parentCheckBoxStatus === 'some') {
-      updateFilters(
+      onFilterStateUpdate(
         subFilterState.map(() => false),
         index
       )
     } else {
-      updateFilters(
+      onFilterStateUpdate(
         subFilterState.map(() => true),
         index
       )
@@ -104,7 +105,7 @@ function SubFilterSection({
   const onSubFilterUpdate = useCallback((index: number, subIndex: number) => {
     const newSubFilterState = subFilterState.slice();
     newSubFilterState[subIndex] = !newSubFilterState[subIndex];
-    updateFilters(newSubFilterState, index);
+    onFilterStateUpdate(newSubFilterState, index);
 
   }, [subFilterState, index])
 
@@ -141,21 +142,28 @@ function SubFilterSection({
 
 export interface FilterDrawerProps {
   filters: FilterSection[]
-  filterState: boolean[][]
-  updateFilters(subFilters: boolean[], index: number): void
+  filterStateProps: boolean[][]
+  onFilterCarparks: (subFilterState: boolean[][]) => void
   applyFilters(filterType: keyof Filters | null): void
   locale: SupportedLanguages
 }
 
 export function FilterDrawer({
   filters,
-  filterState,
-  updateFilters,
+  filterStateProps,
+  onFilterCarparks,
   applyFilters,
   locale,
 }: FilterDrawerProps) {
   const classes = useStyles()
-  const { filterContinueBtnLabel } = translations[locale]
+  const {filterContinueBtnLabel} = translations[locale];
+  const [filterState, setFilterState] = useState(filterStateProps)
+
+  const onFilterStateUpdate = useCallback((subFilterState: boolean[], index: number)=> {
+    const newFilterState = filterStateProps.slice();
+    newFilterState[index] = subFilterState;
+    setFilterState(newFilterState)
+  }, [])
   return (
     <Drawer
       className={classes.panelDrawer}
@@ -175,7 +183,7 @@ export function FilterDrawer({
                 subFilters={filter.subFilters}
                 subFilterState={filterState[i]}
                 index={i}
-                updateFilters={updateFilters}
+                onFilterStateUpdate={onFilterStateUpdate}
               />
             )
           })}
@@ -185,6 +193,10 @@ export function FilterDrawer({
             fullWidth
             variant="contained"
             color="primary"
+            onClick={()=>{
+              onFilterCarparks(filterState)
+              applyFilters(null)
+            }}
           >
             {filterContinueBtnLabel}
           </Button>
