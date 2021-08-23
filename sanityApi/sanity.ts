@@ -1,15 +1,15 @@
-import { SanityImageSource } from "@sanity/image-url/lib/types/types"
+import { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import {
   createClient,
   createImageUrlBuilder,
   createPreviewSubscriptionHook,
   ClientConfig,
-} from "next-sanity"
+} from 'next-sanity'
 
 const config: ClientConfig = {
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "staging",
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "project-id",
-  useCdn: process.env.NODE_ENV === "production",
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'staging',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'project-id',
+  useCdn: process.env.NODE_ENV === 'production',
 }
 
 export const imageBuilder = (source: SanityImageSource) =>

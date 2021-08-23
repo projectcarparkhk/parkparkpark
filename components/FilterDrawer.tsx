@@ -1,17 +1,17 @@
-import React, { useMemo, useCallback } from "react"
-import CloseIcon from "@material-ui/icons/Close"
-import Button from "@material-ui/core/Button"
-import Drawer from "@material-ui/core/Drawer"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Checkbox from "@material-ui/core/Checkbox"
-import Chip from "@material-ui/core/Chip"
-import { Theme, makeStyles } from "@material-ui/core/styles"
-import Container from "@material-ui/core/Container"
-import translations from "../locales"
-import { useRouter } from "next/router"
-import { SupportedLanguages } from "../constants/SupportedLanguages"
-import { FilterOption, Filters, FilterSection } from "../types/components/filters"
-import { useState } from "react"
+import React, { useMemo, useCallback } from 'react'
+import CloseIcon from '@material-ui/icons/Close'
+import Button from '@material-ui/core/Button'
+import Drawer from '@material-ui/core/Drawer'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import Chip from '@material-ui/core/Chip'
+import { Theme, makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
+import translations from '../locales'
+import { useRouter } from 'next/router'
+import { SupportedLanguages } from '../constants/SupportedLanguages'
+import { FilterOption, Filters, FilterSection } from '../types/components/filters'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -19,35 +19,35 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   panelDrawer: {
-    "& .MuiDrawer-paper": {
-      height: "100vh",
+    '& .MuiDrawer-paper': {
+      height: '100vh',
     },
   },
   filterDrawerHeader: {
     height: theme.spacing(6),
     padding: theme.spacing(1.5 ,1.5 ,1.5, 0),
-    "& svg": {
-        cursor: "pointer",
+    '& svg': {
+        cursor: 'pointer',
     }
   },
   filterCatalogue: {
-    display: "flex",
+    display: 'flex',
   },
 
   filterOptionContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    "& .MuiChip-root": {
+    display: 'flex',
+    flexWrap: 'wrap',
+    '& .MuiChip-root': {
       margin: theme.spacing(0, 1, 0.75, 0),
     },
   },
     filterTypeButton: {
-        display: "flex",
+        display: 'flex',
         padding: theme.spacing(1),
-        "& .MuiFormControlLabel-label": {
-            fontSize: "1rem",
+        '& .MuiFormControlLabel-label': {
+            fontSize: '1rem',
         },
-        cursor: "pointer",
+        cursor: 'pointer',
     },
     checkedItem: {
         color: theme.palette.primary.main,
@@ -75,21 +75,21 @@ function SubFilterSection({
   const classes = useStyles()
   const {locale} = useRouter();
 
-  const fallbackLocale = locale || "zh"
+  const fallbackLocale = locale || 'zh'
   // i think the selection should be the only source of truth and should govern the "prop" of the parent checkbox
   // therefore should not have its own state
   const parentCheckBoxStatus = useMemo(() => {
     if (subFilterState.every((checked) => checked)) {
-      return "all"
+      return 'all'
     } else if (subFilterState.some((checked) => checked)) {
-      return "some"
+      return 'some'
     } else {
-      return "none"
+      return 'none'
     }
   }, [subFilterState])
 
   const onFilterUpdate = useCallback(() => {
-    if (parentCheckBoxStatus === "all" || parentCheckBoxStatus === "some") {
+    if (parentCheckBoxStatus === 'all' || parentCheckBoxStatus === 'some') {
       onFilterStateUpdate(
         subFilterState.map(() => false),
         index
@@ -115,10 +115,10 @@ function SubFilterSection({
         control={
           <Checkbox
             color="primary"
-            checked={parentCheckBoxStatus === "all"}
+            checked={parentCheckBoxStatus === 'all'}
             onChange={onFilterUpdate}
             name="checkedF"
-            indeterminate={parentCheckBoxStatus === "some"}
+            indeterminate={parentCheckBoxStatus === 'some'}
           />
         }
         label={title}
@@ -128,7 +128,7 @@ function SubFilterSection({
           return (
             <Chip
               onClick={()=>onSubFilterUpdate(index, subIndex)}
-              variant={subFilterState[subIndex] ? "default" : "outlined"}
+              variant={subFilterState[subIndex] ? 'default' : 'outlined'}
               size="small"
               key={subFilter._id}
               label={subFilter.name[fallbackLocale]}
@@ -167,7 +167,7 @@ export function FilterDrawer({
   return (
     <Drawer
       className={classes.panelDrawer}
-      anchor={"bottom"}
+      anchor={'bottom'}
       open={true}
     >
       <Container maxWidth="lg">

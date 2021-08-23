@@ -1,7 +1,7 @@
 // Fix later:
 
-import { CarparkResponse } from "../types/pages"
-import { SanityClient } from "./sanity"
+import { CarparkResponse } from '../types/pages'
+import { SanityClient } from './sanity'
 
 
 export async function getSubDistricts(

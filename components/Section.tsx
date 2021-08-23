@@ -1,40 +1,40 @@
-import { makeStyles, Theme, useTheme } from "@material-ui/core"
-import React, { useMemo } from "react"
-import Carousel from "react-material-ui-carousel"
-import { StyledText } from "./StyledText"
-import { useMediaQuery } from "@material-ui/core"
-import { RenderCards } from "./RenderCards"
-import { RenderSlidingCards } from "./RenderSlidingCards"
+import { makeStyles, Theme, useTheme } from '@material-ui/core'
+import React, { useMemo } from 'react'
+import Carousel from 'react-material-ui-carousel'
+import { StyledText } from './StyledText'
+import { useMediaQuery } from '@material-ui/core'
+import { RenderCards } from './RenderCards'
+import { RenderSlidingCards } from './RenderSlidingCards'
 
 const useStyles = makeStyles((theme: Theme) => ({
   titleContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    [theme.breakpoints.up("sm")]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    [theme.breakpoints.up('sm')]: {
       marginBottom: theme.spacing(4),
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(1),
     },
   },
   sectionTitle: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   carousel: {
-    width: "100%",
-    "&:hover": {
-      cursor: "pointer",
+    width: '100%',
+    '&:hover': {
+      cursor: 'pointer',
     },
   },
   buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: 'center',
     marginTop: theme.spacing(2),
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       height: theme.spacing(5),
     },
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up('sm')]: {
       height: theme.spacing(6),
     },
   },
@@ -73,7 +73,7 @@ export const Section = ({
 }: SectionProps) => {
   const theme = useTheme()
   const classes = useStyles(theme)
-  const smOrAbove = useMediaQuery(theme.breakpoints.up("sm"))
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
   const windowPosts = useMemo(() => {
     let window: PostItem[] = []
     return postItems.reduce((acc, item, i) => {
@@ -93,7 +93,7 @@ export const Section = ({
   return (
     <div>
       <div className={classes.titleContainer}>
-        <StyledText size={smOrAbove ? "h3" : "h4"} bold>
+        <StyledText size={smOrAbove ? 'h3' : 'h4'} bold>
           {sectionHeader}
         </StyledText>
         {renderSideLink && renderSideLink()}

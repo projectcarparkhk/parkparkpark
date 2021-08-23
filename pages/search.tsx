@@ -1,17 +1,17 @@
-import React from "react";
-import { useRouter } from "next/router";
-import SearchInput from "../components/search/input"
-import { Suggestion } from "../components/search/type"
-import { HotTagResponse } from "../types/pages"
-import Header from "../components/header"
-import { getHotTags } from "../sanityApi/tags"
-import Link from "next/link"
-import Container from "@material-ui/core/Container"
-import Chip from "@material-ui/core/Chip"
-import { Theme } from "@material-ui/core/styles"
-import { makeStyles } from "@material-ui/core/styles"
-import { SupportedLanguages } from "../constants/SupportedLanguages";
-import translations from "../locales";
+import React from 'react';
+import { useRouter } from 'next/router';
+import SearchInput from '../components/search/input'
+import { Suggestion } from '../components/search/type'
+import { HotTagResponse } from '../types/pages'
+import Header from '../components/header'
+import { getHotTags } from '../sanityApi/tags'
+import Link from 'next/link'
+import Container from '@material-ui/core/Container'
+import Chip from '@material-ui/core/Chip'
+import { Theme } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
+import { SupportedLanguages } from '../constants/SupportedLanguages';
+import translations from '../locales';
 
 interface IProps {
   hotTags: HotTagResponse[]
@@ -32,19 +32,19 @@ function Search({ hotTags }: IProps) {
 
   const {
     hot,
-  } = translations[locale || "zh"]
+  } = translations[locale || 'zh']
 
   const classes = useStyles()
 
   function onSuggestionClick(suggestion: Suggestion) {
     switch (suggestion.type) {
-      case "subDistrict":
+      case 'subDistrict':
         push({
-          pathname: "/carparks",
+          pathname: '/carparks',
           query: { subDistricts: suggestion.slug },
         })
         break
-      case "carpark":
+      case 'carpark':
         push({
           pathname: `/carparks/${suggestion.slug}`
         })
@@ -66,7 +66,7 @@ function Search({ hotTags }: IProps) {
                 <Link 
                   key={tag[locale as SupportedLanguages].name}
                   href={{
-                    pathname: "/carparks",
+                    pathname: '/carparks',
                     query: { tags: tag.slug },
                   }}
                 >

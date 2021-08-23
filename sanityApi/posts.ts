@@ -1,6 +1,6 @@
 
-import { PostResponse } from "../types/pages"
-import {SanityClient} from "./sanity"
+import { PostResponse } from '../types/pages'
+import {SanityClient} from './sanity'
 
 const postFields = `
   _id,

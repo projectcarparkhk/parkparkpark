@@ -1,4 +1,4 @@
-import { ResponseElement } from "./ResponseElement";
+import { ResponseElement } from './ResponseElement';
 export interface PriceDetail {
   day: string
   hr: string

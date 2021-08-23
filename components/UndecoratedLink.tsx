@@ -1,6 +1,6 @@
-import { useTheme } from "@material-ui/core"
-import Link from "next/link"
-import React from "react"
+import { useTheme } from '@material-ui/core'
+import Link from 'next/link'
+import React from 'react'
 
 interface IProps {
   href: string
@@ -11,7 +11,7 @@ const UndecoratedLink = ({ href, children }: IProps) => {
   const theme = useTheme()
   return (
     <Link href={href}>
-      <a style={{ textDecoration: "none", color: theme.palette.primary.main, fontWeight: "bold" }}>{children}</a>
+      <a style={{ textDecoration: 'none', color: theme.palette.primary.main, fontWeight: 'bold' }}>{children}</a>
     </Link>
   )
 }

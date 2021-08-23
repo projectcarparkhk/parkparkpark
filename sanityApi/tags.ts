@@ -1,6 +1,6 @@
 
-import { HotTagResponse, TagFilterResponse } from "../types/api/TagResponse"
-import { SanityClient } from "./sanity"
+import { HotTagResponse, TagFilterResponse } from '../types/api/TagResponse'
+import { SanityClient } from './sanity'
 
 const tagFields = `
   _id,

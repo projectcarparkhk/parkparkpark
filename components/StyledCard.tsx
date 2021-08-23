@@ -6,13 +6,13 @@ import {
   makeStyles,
   Theme,
   withStyles,
-} from "@material-ui/core"
-import React from "react"
-import { StyledText } from "./StyledText"
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder"
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
-import { Chip } from "@material-ui/core"
-import { useRouter } from "next/router"
+} from '@material-ui/core'
+import React from 'react'
+import { StyledText } from './StyledText'
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
+import { Chip } from '@material-ui/core'
+import { useRouter } from 'next/router'
 
 interface StyleProps {
   index: number
@@ -20,78 +20,78 @@ interface StyleProps {
 
 const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   card: {
-    width: "100%",
-    height: "min-content",
+    width: '100%',
+    height: 'min-content',
   },
   media: {
     height: 120,
-    position: "relative",
+    position: 'relative',
   },
   cardOverlay: {
-    position: "absolute",
-    width:"100%",
-    height: "100%",
-    top: "0",
-    left: "0",
+    position: 'absolute',
+    width:'100%',
+    height: '100%',
+    top: '0',
+    left: '0',
     zIndex: 1,
-    background: "linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)",
-    display: "flex",
-    alignItems: "flex-end"
+    background: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)',
+    display: 'flex',
+    alignItems: 'flex-end'
   },
   mediaText: {
-    padding: "1rem",
+    padding: '1rem',
   },
   fullImageMedia: {
-    [theme.breakpoints.down("sm")]: {
-      height: "10rem",
+    [theme.breakpoints.down('sm')]: {
+      height: '10rem',
     },
-    [theme.breakpoints.up("sm")]: {
-      height: "20rem",
+    [theme.breakpoints.up('sm')]: {
+      height: '20rem',
     },
   },
   iconSection: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   iconContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    fontSize: "0.8rem",
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "0.9rem",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    fontSize: '0.8rem',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '0.9rem',
     },
   },
   iconContainerStart: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up('sm')]: {
       marginRight: theme.spacing(1),
     },
     marginRight: theme.spacing(0.5),
   },
   icons: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
   },
   titles: {
     marginBottom: theme.spacing(1),
   },
   chip: {
     marginRight: theme.spacing(1),
-    borderRadius: "5px",
+    borderRadius: '5px',
     padding: theme.spacing(0),
   },
   caption: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   captionContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    [theme.breakpoints.up("sm")]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    [theme.breakpoints.up('sm')]: {
       marginTop: theme.spacing(4),
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(2),
     },
   },
@@ -112,23 +112,23 @@ export interface StyledCardProps {
 
 const StyledChip = withStyles((theme: Theme) => ({
   root: {
-    [theme.breakpoints.down("sm")]: {
-      height: "1.2rem",
+    [theme.breakpoints.down('sm')]: {
+      height: '1.2rem',
     },
   },
   label: {
     padding: theme.spacing(0, 1),
-    fontSize: "1rem",
-    [theme.breakpoints.down("sm")]: {
+    fontSize: '1rem',
+    [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(0, 0.7),
-      fontSize: "0.6rem",
+      fontSize: '0.6rem',
     },
   },
 }))(Chip)
 
 const StyledCardContent = withStyles((theme: Theme) => ({
   root: {
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(1.5),
     },
   },

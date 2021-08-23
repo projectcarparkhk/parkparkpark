@@ -1,6 +1,6 @@
-import zh from "./zh"
-import en from "./en"
-import Translations from "../types/translations"
+import zh from './zh'
+import en from './en'
+import Translations from '../types/translations'
 
 const translations: Translations = {
   zh,

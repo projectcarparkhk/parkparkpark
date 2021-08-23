@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from 'react'
 import Autosuggest, {
   ChangeEvent,
   InputProps,
@@ -6,55 +6,55 @@ import Autosuggest, {
   RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
   SuggestionsFetchRequestedParams,
-} from "react-autosuggest"
-import List from "@material-ui/core/List"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemText from "@material-ui/core/ListItemText"
-import ListItemAvatar from "@material-ui/core/ListItemAvatar"
-import Avatar from "@material-ui/core/Avatar"
-import LocationOnIcon from "@material-ui/icons/LocationOn"
-import InputBase from "@material-ui/core/InputBase"
-import { Suggestion } from "./type"
-import { makeStyles } from "@material-ui/core/styles"
-import { Theme } from "@material-ui/core/styles"
-import SearchIcon from "@material-ui/icons/Search"
-import translations from "../../locales"
-import { SupportedLanguages } from "../../constants/SupportedLanguages";
-import { useRouter } from "next/router";
+} from 'react-autosuggest'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import Avatar from '@material-ui/core/Avatar'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
+import InputBase from '@material-ui/core/InputBase'
+import { Suggestion } from './type'
+import { makeStyles } from '@material-ui/core/styles'
+import { Theme } from '@material-ui/core/styles'
+import SearchIcon from '@material-ui/icons/Search'
+import translations from '../../locales'
+import { SupportedLanguages } from '../../constants/SupportedLanguages';
+import { useRouter } from 'next/router';
 
 export const useStyles = makeStyles((theme: Theme) => ({
   searchBox: {
-    position: "relative",
-    borderRadius: "30px",
-    backgroundColor: "#EEEEEE",
-    height: "2.5rem",
-    display: "flex",
-    alignItems: "center",
-    [theme.breakpoints.up("sm")]: {
-      height: "3rem",
-      width: "50%",
-      left: "50%",
-      transform: "translateX(-50%)",
+    position: 'relative',
+    borderRadius: '30px',
+    backgroundColor: '#EEEEEE',
+    height: '2.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    [theme.breakpoints.up('sm')]: {
+      height: '3rem',
+      width: '50%',
+      left: '50%',
+      transform: 'translateX(-50%)',
     },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputInput: {
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     paddingRight: theme.spacing(2.5),
-    width: "100%",
-    fontSize: "1rem",
-    [theme.breakpoints.up("sm")]: {
+    width: '100%',
+    fontSize: '1rem',
+    [theme.breakpoints.up('sm')]: {
       margin: theme.spacing(1, 1),
-      fontSize: "1rem",
+      fontSize: '1rem',
     },
   },
 }))
@@ -109,7 +109,7 @@ interface IProps {
 }
 
 function SearchInput({ onSuggestionClick, children }: IProps) {
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
   const { locale } = useRouter()
@@ -147,7 +147,7 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
   const inputProps: InputProps<Suggestion> = {
     placeholder: searchPlaceholder,
     value,
-    "aria-label": "search",
+    'aria-label': 'search',
     onChange,
   }
 
