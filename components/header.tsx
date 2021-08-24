@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import { StyledText } from '../components/StyledText'
-import translations from '../locales/components/header'
+import translations from '../locales'
 import { useRouter } from 'next/router'
 
 type HeaderProps = {
@@ -44,7 +44,7 @@ export default function Header({ imageToTop }: HeaderProps) {
         className={classes.appBar}
       >
         <Toolbar className={classes.toolBar}>
-          <Link href="/all">
+          <Link href="/search-all">
             <IconButton edge="start" color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>

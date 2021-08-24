@@ -1,114 +1,190 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import Header from '../components/header'
-import { StyledText } from '../components/StyledText'
-import { getCarparksforFilters } from '../sanityApi/carparks'
-import { getFilters } from '../sanityApi/filters'
+import { getCarparks } from '../sanityApi/carparks'
 import Container from '@material-ui/core/Container'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card';
 import { useRouter } from 'next/router'
-import { SubDistrict } from '../types/DistrictResponse';
+import { FilterDrawer } from '../components/FilterDrawer'
+import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import {
-    Area,
-    Category,
-    FilterConfig,
-    SubFilterConfig,
-    FilterResponse, 
-    FilterOption,
-    FilterableItem,
-} from '../types/FilterResponse'
-import { FilterDrawer, initializeFilter, filterItems, FilterCatelogue } from '../components/FilterDrawer'
+  structureCarparks,
+  structureFilters,
+} from '../sanityApi/toApplication/carparks'
+import { SupportedLanguages } from '../constants/SupportedLanguages'
+import CarparkListItem from '../components/filter/CarparkListItem'
+import { FilterCatalogue } from '../components/filter/FilterCatalogue'
+import { CarparkItem, FilterSection } from '../types/components/filters'
+import { getTags } from '../sanityApi/tags'
 
-const FILTER_CONFIG: FilterConfig = {
-    areas: 'subDistricts',
-    categories: 'tags'
-}
-interface PageProps {
-    carparks: FilterableItem[]
-    filters: FilterResponse
+const FILTER_TYPES: Array<keyof Filters> = ['areas', 'categories']
+
+export interface Filters {
+  areas: FilterSection[]
+  categories: FilterSection[]
 }
 interface IProps {
-    key: string
-    carpark: FilterableItem
+  filters: Filters
+  carparks: CarparkItem[]
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-    card: {
-        padding: theme.spacing(2),
-        marginBottom: theme.spacing(2)
-    }
-}))
-
-
-function CarparkListItem({ carpark }: IProps) {
-    const classes = useStyles()
-    return (
-        <Card className={classes.card}>
-            <StyledText size="h4" bold inline={false}>
-                {carpark.name}
-            </StyledText>
-
-            <div>
-                {carpark.subDistricts.map((subDistrict: SubDistrict) => {
-                    return (
-                        <span key={subDistrict.name}>
-                            <StyledText size="body1" inline={true}>
-                                {subDistrict.name}
-                            </StyledText>
-                        </span>
-                    )
-                })}
-            </div>
-        </Card>
-    )
+export interface FilterState {
+  areas: boolean[][]
+  categories: boolean[][]
 }
 
-function Carparks({ carparks, filters }: PageProps) {
+function filterCarparksByQuery(
+  subDistrictsString: string | string[] | undefined,
+  categoriesString: string | string[] | undefined,
+  carparks: CarparkItem[]
+) {
+  const filteredIds: { areas: string[]; categories: string[] } = {
+    areas: [],
+    categories: [],
+  }
+  filteredIds.areas = subDistrictsString
+    ? subDistrictsString.toString().split(',')
+    : []
+  filteredIds.categories = categoriesString
+    ? categoriesString.toString().split(',')
+    : []
 
-    const router = useRouter()
-    const [masterFilter, setMasterfilter] = useState<FilterResponse>(filters)
-    const [activePanel, setActivePanel] = useState<null | keyof FilterConfig>(null)
+  let filteredCarparks
 
-    useEffect(() => {
-        setMasterfilter(initializeFilter(filters, FILTER_CONFIG, router.query))
-    }, [router])
-
-    return (
-        <Container>
-            <Header imageToTop={false} />
-            <FilterCatelogue
-                filters={masterFilter}
-                applyFilterCatelogue={(activeItem: keyof FilterConfig) => setActivePanel(activeItem)}
-                config={FILTER_CONFIG} />
-            {activePanel && <FilterDrawer
-                filters={activePanel && masterFilter[activePanel]}
-                child={activePanel && FILTER_CONFIG[activePanel]}
-                applyFilters={(listOptions: Area[] | Category[] | null) => setMasterfilter({
-                    ...masterFilter,
-                    [activePanel]: listOptions
-                })}
-                applyFilterCatelogue={(activeItem: keyof FilterConfig) => setActivePanel(activeItem)}
-            />}
-            <div>
-                {filterItems(carparks, masterFilter, FILTER_CONFIG).map((carpark: FilterableItem) => {
-                    return (
-                        <CarparkListItem
-                            key={carpark._id}
-                            carpark={carpark} />
-                    )
-                })}
-            </div>
-        </Container>
+  if (!filteredIds.areas.length && !filteredIds.categories.length) {
+    filteredCarparks = carparks
+  } else if (!filteredIds.categories.length) {
+    filteredCarparks = carparks.filter((carpark) =>
+      carpark.subDistricts.some((district) =>
+        filteredIds.areas.includes(district._id)
+      )
     )
+  } else if (!filteredIds.areas.length) {
+    filteredCarparks = carparks.filter((carpark) =>
+      carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+    )
+  } else {
+    filteredCarparks = carparks
+      .filter((carpark) =>
+        carpark.subDistricts.some((district) =>
+          filteredIds.areas.includes(district._id)
+        )
+      )
+      .filter((carpark) =>
+        carpark.tags.some((tag) => filteredIds.categories.includes(tag._id))
+      )
+  }
+  return filteredCarparks
+}
+
+function Carparks({ carparks, filters }: IProps) {
+  const router = useRouter()
+  const { locale, query } = router
+  const { subDistricts: subDistrictsString, categories: categoriesString } =
+    query
+  const subDistricts = ((subDistrictsString as string) || '').split(',')
+  const categories = ((categoriesString as string) || '').split(',')
+
+  const [filterState, setFilterState] = useState<FilterState>({
+    areas: filters.areas.map((area) => area.subFilters.map(() => false)),
+    categories: filters.categories.map((category) =>
+      category.subFilters.map(() => false)
+    ),
+  })
+
+  // set filter state based on url path
+  useEffect(() => {
+    setFilterState({
+      areas: filters.areas.map((area) =>
+        area.subFilters.map((subFilter) => subDistricts.includes(subFilter._id))
+      ),
+      categories: filters.categories.map((category) =>
+        category.subFilters.map((subFilter) =>
+          categories.includes(subFilter._id)
+        )
+      ),
+    })
+  }, [filters, query])
+
+  const [activePanel, setActivePanel] = useState<null | keyof FilterState>(null)
+
+  const fallbackLocale = locale || 'zh'
+
+  // useMemo to optimize by memoizing the result of a function call
+  // runs function on dependency change
+  const filteredCarparks = useMemo(
+    () => filterCarparksByQuery(subDistrictsString, categoriesString, carparks),
+    [subDistrictsString, categoriesString, carparks]
+  )
+
+  // set filter state based on url path
+  // usecallback to optimize when this function is being passed down to component
+  const onUpdateRoute = useCallback(
+    (subFilterState: boolean[][]) => {
+      if (activePanel) {
+        const filteredIds = filters[activePanel].reduce((acc, filter, i) => {
+          const filtered = filter.subFilters.filter(
+            (_, subI) => subFilterState[i][subI]
+          )
+          acc.push(...filtered.map((elem) => elem._id))
+          return acc
+        }, [] as string[])
+        const queryString = filteredIds.join(',')
+        const queryObject =
+          activePanel === 'areas'
+            ? { subDistricts: queryString }
+            : { categories: queryString }
+        router.push({
+          query: {
+            ...query,
+            ...queryObject,
+          },
+        })
+      }
+    },
+    [activePanel, filters, query]
+  )
+
+  return (
+    <Container>
+      <Header imageToTop={false} />
+      <FilterCatalogue
+        applyFilterCatalogue={(activeItem: keyof Filters) =>
+          setActivePanel(activeItem)
+        }
+        filterTypes={FILTER_TYPES}
+        locale={fallbackLocale as SupportedLanguages}
+      />
+      {activePanel && (
+        <FilterDrawer
+          filters={activePanel && filters[activePanel]}
+          filterStateProps={activePanel && filterState[activePanel]}
+          onUpdateRoute={onUpdateRoute}
+          setActivePanel={setActivePanel}
+          locale={fallbackLocale as SupportedLanguages}
+        />
+      )}
+      <div>
+        {filteredCarparks.map((carpark) => (
+          <CarparkListItem
+            key={carpark._id}
+            carpark={carpark}
+            locale={fallbackLocale as SupportedLanguages}
+          />
+        ))}
+      </div>
+    </Container>
+  )
 }
 
 export default Carparks
 
 export async function getStaticProps({ preview = false }) {
-    const carparks = await getCarparksforFilters(preview)
-    const filters = await getFilters(preview)
-    return {
-        props: { carparks, filters, preview },
-        revalidate: 1,
-    }
+  const carparkResponse = await getCarparks(preview)
+  const tagResponse = await getTags(preview)
+  const areaResponse = await getSubDistrictsGroupByArea(preview)
+  const filters = structureFilters(tagResponse, areaResponse)
+  const carparks = structureCarparks(carparkResponse)
+  return {
+    props: { carparks, filters },
+    revalidate: 1,
+  }
 }

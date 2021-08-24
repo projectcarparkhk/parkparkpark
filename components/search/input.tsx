@@ -18,7 +18,7 @@ import { Suggestion } from './type'
 import { makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
-import translations from '../../locales/pages/search'
+import translations from '../../locales'
 import { SupportedLanguages } from '../../constants/SupportedLanguages';
 import { useRouter } from 'next/router';
 

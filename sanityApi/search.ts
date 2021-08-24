@@ -1,13 +1,12 @@
 // Fix later:
 
-import { DistrictResponse } from '../types'
-import { CarparkResponse } from '../types'
+import { CarparkResponse } from '../types/pages'
 import { SanityClient } from './sanity'
 
 
 export async function getSubDistricts(
   preview: boolean
-): Promise<DistrictResponse[]> {
+): Promise<any[]> {
   return SanityClient(preview).fetch(`*[_type == 'subDistrict']{
       'type': _type,
       name,
