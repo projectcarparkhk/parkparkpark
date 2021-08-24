@@ -31,28 +31,21 @@ export interface FilterState {
   categories: boolean[][]
 }
 
-function filterCarparks(
-  filters: Filters,
-  filterState: FilterState,
+function filterCarparksByQuery(
+  subDistrictsString: string | string[] | undefined,
+  categoriesString: string | string[] | undefined,
   carparks: CarparkItem[]
 ) {
   const filteredIds: { areas: string[]; categories: string[] } = {
     areas: [],
     categories: [],
   }
-  const filterKeys = Object.keys(filterState) as Array<keyof FilterState>
-  for (const key of filterKeys) {
-    const subSections = filters[key]
-    for (let index = 0; index < subSections.length; index++) {
-      const subFilters = subSections[index].subFilters
-      const filteredSubFilters = subFilters.filter(
-        (_, subIndex) => filterState[key][index][subIndex]
-      )
-      filteredIds[key].push(
-        ...filteredSubFilters.map((subFilter) => subFilter._id)
-      )
-    }
-  }
+  filteredIds.areas = subDistrictsString
+    ? subDistrictsString.toString().split(',')
+    : []
+  filteredIds.categories = categoriesString
+    ? categoriesString.toString().split(',')
+    : []
 
   let filteredCarparks
 
@@ -84,10 +77,9 @@ function filterCarparks(
 
 function Carparks({ carparks, filters }: IProps) {
   const router = useRouter()
-  const { locale, query } = router;
+  const { locale, query } = router
   const { subDistricts: subDistrictsString, categories: categoriesString } =
     query
-
   const subDistricts = ((subDistrictsString as string) || '').split(',')
   const categories = ((categoriesString as string) || '').split(',')
 
@@ -98,6 +90,7 @@ function Carparks({ carparks, filters }: IProps) {
     ),
   })
 
+  // set filter state based on url path
   useEffect(() => {
     setFilterState({
       areas: filters.areas.map((area) =>
@@ -116,26 +109,36 @@ function Carparks({ carparks, filters }: IProps) {
   const fallbackLocale = locale || 'zh'
 
   const filteredCarparks = useMemo(
-    () => filterCarparks(filters, filterState, carparks),
-    [filterState, filters, carparks]
+    () => filterCarparksByQuery(subDistrictsString, categoriesString, carparks),
+    [subDistrictsString, categoriesString, carparks]
   )
 
-  const onUpdateRoute = useCallback((subFilterState: boolean[][])=> {
-    if (activePanel){
-      const queries = filters[activePanel].map((filter, i) => {
-        const filtered = filter.subFilters.filter((_, subI) => subFilterState[i][subI])
-        return filtered.map(elem => elem._id)
-      })
-      const queryString = queries.join(',');
-      const queryObject =  activePanel === 'areas' ? {subDistricts: queryString} : {categories: queryString}
-      router.push({
-        query: {
-          ...query,
-          ...queryObject
-        }
-      })
-    }
-  }, [activePanel, filters, query])
+  // set filter state based on url path
+  const onUpdateRoute = useCallback(
+    (subFilterState: boolean[][]) => {
+      if (activePanel) {
+        const filteredIds = filters[activePanel].reduce((acc, filter, i) => {
+          const filtered = filter.subFilters.filter(
+            (_, subI) => subFilterState[i][subI]
+          )
+          acc.push(...filtered.map((elem) => elem._id))
+          return acc
+        }, [] as string[])
+        const queryString = filteredIds.join(',')
+        const queryObject =
+          activePanel === 'areas'
+            ? { subDistricts: queryString }
+            : { categories: queryString }
+        router.push({
+          query: {
+            ...query,
+            ...queryObject,
+          },
+        })
+      }
+    },
+    [activePanel, filters, query]
+  )
 
   return (
     <Container>

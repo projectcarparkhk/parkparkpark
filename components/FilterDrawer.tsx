@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import { FilterOption, Filters, FilterSection } from '../types/components/filters'
 import { useState } from 'react'
+import { cloneDeep } from 'lodash'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -102,12 +103,12 @@ function SubFilterSection({
     }
   }, [subFilterState, parentCheckBoxStatus, index])
 
-  const onSubFilterUpdate = useCallback((index: number, subIndex: number) => {
+  const onSubFilterUpdate = (subIndex: number) => {
     const newSubFilterState = subFilterState.slice();
     newSubFilterState[subIndex] = !newSubFilterState[subIndex];
     onFilterStateUpdate(newSubFilterState, index);
 
-  }, [subFilterState, index])
+  }
 
   return (
     <div>
@@ -127,7 +128,7 @@ function SubFilterSection({
         {subFilters.map((subFilter, subIndex: number) => {
           return (
             <Chip
-              onClick={()=>onSubFilterUpdate(index, subIndex)}
+              onClick={()=>onSubFilterUpdate(subIndex)}
               variant={subFilterState[subIndex] ? 'default' : 'outlined'}
               size="small"
               key={subFilter._id}
@@ -160,10 +161,10 @@ export function FilterDrawer({
   const [filterState, setFilterState] = useState(filterStateProps)
 
   const onFilterStateUpdate = useCallback((subFilterState: boolean[], index: number)=> {
-    const newFilterState = filterStateProps.slice();
+    const newFilterState = cloneDeep(filterState)
     newFilterState[index] = subFilterState;
     setFilterState(newFilterState)
-  }, [])
+  }, [filterState])
   return (
     <Drawer
       className={classes.panelDrawer}
