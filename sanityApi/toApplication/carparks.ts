@@ -5,6 +5,7 @@ import { TagFilterResponse } from '../../types/api/TagResponse'
 import { FilterSection } from '../../types/components/filters'
 import { AreaResponse } from '../../types/api/AreaResponse'
 
+// Data transformation before going into applications
 export const orderCarparkByPriceToday = (
   carparkResponse: CarparkResponse[]
 ): CarparkContextToday[] => {

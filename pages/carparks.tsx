@@ -108,12 +108,15 @@ function Carparks({ carparks, filters }: IProps) {
 
   const fallbackLocale = locale || 'zh'
 
+  // useMemo to optimize by memoizing the result of a function call
+  // runs function on dependency change
   const filteredCarparks = useMemo(
     () => filterCarparksByQuery(subDistrictsString, categoriesString, carparks),
     [subDistrictsString, categoriesString, carparks]
   )
 
   // set filter state based on url path
+  // usecallback to optimize when this function is being passed down to component
   const onUpdateRoute = useCallback(
     (subFilterState: boolean[][]) => {
       if (activePanel) {

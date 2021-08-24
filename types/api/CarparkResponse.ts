@@ -6,6 +6,7 @@ export interface PriceDetail {
   time: string
 }
 
+// define types and only take what matters for the component in the transformation section
 export interface CarparkResponse extends ResponseElement {
   imagePath: string
   name: { [key: string]: string }
