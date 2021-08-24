@@ -143,16 +143,16 @@ function SubFilterSection({
 export interface FilterDrawerProps {
   filters: FilterSection[]
   filterStateProps: boolean[][]
-  onFilterCarparks: (subFilterState: boolean[][]) => void
-  applyFilters(filterType: keyof Filters | null): void
+  onUpdateRoute: (subFilterState: boolean[][]) => void
+  setActivePanel(filterType: keyof Filters | null): void
   locale: SupportedLanguages
 }
 
 export function FilterDrawer({
   filters,
   filterStateProps,
-  onFilterCarparks,
-  applyFilters,
+  onUpdateRoute,
+  setActivePanel,
   locale,
 }: FilterDrawerProps) {
   const classes = useStyles()
@@ -172,7 +172,7 @@ export function FilterDrawer({
     >
       <Container maxWidth="lg">
         <div className={classes.filterDrawerHeader}>
-          <CloseIcon onClick={() => applyFilters(null)} />
+          <CloseIcon onClick={() => setActivePanel(null)} />
         </div>
         <div>
           {filters.map((filter, i) => {
@@ -194,8 +194,8 @@ export function FilterDrawer({
             variant="contained"
             color="primary"
             onClick={()=>{
-              onFilterCarparks(filterState)
-              applyFilters(null)
+              onUpdateRoute(filterState)
+              setActivePanel(null)
             }}
           >
             {filterContinueBtnLabel}

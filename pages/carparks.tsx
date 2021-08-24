@@ -83,7 +83,8 @@ function filterCarparks(
 }
 
 function Carparks({ carparks, filters }: IProps) {
-  const { locale, query } = useRouter()
+  const router = useRouter()
+  const { locale, query } = router;
   const { subDistricts: subDistrictsString, categories: categoriesString } =
     query
 
@@ -119,15 +120,22 @@ function Carparks({ carparks, filters }: IProps) {
     [filterState, filters, carparks]
   )
 
-  const onFilterCarparks = useCallback(
-    (subFilterState: boolean[][]) => {
-      if (activePanel) {
-        const newFilterState = { ...filterState, [activePanel]: subFilterState }
-        setFilterState(newFilterState)
-      }
-    },
-    [activePanel, filterState]
-  )
+  const onUpdateRoute = useCallback((subFilterState: boolean[][])=> {
+    if (activePanel){
+      const queries = filters[activePanel].map((filter, i) => {
+        const filtered = filter.subFilters.filter((_, subI) => subFilterState[i][subI])
+        return filtered.map(elem => elem._id)
+      })
+      const queryString = queries.join(',');
+      const queryObject =  activePanel === 'areas' ? {subDistricts: queryString} : {categories: queryString}
+      router.push({
+        query: {
+          ...query,
+          ...queryObject
+        }
+      })
+    }
+  }, [activePanel, filters, query])
 
   return (
     <Container>
@@ -143,8 +151,8 @@ function Carparks({ carparks, filters }: IProps) {
         <FilterDrawer
           filters={activePanel && filters[activePanel]}
           filterStateProps={activePanel && filterState[activePanel]}
-          onFilterCarparks={onFilterCarparks}
-          applyFilters={setActivePanel}
+          onUpdateRoute={onUpdateRoute}
+          setActivePanel={setActivePanel}
           locale={fallbackLocale as SupportedLanguages}
         />
       )}
