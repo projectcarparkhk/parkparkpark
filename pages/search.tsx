@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import SearchInput from '../components/search/input'
 import { Suggestion } from '../components/search/type'
-import { TagResponse } from '../types'
+import { HotTagResponse } from '../types/pages'
 import Header from '../components/header'
 import { getHotTags } from '../sanityApi/tags'
 import Link from 'next/link'
@@ -11,9 +11,10 @@ import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import { SupportedLanguages } from '../constants/SupportedLanguages';
+import translations from '../locales';
 
 interface IProps {
-  hotTags: TagResponse[]
+  hotTags: HotTagResponse[]
 }
 
 
@@ -27,12 +28,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 function Search({ hotTags }: IProps) {
-  const router = useRouter()
+  const { push, locale } = useRouter()
+
+  const {
+    hot,
+  } = translations[locale || 'zh']
+
   const classes = useStyles()
-  const {locale} = useRouter()
 
   function onSuggestionClick(suggestion: Suggestion) {
-    router.push(`/${suggestion.type}/${suggestion.slug}`, undefined, { shallow: true })
+    switch (suggestion.type) {
+      case 'subDistrict':
+        push({
+          pathname: '/carparks',
+          query: { subDistricts: suggestion.slug },
+        })
+        break
+      case 'carpark':
+        push({
+          pathname: `/carparks/${suggestion.slug}`
+        })
+        break
+    }
   }
   return (
     <Container>
@@ -42,11 +59,17 @@ function Search({ hotTags }: IProps) {
         onSuggestionClick={onSuggestionClick}
       >
         <>
-          <h3>熱門</h3>
+          <h3>{hot}</h3>
           <div>
             {hotTags
               .map((tag) => (
-                <Link key={tag[locale as SupportedLanguages].name} href={`/tags/${tag.slug}`}>
+                <Link 
+                  key={tag[locale as SupportedLanguages].name}
+                  href={{
+                    pathname: '/carparks',
+                    query: { tags: tag.slug },
+                  }}
+                >
                   <Chip
                     className={classes.chip}
                     key={tag[locale as SupportedLanguages].name}

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
-import { Area } from '../types/DistrictResponse'
 import Header from '../components/header'
 import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
@@ -15,10 +14,10 @@ import UndecoratedLink from '../components/UndecoratedLink'
 import {
   CarparkContextToday,
   PostResponse,
-  TagResponse,
+  HotTagResponse,
   TranslatedCarpark,
-} from '../types'
-import translations from '../locales/pages/index'
+} from '../types/pages'
+import translations from '../locales'
 import { useRouter } from 'next/router'
 import { imageBuilder } from '../sanityApi/sanity'
 import {
@@ -26,12 +25,13 @@ import {
   durationTranslations,
 } from '../constants/SupportedLanguages'
 import { getCarparks } from '../sanityApi/carparks'
-import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
 import { getHotTags } from '../sanityApi/tags'
-import FilterHdrIcon from '@material-ui/icons/FilterHdr';
-import GestureIcon from '@material-ui/icons/Gesture'; 
-import NatureIcon from '@material-ui/icons/Nature';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import FilterHdrIcon from '@material-ui/icons/FilterHdr'
+import GestureIcon from '@material-ui/icons/Gesture'
+import NatureIcon from '@material-ui/icons/Nature'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
+import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
+import { AreaResponse } from '../types/api/AreaResponse'
 
 interface IndexStyleProps {
   iconColor?: string
@@ -42,7 +42,8 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     zIndex: -1,
     height: '35vh',
     padding: theme.spacing(8, 2, 2, 2),
-    backgroundImage: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
+    backgroundImage:
+      'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     display: 'flex',
@@ -92,51 +93,51 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     '& div': {
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center'
-    }
+      alignItems: 'center',
+    },
   },
   icon: {
     padding: theme.spacing(1.5),
     marginBottom: theme.spacing(1),
     borderRadius: theme.spacing(6),
-    background: props => props.iconColor,
+    background: (props) => props.iconColor,
     '& svg': {
       fill: '#666',
       width: '0.95rem',
       height: '0.95rem',
-    }
-  }
+    },
+  },
 }))
 
 interface IProps {
   latestPosts: PostResponse[]
   hotPosts: PostResponse[]
   orderedCarparks: CarparkContextToday[]
-  hotTags: TagResponse[]
-  areas: Area[]
-
+  hotTags: HotTagResponse[]
+  areas: AreaResponse[]
 }
 interface AProps {
-  areas: Area[]
+  areas: AreaResponse[]
+  locale: SupportedLanguages
 }
 
 const areaConfig = [
   {
     icon: <FilterHdrIcon />,
-    color: '#e4f3ea'
+    color: '#e4f3ea',
   },
   {
     icon: <GestureIcon />,
-    color: '#ffece8'
+    color: '#ffece8',
   },
   {
     icon: <NatureIcon />,
-    color: '#fff6e4'
+    color: '#fff6e4',
   },
   {
     icon: <MoreHorizIcon />,
-    color: '#f0edfc'
-  }
+    color: '#f0edfc',
+  },
 ]
 
 interface IconCircleProps {
@@ -146,66 +147,67 @@ interface IconCircleProps {
 
 function IconCircle({ color, children }: IconCircleProps) {
   const classes = useStyles({
-    iconColor: color
+    iconColor: color,
   })
 
-  return (
-    <div className={classes.icon}>
-      {children}
-    </div>
-  )
+  return <div className={classes.icon}>{children}</div>
 }
 
-function AreaCategory({ areas }: AProps) {
+function AreaCategory({ areas, locale }: AProps) {
   const classes = useStyles({})
-
+  const { areaSelection } = translations[locale]
   return (
     <div className={classes.sectionContainer}>
       <StyledText size="h4" bold>
-        地區分類
+        {areaSelection}
       </StyledText>
       <div className={classes.areaIconContainer}>
-        {[...areas, {
-          _id: 'more',
-          name: '更多',
-          slug: ''
-        }].map((area, i) => {
-          return (
-            <Link 
-              href={{
-                pathname: '/all',
-                query: { area: area.slug },
-              }}
-              key={area._id}
-            >
-              <div>
-                <IconCircle 
-                  color={areaConfig[i].color}
-                >
+        {[
+          ...areas,
+          {
+            _id: 'more',
+            name: {
+              en: 'More',
+              zh: '更多',
+            },
+            slug: 'more',
+          },
+        ].map((area, i) => (
+          <Link
+            href={{
+              pathname: '/search-all',
+              query: { ['sub-district']: area.slug },
+            }}
+            key={area._id}
+          >
+            <div>
+              <IconCircle color={areaConfig[i].color}>
                 {areaConfig[i].icon}
-                </IconCircle>
-                {area.name}
-              </div>
-            </Link>
-          )
-        })}
+              </IconCircle>
+              {area.name[locale]}
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   )
 }
 
-export default function Index({ latestPosts,
+export default function Index({
+  latestPosts,
   hotPosts,
   orderedCarparks,
   hotTags,
-  areas }: IProps) {
+  areas,
+}: IProps) {
   const classes = useStyles({})
   const searchBoxClasses = useSearchBoxStyles()
   const { locale } = useRouter()
-  const fallBackLocale = (locale as SupportedLanguages) || 'zh'
+  const fallbackLocale = (locale as SupportedLanguages) || 'zh'
+
   const translatedLatestPosts = useMemo(() => {
     return latestPosts.map((post) => {
-      const { title, shortDescription } = post[fallBackLocale]
+      const { title, shortDescription } = post[fallbackLocale]
       const { _id, slug, imagePath } = post
       return {
         _id,
@@ -215,11 +217,11 @@ export default function Index({ latestPosts,
         imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
       }
     })
-  }, [latestPosts, fallBackLocale])
+  }, [latestPosts, fallbackLocale])
 
   const translatedHotPosts = useMemo(() => {
     return hotPosts.map((post) => {
-      const { title, shortDescription } = post[fallBackLocale]
+      const { title, shortDescription } = post[fallbackLocale]
       const { _id, slug, imagePath } = post
       return {
         _id,
@@ -229,41 +231,43 @@ export default function Index({ latestPosts,
         imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
       }
     })
-  }, [hotPosts, fallBackLocale])
+  }, [hotPosts, fallbackLocale])
 
   const translatedCarparks: TranslatedCarpark[] = useMemo(() => {
     return orderedCarparks.map((carpark) => {
-      const { tag, subDistrict, name } = carpark[fallBackLocale]
-      const { priceDetail, _id, imagePath, slug } = carpark
-      const shortDescription = priceDetail ? `$${priceDetail.price} / ${
-        durationTranslations[
-          priceDetail.hr as keyof typeof durationTranslations
-        ][fallBackLocale]
-      }` : ''
+      const { priceDetail, _id, imagePath, slug, tags, subDistrict, name } =
+        carpark
+      const shortDescription = priceDetail
+        ? `$${priceDetail.price} / ${
+            durationTranslations[
+              priceDetail.hr as keyof typeof durationTranslations
+            ][fallbackLocale]
+          }`
+        : ''
       return {
         _id,
-        title: name,
-        tags: tag.map((tag) => ({ label: tag.name })),
-        location: subDistrict.name,
+        title: name[fallbackLocale],
+        tags: tags.map((tag) => ({ label: tag.name[fallbackLocale] })),
+        location: subDistrict.name[fallbackLocale],
         imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
         shortDescription,
         slug,
       }
     })
-  }, [orderedCarparks, fallBackLocale])
+  }, [orderedCarparks, fallbackLocale])
 
   const translatedHotTags = useMemo(() => {
     return hotTags.map((tag) => {
-      const { name } = tag[fallBackLocale];
-      const { _id, imagePath, slug } = tag;
+      const { name } = tag[fallbackLocale]
+      const { _id, imagePath, slug } = tag
       return {
         _id,
         subtitle: name,
         imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
-        slug
+        slug,
       }
     })
-  }, [hotTags, fallBackLocale])
+  }, [hotTags, fallbackLocale])
 
   const StyledButton = withStyles((theme: Theme) => ({
     root: {
@@ -357,9 +361,7 @@ export default function Index({ latestPosts,
         </div>
       </div>
       <Container maxWidth="lg">
-        <AreaCategory 
-          areas={areas} 
-        />
+        <AreaCategory areas={areas} locale={fallbackLocale} />
         {postSections.map((section) => (
           <div key={section.sectionHeader} className={classes.sectionContainer}>
             <Section {...section} />
@@ -374,7 +376,7 @@ export async function getStaticProps() {
   const latestPosts = await getLatestPosts()
   const hotPosts = await getHotPosts()
   const carparks = await getCarparks()
-  const hotTags = await getHotTags(false);
+  const hotTags = await getHotTags(false)
 
   // building once per day to reduce front-end's load
   const orderedCarparks = orderCarparkByPriceToday(carparks)

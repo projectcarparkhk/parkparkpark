@@ -18,6 +18,9 @@ import { Suggestion } from './type'
 import { makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
+import translations from '../../locales'
+import { SupportedLanguages } from '../../constants/SupportedLanguages';
+import { useRouter } from 'next/router';
 
 export const useStyles = makeStyles((theme: Theme) => ({
   searchBox: {
@@ -79,16 +82,19 @@ const getSuggestionValue = (suggestion: Suggestion) => suggestion.name
 // Use your imagination to render suggestions.
 const renderSuggestion = (
   suggestion: Suggestion,
-) => (
-  <ListItem button>
+  locale:  SupportedLanguages,
+) => {
+  return (
+    <ListItem button>
     <ListItemAvatar>
       <Avatar>
         <LocationOnIcon />
       </Avatar>
     </ListItemAvatar>
-    <ListItemText primary={suggestion.name} secondary={suggestion.type} />
+    <ListItemText primary={suggestion.name} secondary={translations[locale][suggestion.type]} />
   </ListItem>
-)
+  )
+}
 
 const renderSuggestionsContainer = ({
   containerProps,
@@ -106,6 +112,12 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
+  const { locale } = useRouter()
+  const fallBackLocale = (locale as SupportedLanguages) 
+
+  const {
+    searchPlaceholder,
+  } = translations[fallBackLocale]
 
   function onChange(
     event: React.FormEvent<HTMLElement>,
@@ -133,7 +145,7 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
   }
   // Autosuggest will pass through all these props to the input.
   const inputProps: InputProps<Suggestion> = {
-    placeholder: '搜尋地區 / 停車場',
+    placeholder: searchPlaceholder,
     value,
     'aria-label': 'search',
     onChange,
@@ -146,7 +158,7 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
       onSuggestionsClearRequested={onSuggestionsClearRequested}
       onSuggestionSelected={onSuggestionSelected}
       getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
+      renderSuggestion={(suggestion) => renderSuggestion(suggestion, fallBackLocale)}
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (

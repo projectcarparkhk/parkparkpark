@@ -1,19 +1,29 @@
-import { CarparkResponse } from '../types'
+import { CarparkResponse } from '../types/pages'
 import { SanityClient } from './sanity'
 
 const carparkFields = `
-  _id,
+  _id, 
   'imagePath': mainImage.asset._ref,
   'slug': slug.current,
-  'en': {
-    'name': name.en,
-    'subDistrict': subDistrict[0]->{'name': name.en},
-    'tag': tag[0..1]->{'name':name.en}
+  'name': {
+    'en': name.en,
+    'zh': name.zh
   },
-  'zh': {
-    'name': name.zh,
-    'subDistrict': subDistrict[0]->{'name': name.zh},
-    'tag': tag[0..1]->{'name':name.zh}
+  'subDistricts': subDistrict[] -> {
+    _id,
+    'name': {
+      'en': name.en,
+      'zh': name.zh,
+    },
+    'slug': slug.current
+  },
+  'tags': tag[] -> {
+    _id,
+    'name': {
+      'en': name.en,
+      'zh': name.zh,
+    },
+    'slug': slug.current
   },
   'priceDetails': priceDetails.rows[1...10]{
     'day': cells[0],
