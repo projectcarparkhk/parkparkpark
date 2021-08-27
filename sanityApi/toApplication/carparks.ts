@@ -75,8 +75,9 @@ export const structureFilters = (
 }
 
 export const structureCarparks = (carparkResponse: CarparkResponse[]) => {
-  return carparkResponse.map(({ _id, name, subDistricts, tags }) => ({
+  return carparkResponse.map(({ _id, imagePath = '', name, subDistricts, tags }) => ({
     _id,
+    imagePath,
     name,
     subDistricts,
     tags,

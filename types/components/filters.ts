@@ -15,7 +15,8 @@ export interface Filters {
   areas: FilterSection[]
   categories: FilterSection[]
 }
-export interface CarparkItem extends FilterOption{
+export interface CarparkItem extends FilterOption {
+  imagePath: string
   subDistricts: FilterOption[]
   tags: FilterOption[]
 }

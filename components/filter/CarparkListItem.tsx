@@ -4,7 +4,8 @@ import Card from '@material-ui/core/Card'
 import { StyledText } from '../StyledText'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { CarparkItem } from '../../types/components/filters'
-
+import { StyledChip } from '../StyledChip'
+import { imageBuilder } from '../../sanityApi/sanity'
 
 interface CarparkListProps {
   carpark: CarparkItem
@@ -13,30 +14,56 @@ interface CarparkListProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
-    padding: theme.spacing(2),
+    display: 'flex',
+    padding: theme.spacing(2, 1),
     marginBottom: theme.spacing(2),
+    borderRadius: theme.spacing(1),
+  },
+  image: {
+    objectFit: 'cover',
+    objectPosition: 'center center',
+    width: '80px',
+    height: '80px',
+    borderRadius: theme.spacing(1),
+    marginRight: theme.spacing(2),
+  },
+  subDistricts: {
+    marginRight: theme.spacing(1),
+  },
+  chipContainer: {
+    marginTop: theme.spacing(1),
+  },
+  chip: {
+    marginRight: theme.spacing(1),
+    borderRadius: '5px',
+    padding: theme.spacing(0),
   },
 }))
 
-
 export default function CarparkListItem({ carpark, locale }: CarparkListProps) {
   const classes = useStyles()
+  const { name, imagePath, subDistricts, tags } = carpark
   return (
     <Card className={classes.card}>
-      <StyledText size="h4" bold inline={false}>
-        {carpark.name[locale]}
-      </StyledText>
-
+      <img className={classes.image} src={imageBuilder(imagePath).width(144).height(144).url() || '/hk.webp'} />
       <div>
-        {carpark.subDistricts.map((subDistrict) => {
-          return (
-            <span key={subDistrict.name[locale]}>
-              <StyledText size="body1" inline={true}>
-                {subDistrict.name[locale]}
-              </StyledText>
-            </span>
-          )
-        })}
+        <div className={classes.subDistricts}>
+          <StyledText size="body1" inline={true}>
+            {subDistricts.map(subDistrict => subDistrict.name[locale]).join('/')}
+          </StyledText>
+        </div>
+        <StyledText size="h4" bold inline={false}>
+          {name[locale]}
+        </StyledText>
+        <div className={classes.chipContainer}>
+              {tags &&
+                tags.map((tag) => (
+                  <StyledChip
+                    className={classes.chip}
+                    label={tag.name[locale]}
+                  />
+                ))}
+            </div>
       </div>
     </Card>
   )
