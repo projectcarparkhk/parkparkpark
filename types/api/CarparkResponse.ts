@@ -8,11 +8,22 @@ export interface PriceDetail {
 
 // define types and only take what matters for the component in the transformation section
 export interface CarparkResponse extends ResponseElement {
-  imagePath: string
+  imagePath: string[]
   name: { [key: string]: string }
   subDistricts: ResponseElement[]
   tags: ResponseElement[]
   priceDetails: PriceDetail[]
+  descriptions: { [key: string]: string }
+  paymentMethods: {
+    name: { [key: string]: string }
+  }
+  posts: {
+    title: { [key: string]: string }
+    slug: string
+    shortDescription: { [key: string]: string },
+    imagePath: string
+  }[]
+
 }
 
 export interface CarparkContextToday extends ResponseElement {

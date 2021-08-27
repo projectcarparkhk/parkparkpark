@@ -19,6 +19,8 @@ const locale = {
   filterContinueBtnLabel: 'Continue',
   allCategories: 'All Categories',
   allSubDistricts: 'All Subdistricts',
+  latestPromotionsTitle: 'Latest Promotions'
+
 }
 
 

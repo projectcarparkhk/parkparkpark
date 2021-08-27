@@ -17,7 +17,7 @@ export const orderCarparkByPriceToday = (
         tags,
         subDistrict: subDistricts[0],
         name,
-        imagePath: imagePath || '',
+        imagePath: imagePath[0] || '',
         slug: slug || '',
         priceDetail:
           (priceDetails?.find((item) => {

@@ -72,7 +72,7 @@ export default {
     {
       name: 'descriptions',
       title: 'Descriptions',
-      type: 'localeBlockContent',
+      type: 'localeString',
     },
     {
       name: 'isHot',

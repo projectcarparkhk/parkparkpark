@@ -71,6 +71,7 @@ theme.typography.body1 = {
 
 theme.typography.subtitle1 = {
   fontSize: '0.6rem',
+  fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.6rem',
   },

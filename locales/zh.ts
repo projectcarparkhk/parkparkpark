@@ -18,7 +18,8 @@ const locale = {
   filterContinueBtnLabel: '繼續',
   areaSelection: '地區分類',
   allCategories: '所有分類',
-  allSubDistricts: '所有分區'
+  allSubDistricts: '所有分區',
+  latestPromotionsTitle: '最新推廣'
 }
 
 export default locale
