@@ -11,7 +11,7 @@ import React from 'react'
 import { StyledText } from './StyledText'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
-import { Chip } from '@material-ui/core'
+import { StyledChip } from './StyledChip'
 import { useRouter } from 'next/router'
 
 interface StyleProps {
@@ -109,22 +109,6 @@ export interface StyledCardProps {
   comments?: number
   index: number
 }
-
-const StyledChip = withStyles((theme: Theme) => ({
-  root: {
-    [theme.breakpoints.down('sm')]: {
-      height: '1.2rem',
-    },
-  },
-  label: {
-    padding: theme.spacing(0, 1),
-    fontSize: '1rem',
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(0, 0.7),
-      fontSize: '0.6rem',
-    },
-  },
-}))(Chip)
 
 const StyledCardContent = withStyles((theme: Theme) => ({
   root: {
