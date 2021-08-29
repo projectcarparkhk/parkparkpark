@@ -115,6 +115,13 @@ function Carparks({ carparks, filters }: IProps) {
     [subDistrictsString, categoriesString, carparks]
   )
 
+  const filterCounts = useMemo(() => {
+    return {
+      areas: subDistricts.filter((item) => item.length).length,
+      categories: categories.filter((item) => item.length).length,
+    }
+  }, [subDistrictsString, categoriesString])
+
   // set filter state based on url path
   // usecallback to optimize when this function is being passed down to component
   const onUpdateRoute = useCallback(
@@ -150,6 +157,7 @@ function Carparks({ carparks, filters }: IProps) {
         applyFilterCatalogue={(activeItem: keyof Filters) =>
           setActivePanel(activeItem)
         }
+        filterCounts={filterCounts}
         filterTypes={FILTER_TYPES}
         locale={fallbackLocale as SupportedLanguages}
       />

@@ -15,6 +15,11 @@ export interface Filters {
   areas: FilterSection[]
   categories: FilterSection[]
 }
+
+export interface FilterCounts {
+  areas: number
+  categories: number
+}
 export interface CarparkItem extends FilterOption {
   imagePath: string
   subDistricts: FilterOption[]
