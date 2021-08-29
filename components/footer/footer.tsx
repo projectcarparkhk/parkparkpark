@@ -1,22 +1,16 @@
 import {
-  Button,
   createStyles,
   FormControl,
   InputBase,
-  InputLabel,
-  Link,
   makeStyles,
   MenuItem,
   Select,
   Theme,
 } from '@material-ui/core'
 import React from 'react'
-import Image from 'next/image'
-import { imageBuilder } from '../../sanityApi/sanity'
 import { StyledText } from '../../components/StyledText'
 import { useRouter } from 'next/router'
 import translations from '../../locales'
-import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { withStyles } from '@material-ui/core'
 import InstagramIcon from '@material-ui/icons/Instagram'
 import { IconButton } from '@material-ui/core'
