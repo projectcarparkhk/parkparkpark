@@ -6,13 +6,13 @@ const postFields = `
   _id,
   'imagePath': mainImage.asset._ref,
   'slug': slug.current,
-  'en' : {
-    'title': title.en,
-    'shortDescription': shortDescription.en
+  'title': {
+    'en': title.en,
+    'zh': title.zh,
   },
-  'zh' : {
-    'title': title.zh,
-    'shortDescription': shortDescription.zh
+  'shortDescription': {
+    'en': shortDescription.en,
+    'zh': shortDescription.zh
   }
 `
 
@@ -29,3 +29,4 @@ export async function getHotPosts(preview?: boolean): Promise<PostResponse[]> {
       ${postFields}
     }`)
 }
+

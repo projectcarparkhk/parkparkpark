@@ -19,7 +19,20 @@ const locale = {
   areaSelection: '地區分類',
   allCategories: '所有分類',
   allSubDistricts: '所有分區',
-  latestPromotionsTitle: '最新推廣'
+  latestPromotionsLabel: '最新推廣',
+  carparkFeeLabel: '收費',
+  priceDetailsDayLabel: '日',
+  priceDetailsTimeLabel: '時段',
+  priceDetailsHourLabel: '毎',
+  priceDetailsPriceLabel: '港幣',
+  priceDetailsDayAllLabel: '全日',
+  priceDetailsTimeAllLabel: '所有時段',
+  nearbyCarparksLabel: '附近停車場',
+  paymentMethodLabel: '付費方式',
+  nearbyBestPromotionsLabel: '附近至抵優惠',
+  aboutParkLabel: '關於ParkParkPark',
+  termsLabel: '網絡條款'
+
 }
 
 export default locale

@@ -5,10 +5,10 @@ export interface PostTranslation {
 
 export interface PostResponse {
     _id: string;
-    en: PostTranslation;
+    title: {[key: string]: string}
+    shortDescription: {[key: string]: string}
     imagePath: string;
     slug: string;
-    zh: PostTranslation;
 }
 
 export interface TranslatedPost {

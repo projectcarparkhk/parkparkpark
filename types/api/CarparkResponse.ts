@@ -1,4 +1,4 @@
-import { ResponseElement } from './ResponseElement';
+import { ResponseElement } from './ResponseElement'
 export interface PriceDetail {
   day: string
   hr: string
@@ -16,19 +16,14 @@ export interface CarparkResponse extends ResponseElement {
   descriptions: { [key: string]: string }
   paymentMethods: {
     name: { [key: string]: string }
-  }
-  posts: {
-    title: { [key: string]: string }
-    slug: string
-    shortDescription: { [key: string]: string },
-    imagePath: string
+    iconPath: string
   }[]
-
+  posts: CarparkPost[]
 }
 
-export interface CarparkContextToday extends ResponseElement {
-  tags: ResponseElement[]
-  subDistrict: ResponseElement
+export interface CarparkPost {
+  title: { [key: string]: string }
+  slug: string
+  shortDescription: { [key: string]: string }
   imagePath: string
-  priceDetail?: PriceDetail
 }

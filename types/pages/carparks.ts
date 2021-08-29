@@ -7,3 +7,9 @@ export interface TranslatedCarpark {
   shortDescription: string
   slug: string
 }
+
+export interface CarparkPostField {
+  day: any
+  hr: any
+  time: any
+}

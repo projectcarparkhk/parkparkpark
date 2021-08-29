@@ -11,6 +11,14 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'icon',
+      title: 'Icon',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    },
+    {
       name: 'shortDescription',
       title: 'Short description',
       type: 'localeString',

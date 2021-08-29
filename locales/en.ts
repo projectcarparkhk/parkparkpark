@@ -19,8 +19,19 @@ const locale = {
   filterContinueBtnLabel: 'Continue',
   allCategories: 'All Categories',
   allSubDistricts: 'All Subdistricts',
-  latestPromotionsTitle: 'Latest Promotions'
-
+  latestPromotionsLabel: 'Latest Promotions',
+  carparkFeeLabel: 'Carpark Fees',
+  priceDetailsDayLabel: 'Days',
+  priceDetailsTimeLabel: 'Time Periods',
+  priceDetailsHourLabel: 'Hourly',
+  priceDetailsPriceLabel: 'HKD',
+  priceDetailsDayAllLabel: 'Whole Day',
+  priceDetailsTimeAllLabel: 'All times',
+  nearbyCarparksLabel: 'Nearby Carparks',
+  paymentMethodLabel: 'Payment Methods',
+  nearbyBestPromotionsLabel: 'Nearby Best Promotions',
+  aboutParkLabel: 'About ParkParkPark',
+  termsLabel: 'Terms & conditions'
 }
 
 

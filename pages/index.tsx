@@ -2,8 +2,8 @@ import React, { useMemo } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
-import { Button, Container, InputBase, SvgIconProps } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Container, InputBase, SvgIconProps } from '@material-ui/core'
+import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
@@ -12,17 +12,16 @@ import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
 import {
-  CarparkContextToday,
   PostResponse,
   HotTagResponse,
   TranslatedCarpark,
+  CarparkResponse,
 } from '../types/pages'
 import translations from '../locales'
 import { useRouter } from 'next/router'
 import { imageBuilder } from '../sanityApi/sanity'
 import {
   SupportedLanguages,
-  durationTranslations,
 } from '../constants/SupportedLanguages'
 import { getCarparks } from '../sanityApi/carparks'
 import { getHotTags } from '../sanityApi/tags'
@@ -32,6 +31,10 @@ import NatureIcon from '@material-ui/icons/Nature'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
 import { AreaResponse } from '../types/api/AreaResponse'
+import { StyledButton } from '../components/StyledButton'
+import Footer from '../components/footer/footer'
+import { translatePosts } from '../utils/translatePosts'
+import { translateCarparks } from '../utils/translateCarparks'
 
 interface IndexStyleProps {
   iconColor?: string
@@ -112,7 +115,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
 interface IProps {
   latestPosts: PostResponse[]
   hotPosts: PostResponse[]
-  orderedCarparks: CarparkContextToday[]
+  orderedCarparks: CarparkResponse[]
   hotTags: HotTagResponse[]
   areas: AreaResponse[]
 }
@@ -205,56 +208,20 @@ export default function Index({
   const { locale } = useRouter()
   const fallbackLocale = (locale as SupportedLanguages) || 'zh'
 
-  const translatedLatestPosts = useMemo(() => {
-    return latestPosts.map((post) => {
-      const { title, shortDescription } = post[fallbackLocale]
-      const { _id, slug, imagePath } = post
-      return {
-        _id,
-        slug,
-        title,
-        shortDescription,
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
-      }
-    })
-  }, [latestPosts, fallbackLocale])
+  const translatedLatestPosts = useMemo(
+    () => translatePosts(latestPosts, fallbackLocale),
+    [latestPosts, fallbackLocale]
+  )
 
-  const translatedHotPosts = useMemo(() => {
-    return hotPosts.map((post) => {
-      const { title, shortDescription } = post[fallbackLocale]
-      const { _id, slug, imagePath } = post
-      return {
-        _id,
-        slug,
-        title,
-        shortDescription,
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
-      }
-    })
-  }, [hotPosts, fallbackLocale])
+  const translatedHotPosts = useMemo(
+    () => translatePosts(hotPosts, fallbackLocale),
+    [hotPosts, fallbackLocale]
+  )
 
-  const translatedCarparks: TranslatedCarpark[] = useMemo(() => {
-    return orderedCarparks.map((carpark) => {
-      const { priceDetail, _id, imagePath, slug, tags, subDistrict, name } =
-        carpark
-      const shortDescription = priceDetail
-        ? `$${priceDetail.price} / ${
-            durationTranslations[
-              priceDetail.hr as keyof typeof durationTranslations
-            ][fallbackLocale]
-          }`
-        : ''
-      return {
-        _id,
-        title: name[fallbackLocale],
-        tags: tags.map((tag) => ({ label: tag.name[fallbackLocale] })),
-        location: subDistrict.name[fallbackLocale],
-        imagePath: imageBuilder(imagePath).toString() || '/hk.webp',
-        shortDescription,
-        slug,
-      }
-    })
-  }, [orderedCarparks, fallbackLocale])
+  const translatedCarparks: TranslatedCarpark[] = useMemo(
+    () => translateCarparks(orderedCarparks, fallbackLocale),
+    [orderedCarparks, fallbackLocale]
+  )
 
   const translatedHotTags = useMemo(() => {
     return hotTags.map((tag) => {
@@ -268,17 +235,6 @@ export default function Index({
       }
     })
   }, [hotTags, fallbackLocale])
-
-  const StyledButton = withStyles((theme: Theme) => ({
-    root: {
-      [theme.breakpoints.down('sm')]: {
-        width: '100%',
-      },
-      [theme.breakpoints.up('sm')]: {
-        width: '30%',
-      },
-    },
-  }))(Button)
 
   const {
     mainSlogan,
@@ -368,6 +324,7 @@ export default function Index({
           </div>
         ))}
       </Container>
+      <Footer />
     </>
   )
 }

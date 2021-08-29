@@ -39,7 +39,8 @@ const carparkFields = `
     'name': {
       'en': name.en,
       'zh': name.zh
-    }
+    },
+    'iconPath': icon.asset._ref
   },
   'posts': posts[] -> {
     'title': {
@@ -52,8 +53,9 @@ const carparkFields = `
       'zh': shortDescription.zh
     },
     'imagePath': mainImage.asset._ref,
-  } 
+    } 
 `
+
 
 export async function getCarparks(
   preview?: boolean
@@ -69,6 +71,13 @@ export async function getCarparkBySlug(
 ): Promise<CarparkResponse> {
   return SanityClient(preview)
     .fetch(`*[_type == 'carpark' && slug.current == '${slug}'] | order(publishedAt desc)[0]{
+      ${carparkFields}
+    }`)
+}
+
+export async function getNearbyCarparks(subDistrictIds: string[], preview?: boolean): Promise<CarparkResponse[]> {
+  return SanityClient(preview)
+    .fetch(`*[_type == 'carpark' && (subDistrict[]->_id)[@ in [${subDistrictIds.map(id => `'${id}'`)}]] ]| order(publishedAt desc){
       ${carparkFields}
     }`)
 }

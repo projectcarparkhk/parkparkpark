@@ -2,43 +2,66 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Card,
-  CardContent,
   CardMedia,
   Chip,
   Container,
   Link,
   makeStyles,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Theme,
-  Typography,
 } from '@material-ui/core'
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
 import Header from '../../components/header'
-import { getCarparkBySlug, getCarparks } from '../../sanityApi/carparks'
-import { CarparkResponse } from '../../types/pages'
+import {
+  getCarparkBySlug,
+  getCarparks,
+  getNearbyCarparks,
+} from '../../sanityApi/carparks'
+import { CarparkResponse, PostResponse } from '../../types/pages'
 import Image from 'next/image'
 import { imageBuilder } from '../../sanityApi/sanity'
 import { StyledText } from '../../components/StyledText'
 import { useRouter } from 'next/router'
 import translations from '../../locales'
-import post from '../../studio/schemas/documents/post'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-
-interface Carpark {
+import {
+  durationTranslations,
+  SupportedLanguages,
+} from '../../constants/SupportedLanguages'
+import { CarparkPost } from '../../types/api/CarparkResponse'
+import { CarparkPostField } from '../../types/pages/carparks'
+import { Section, SectionProps } from '../../components/Section'
+import { useMemo } from 'react'
+import { StyledButton } from '../../components/StyledButton'
+import { getHotPosts } from '../../sanityApi/posts'
+import Footer from '../../components/footer/footer'
+import { withStyles } from '@material-ui/core'
+import { translateCarparks } from '../../utils/translateCarparks'
+import { translatePosts } from '../../utils/translatePosts'
+import UndecoratedLink from '../../components/UndecoratedLink'
+interface IProps {
   carpark: CarparkResponse
+  nearbyCarparks: CarparkResponse[]
+  nearbyBestPromotions: PostResponse[]
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   carouselImage: {
     height: '30vh',
+    marginTop: theme.spacing(1),
   },
   container: {
     padding: theme.spacing(2, 0),
   },
   section: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
   title: {
     marginBottom: theme.spacing(1),
@@ -62,13 +85,139 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  tableTitle: {
+    fontWeight: 'bold',
+  },
+  feeContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: theme.spacing(1),
+  },
+  paymentContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: theme.spacing(1),
+  },
+  paymentIconContainer: {
+    height: '20px',
+    width: '20px',
+    position: 'relative',
+    marginRight: theme.spacing(2),
+  },
+  sectionContainer: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2, 0),
+  },
+  accordionSummary: {
+    display: 'flex',
+    alignItems: 'flex-start',
+  },
+  accordionSummaryContent: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }))
 
-const Carpark = ({ carpark }: Carpark) => {
+const CarparkPage = ({
+  carpark,
+  nearbyCarparks,
+  nearbyBestPromotions,
+}: IProps) => {
   const classes = useStyles()
-  const { locale } = useRouter()
-  const fallbackLocale = locale || 'zh'
-  const { latestPromotionsTitle } = translations[fallbackLocale]
+  const router = useRouter()
+  const fallbackLocale = (router.locale as SupportedLanguages) || 'zh'
+  const {
+    latestPromotionsLabel,
+    carparkFeeLabel,
+    priceDetailsDayLabel,
+    priceDetailsTimeLabel,
+    priceDetailsHourLabel,
+    priceDetailsPriceLabel,
+    priceDetailsDayAllLabel,
+    priceDetailsTimeAllLabel,
+    nearbyCarparksLabel,
+    checkoutAll,
+    paymentMethodLabel,
+    nearbyBestPromotionsLabel,
+  } = translations[fallbackLocale]
+
+  const carparkPostFields: CarparkPostField = {
+    day: {
+      all: priceDetailsDayAllLabel,
+    },
+    hr: {
+      '0.5': durationTranslations['0.5'][fallbackLocale],
+      '1': durationTranslations['1'][fallbackLocale],
+      '1.5': durationTranslations['1.5'][fallbackLocale],
+      '2': durationTranslations['2'][fallbackLocale],
+    },
+    time: {
+      all: priceDetailsTimeAllLabel,
+    },
+  }
+
+  const translatedNearbyCarparks = useMemo(
+    () => translateCarparks(nearbyCarparks, fallbackLocale),
+    [nearbyCarparks, fallbackLocale]
+  )
+
+  const translatedNearbyBestPromotions = useMemo(
+    () => translatePosts(nearbyBestPromotions, fallbackLocale),
+    []
+  )
+
+  const postSections: SectionProps[] = [
+    {
+      sectionHeader: nearbyCarparksLabel,
+      postItems: translatedNearbyCarparks,
+      limited: true,
+      renderButton: () => (
+        <Link href="/nearby" style={{ width: '100%' }}>
+          <StyledButton variant="outlined" color="primary">
+            <StyledText size="h6" bold>
+              {checkoutAll}
+            </StyledText>
+          </StyledButton>
+        </Link>
+      ),
+    },
+    {
+      sectionHeader: nearbyBestPromotionsLabel,
+      postItems: translatedNearbyBestPromotions,
+      slidingCard: true,
+    },
+  ]
+
+  const Promotions = ({ post }: { post: CarparkPost }) => (
+    <UndecoratedLink href={post.slug}>
+      <div className={classes.details}>
+        <CardMedia
+          className={classes.media}
+          image={imageBuilder(post.imagePath).toString() || '/hk.webp'}
+        />
+        <div className={classes.content}>
+          <StyledText size="body1" bold className={classes.title}>
+            {post.title[fallbackLocale]}
+          </StyledText>
+          <StyledText size="subtitle1">
+            {post.shortDescription[fallbackLocale]}
+          </StyledText>
+        </div>
+      </div>
+    </UndecoratedLink>
+  )
+
+  const StyledChip = withStyles((theme: Theme) => ({
+    root: {
+      border: '1px solid',
+      borderColor: theme.palette.primary.main,
+      borderRadius: '4px',
+    },
+    label: {
+      color: theme.palette.primary.main,
+    },
+  }))(Chip)
+
   return (
     <div>
       <Container>
@@ -92,14 +241,14 @@ const Carpark = ({ carpark }: Carpark) => {
       <Container>
         <div className={classes.container}>
           <div className={classes.section}>
-            <StyledText size="h3" bold>
+            <StyledText size="h3" bold className={classes.title}>
               {carpark.name[fallbackLocale]}
             </StyledText>
             <StyledText size="body1" className={classes.description}>
               {carpark.descriptions[fallbackLocale]}
             </StyledText>
             {carpark.tags.map((tag) => (
-              <Chip
+              <StyledChip
                 variant="outlined"
                 size="small"
                 key={tag.slug}
@@ -110,91 +259,158 @@ const Carpark = ({ carpark }: Carpark) => {
           </div>
           <div className={classes.section}>
             <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <StyledText size="h4" bold className={classes.title}>
-                  {latestPromotionsTitle}
-                </StyledText>
+              <AccordionSummary
+                expandIcon={carpark.posts.length && <ExpandMoreIcon />}
+                className={classes.accordionSummary}
+              >
+                <div className={classes.accordionSummaryContent}>
+                  <StyledText size="h4" bold className={classes.title}>
+                    {latestPromotionsLabel}
+                  </StyledText>
+                </div>
               </AccordionSummary>
 
               {carpark.posts.map((post) => (
-                <AccordionDetails>
-                  <div className={classes.details}>
-                    <CardMedia
-                      className={classes.media}
-                      image={
-                        imageBuilder(post.imagePath).toString() || '/hk.webp'
-                      }
-                    />
-                    <div className={classes.content}>
-                      <StyledText size="body1" bold className={classes.title}>
-                        {post.title[fallbackLocale]}
-                      </StyledText>
-                      <StyledText size="subtitle1">
-                        {post.shortDescription[fallbackLocale]}
-                      </StyledText>
-                    </div>
-                  </div>
-                  {/* <div className={classes.postImageContainer}>
-                    <Image
-                      src={imageBuilder(post.imagePath).toString() || '/hk.webp'}
-                      objectFit="none"
-                      layout="fill"
-                    />
-
-                  </div>
-                  <div>
-                    <StyledText size="body1" bold className={classes.title}>
-                      {post.title[fallbackLocale]}
-                    </StyledText>
-                    <StyledText size="subtitle1">
-                      {post.shortDescription[fallbackLocale]}
-                    </StyledText>
-                  </div> */}
+                <AccordionDetails key={post.slug}>
+                  <Promotions post={post} />
                 </AccordionDetails>
               ))}
             </Accordion>
           </div>
+          <div className={classes.section}>
+            <div className={classes.feeContainer}>
+              <StyledText size="h4" bold className={classes.title}>
+                {carparkFeeLabel}
+              </StyledText>
+            </div>
+            <TableContainer component={Paper}>
+              <Table size="small" aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className={classes.tableTitle}>
+                      {priceDetailsDayLabel}
+                    </TableCell>
+                    <TableCell className={classes.tableTitle}>
+                      {priceDetailsTimeLabel}
+                    </TableCell>
+                    <TableCell className={classes.tableTitle}>
+                      {priceDetailsHourLabel}
+                    </TableCell>
+                    <TableCell className={classes.tableTitle}>
+                      {priceDetailsPriceLabel}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {carpark.priceDetails.map((detail) => (
+                    <TableRow
+                      key={`${detail.day}_${detail.hr}_${detail.price}`}
+                    >
+                      <TableCell>
+                        <StyledText size="body1">
+                          {carparkPostFields['day'][detail.day]}
+                        </StyledText>
+                      </TableCell>
+                      <TableCell>
+                        <StyledText size="body1">
+                          {carparkPostFields['time'][detail.time]}
+                        </StyledText>
+                      </TableCell>
+                      <TableCell>
+                        <StyledText size="body1">
+                          {carparkPostFields['hr'][detail.hr]}
+                        </StyledText>
+                      </TableCell>
+                      <TableCell>
+                        <StyledText size="body1">
+                          {`$ ${detail.price}`}
+                        </StyledText>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className={classes.section}>
+            <StyledText size="h4" bold className={classes.title}>
+              {paymentMethodLabel}
+            </StyledText>
+            {carpark.paymentMethods.map((method) => (
+              <div
+                className={classes.paymentContainer}
+                key={`${method.name[fallbackLocale]}_${method.iconPath}`}
+              >
+                <div className={classes.paymentIconContainer}>
+                  <Image
+                    src={imageBuilder(method.iconPath).toString() || '/hk.webp'}
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <StyledText size="body1">
+                  {method.name[fallbackLocale]}
+                </StyledText>
+              </div>
+            ))}
+          </div>
+          <div className={classes.section}>
+            {postSections.map((section) => (
+              <div
+                key={section.sectionHeader}
+                className={classes.sectionContainer}
+              >
+                <Section {...section} />
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
+      <Footer />
     </div>
   )
 }
 
-export default Carpark
+export default CarparkPage
 
-interface PathContext {
+interface StaticPathContext {
   locales: string[]
 }
+interface Path {
+  params: { slug: string }
+  locale: string
+}
 
-export async function getStaticPaths({ locales }: PathContext) {
+export async function getStaticPaths({ locales }: StaticPathContext) {
   const carparksResponse = await getCarparks()
   const paths = carparksResponse.reduce(
-    (acc, carpark) => ({
+    (acc, carpark) => [
       ...acc,
-      ...locales.map((locale) => ({
-        params: { slug: 'post-1' },
-        locale: locale,
-      })),
-    }),
-    []
+      ...locales.map((locale) => ({ params: { slug: carpark.slug }, locale })),
+    ],
+    [] as Path[]
   )
 
   return { paths, fallback: false }
 }
 
-interface Context {
+interface StaticPropsContext {
   params: {
     slug: string
   }
   preview: boolean
 }
 
-export async function getStaticProps({ params, preview }: Context) {
+export async function getStaticProps({ params, preview }: StaticPropsContext) {
   const carpark = await getCarparkBySlug(params.slug, preview)
-
-  console.log('carpark', JSON.stringify(carpark, null, 2))
+  const subDistrictIds = carpark.subDistricts.map(
+    (subDistrict) => subDistrict._id
+  )
+  const nearbyCarparks = await getNearbyCarparks(subDistrictIds)
+  // todo when final structure is defined
+  const nearbyBestPromotions = await getHotPosts()
   return {
-    props: { carpark },
+    props: { carpark, nearbyCarparks, nearbyBestPromotions },
     revalidate: 1,
   }
 }
