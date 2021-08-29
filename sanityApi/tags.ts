@@ -1,4 +1,3 @@
-
 import { HotTagResponse, TagFilterResponse } from '../types/api/TagResponse'
 import { SanityClient } from './sanity'
 
@@ -24,10 +23,10 @@ export async function getHotTags(preview: boolean): Promise<HotTagResponse[]> {
 }
 
 export async function getTags(preview: boolean): Promise<TagFilterResponse[]> {
-  const categories = await SanityClient(preview)
-  .fetch(`*[_type == 'tag']{
+  const categories = await SanityClient(preview).fetch(`*[_type == 'tag']{
     _id, 
-    name
+    name,
+    'slug': slug.current,
   }`)
-  return categories;
+  return categories
 }

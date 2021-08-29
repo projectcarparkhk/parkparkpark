@@ -9,6 +9,7 @@ export interface FilterSection {
 export interface FilterOption {
   _id: string
   name: { [key: string]: string }
+  slug: string
 }
 
 export interface Filters {

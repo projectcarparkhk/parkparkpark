@@ -10,7 +10,7 @@ const carparkFields = `
     'zh': name.zh
   },
   'subDistricts': subDistrict[] -> {
-    _id,
+    '_id': slug.current,
     'name': {
       'en': name.en,
       'zh': name.zh,
@@ -18,7 +18,7 @@ const carparkFields = `
     'slug': slug.current
   },
   'tags': tag[] -> {
-    _id,
+    '_id': slug.current,
     'name': {
       'en': name.en,
       'zh': name.zh,
