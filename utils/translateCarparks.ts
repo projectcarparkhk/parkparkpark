@@ -12,7 +12,7 @@ export const translateCarparks = (
   carparks.map((carpark) => {
     const { priceDetails, _id, imagePath, slug, tags, subDistricts, name } =
       carpark
-    const shortDescription = priceDetails[0]
+    const shortDescription = priceDetails && priceDetails[0]
       ? `$${priceDetails[0].price} / ${
           durationTranslations[
             priceDetails[0].hr as keyof typeof durationTranslations
