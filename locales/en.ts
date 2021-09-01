@@ -23,7 +23,7 @@ const locale = {
   carparkFeeLabel: 'Carpark Fees',
   priceDetailsDayLabel: 'Days',
   priceDetailsTimeLabel: 'Periods',
-  priceDetailsHourLabel: 'Times',
+  priceDetailsHourLabel: 'Modes',
   priceDetailsPriceLabel: 'HKD',
   priceDetailsDayAllLabel: 'Whole Day',
   toLabel: ' to ',

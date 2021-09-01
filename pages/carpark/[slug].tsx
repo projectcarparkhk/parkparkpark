@@ -31,9 +31,7 @@ import { StyledText } from '../../components/StyledText'
 import { useRouter } from 'next/router'
 import translations from '../../locales'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import {
-  SupportedLanguages,
-} from '../../constants/SupportedLanguages'
+import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { CarparkPost } from '../../types/api/CarparkResponse'
 import { Section, SectionProps } from '../../components/Section'
 import { useMemo } from 'react'
@@ -44,7 +42,11 @@ import { withStyles } from '@material-ui/core'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
-import { parseDayData, parseHourData, parseTimeData } from '../../utils/parseData'
+import {
+  parseDayData,
+  parseHourData,
+  parseTimeData,
+} from '../../utils/parseData'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -87,11 +89,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
   tableTitle: {
-    padding: theme.spacing(1, 2),
-    minWidth: '25%'
+    padding: theme.spacing(0.5, 1),
+    minWidth: '25%',
   },
   tableCell: {
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(0.5, 1),
   },
   feeContainer: {
     display: 'flex',
@@ -158,7 +160,6 @@ const CarparkPage = ({
     paymentMethodLabel,
     nearbyBestPromotionsLabel,
   } = translations[fallbackLocale]
-
 
   const translatedNearbyCarparks = useMemo(
     () => translateCarparks(nearbyCarparks, fallbackLocale),
@@ -238,6 +239,7 @@ const CarparkPage = ({
       >
         {carpark.imagePath.map((path) => (
           <div
+            key={path}
             className={classes.carouselImage}
             style={{
               backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%), url('${
