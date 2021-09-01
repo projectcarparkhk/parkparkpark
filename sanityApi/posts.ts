@@ -1,6 +1,5 @@
-
 import { PostResponse } from '../types/pages'
-import {SanityClient} from './sanity'
+import { SanityClient } from './sanity'
 
 const postFields = `
   _id,
@@ -16,17 +15,34 @@ const postFields = `
   }
 `
 
-export async function getLatestPosts(preview?: boolean): Promise<PostResponse[]> {
-  return SanityClient(preview)
+const defaultValues = {
+  _id: 'default-id',
+  title: {},
+  shortDescription: {},
+  imagePath: '',
+  slug: '',
+}
+
+export async function getLatestPosts(
+  preview?: boolean
+): Promise<PostResponse[]> {
+  const posts: PostResponse[] = await SanityClient(preview)
     .fetch(`*[_type == 'post'] | order(publishedAt desc)[0..7]{
       ${postFields}
     }`)
+  return posts.map((post) => ({
+    ...defaultValues,
+    ...post,
+  }))
 }
 
 export async function getHotPosts(preview?: boolean): Promise<PostResponse[]> {
-  return SanityClient(preview)
+  const posts: PostResponse[] = await SanityClient(preview)
     .fetch(`*[_type == 'post' && isHot == true] | order(publishedAt desc)[0..7]{
       ${postFields}
     }`)
+  return posts.map((post) => ({
+    ...defaultValues,
+    ...post,
+  }))
 }
-

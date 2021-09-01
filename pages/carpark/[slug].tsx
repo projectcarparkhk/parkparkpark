@@ -32,11 +32,9 @@ import { useRouter } from 'next/router'
 import translations from '../../locales'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
-  durationTranslations,
   SupportedLanguages,
 } from '../../constants/SupportedLanguages'
 import { CarparkPost } from '../../types/api/CarparkResponse'
-import { CarparkPostField } from '../../types/pages/carparks'
 import { Section, SectionProps } from '../../components/Section'
 import { useMemo } from 'react'
 import { StyledButton } from '../../components/StyledButton'
@@ -46,6 +44,7 @@ import { withStyles } from '@material-ui/core'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
+import { parseDayData, parseHourData, parseTimeData } from '../../utils/parseData'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -55,7 +54,9 @@ interface IProps {
 const useStyles = makeStyles((theme: Theme) => ({
   carouselImage: {
     height: '30vh',
-    marginTop: theme.spacing(1),
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
   },
   container: {
     padding: theme.spacing(2, 0),
@@ -86,7 +87,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
   tableTitle: {
-    fontWeight: 'bold',
+    padding: theme.spacing(1, 2),
+    minWidth: '25%'
+  },
+  tableCell: {
+    padding: theme.spacing(1, 2),
   },
   feeContainer: {
     display: 'flex',
@@ -116,6 +121,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
+  activeIndicator: {
+    backgroundColor: theme.palette.primary.main + ' !important',
+    width: '24px !important',
+  },
+  nonActiveIndicator: {
+    height: '7px',
+    width: '7px',
+    borderRadius: '10px',
+    backgroundColor: theme.palette.grey[400],
+    margin: theme.spacing(1.5, 0.5),
+  },
+  indicator: {
+    position: 'absolute',
+    bottom: 2,
+  },
 }))
 
 const CarparkPage = ({
@@ -133,28 +153,12 @@ const CarparkPage = ({
     priceDetailsTimeLabel,
     priceDetailsHourLabel,
     priceDetailsPriceLabel,
-    priceDetailsDayAllLabel,
-    priceDetailsTimeAllLabel,
     nearbyCarparksLabel,
     checkoutAll,
     paymentMethodLabel,
     nearbyBestPromotionsLabel,
   } = translations[fallbackLocale]
 
-  const carparkPostFields: CarparkPostField = {
-    day: {
-      all: priceDetailsDayAllLabel,
-    },
-    hr: {
-      '0.5': durationTranslations['0.5'][fallbackLocale],
-      '1': durationTranslations['1'][fallbackLocale],
-      '1.5': durationTranslations['1.5'][fallbackLocale],
-      '2': durationTranslations['2'][fallbackLocale],
-    },
-    time: {
-      all: priceDetailsTimeAllLabel,
-    },
-  }
 
   const translatedNearbyCarparks = useMemo(
     () => translateCarparks(nearbyCarparks, fallbackLocale),
@@ -224,18 +228,23 @@ const CarparkPage = ({
         <Header imageToTop={false} />
       </Container>
       <Carousel
-        className={classes.carouselImage}
         swipe
         navButtonsAlwaysInvisible
+        autoPlay={false}
+        IndicatorIcon={<div></div>}
+        activeIndicatorIconButtonProps={{ className: classes.activeIndicator }}
+        indicatorIconButtonProps={{ className: classes.nonActiveIndicator }}
+        indicatorContainerProps={{ className: classes.indicator }}
       >
         {carpark.imagePath.map((path) => (
-          <div>
-            <Image
-              src={imageBuilder(path).toString() || '/hk.webp'}
-              layout="fill"
-              objectFit="cover"
-            />
-          </div>
+          <div
+            className={classes.carouselImage}
+            style={{
+              backgroundImage: `linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%), url('${
+                imageBuilder(path).toString() || '/hk.webp'
+              }')`,
+            }}
+          ></div>
         ))}
       </Carousel>
       <Container>
@@ -260,7 +269,7 @@ const CarparkPage = ({
           <div className={classes.section}>
             <Accordion>
               <AccordionSummary
-                expandIcon={carpark.posts.length && <ExpandMoreIcon />}
+                expandIcon={<ExpandMoreIcon />}
                 className={classes.accordionSummary}
               >
                 <div className={classes.accordionSummaryContent}>
@@ -288,16 +297,18 @@ const CarparkPage = ({
                 <TableHead>
                   <TableRow>
                     <TableCell className={classes.tableTitle}>
-                      {priceDetailsDayLabel}
+                      <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
                     </TableCell>
                     <TableCell className={classes.tableTitle}>
-                      {priceDetailsTimeLabel}
+                      <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
                     </TableCell>
                     <TableCell className={classes.tableTitle}>
-                      {priceDetailsHourLabel}
+                      <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
                     </TableCell>
                     <TableCell className={classes.tableTitle}>
-                      {priceDetailsPriceLabel}
+                      <StyledText size="h6">
+                        {priceDetailsPriceLabel}
+                      </StyledText>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -306,22 +317,22 @@ const CarparkPage = ({
                     <TableRow
                       key={`${detail.day}_${detail.hr}_${detail.price}`}
                     >
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <StyledText size="body1">
-                          {carparkPostFields['day'][detail.day]}
+                          {parseDayData(detail.day, fallbackLocale)}
                         </StyledText>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <StyledText size="body1">
-                          {carparkPostFields['time'][detail.time]}
+                          {parseTimeData(detail.time, fallbackLocale)}
                         </StyledText>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <StyledText size="body1">
-                          {carparkPostFields['hr'][detail.hr]}
+                          {parseHourData(detail.hr, fallbackLocale)}
                         </StyledText>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <StyledText size="body1">
                           {`$ ${detail.price}`}
                         </StyledText>

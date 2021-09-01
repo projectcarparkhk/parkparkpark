@@ -25,38 +25,41 @@ export const orderCarparkByPriceToday = (
       }) => {
         return {
           _id,
-          tags: tags || [],
-          subDistricts: subDistricts || [],
+          tags,
+          subDistricts,
           name,
-          imagePath: imagePath || [],
-          posts: posts || [],
-          descriptions: descriptions || '',
-          slug: slug || '',
-          paymentMethods: paymentMethods || [],
-          priceDetails: priceDetails ? 
-            [
-              priceDetails?.find((item) => {
-                const { day } = item
-                const today = new Date().getDay()
-                if (day === 'all') {
-                  return true
-                } else if (day.includes('-')) {
-                  const [startDay, endDay] = day.split('-')
-                  return (
-                    today >= week.indexOf(startDay) &&
-                    today <= week.indexOf(endDay)
-                  )
-                } else {
-                  const dates = day.split(',')
-                  return dates.some((date) => date === week[today])
-                }
-              }) as PriceDetail,
-            ] : [],
+          imagePath,
+          posts,
+          descriptions,
+          slug,
+          paymentMethods,
+          priceDetails: priceDetails.filter((item) => {
+            const { day } = item
+            const today = new Date().getDay()
+            if (day === 'all') {
+              return true
+            } else if (day.includes('-')) {
+              const [startDay, endDay] = day.split('-')
+              return (
+                today >= week.indexOf(startDay) && today <= week.indexOf(endDay)
+              )
+            } else {
+              const dates = day.split(',')
+              return dates.some((date) => date === week[today])
+            }
+          }) as PriceDetail[],
         }
       }
     )
     .sort((a, b) => {
-      if (!a || !b || !a.priceDetails || !b.priceDetails || !a.priceDetails[0] || !b.priceDetails[0]) {
+      if (
+        !a ||
+        !b ||
+        !a.priceDetails ||
+        !b.priceDetails ||
+        !a.priceDetails[0] ||
+        !b.priceDetails[0]
+      ) {
         return 0
       }
       const aHr = parseInt((a.priceDetails[0] as PriceDetail).hr)
