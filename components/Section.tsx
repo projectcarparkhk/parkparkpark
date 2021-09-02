@@ -113,7 +113,7 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page, i) => (
-            <div key={page[i].slug}><RenderCards subPath={subPath} page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
+            <div key={page.map(elem => elem.slug).join(',')}><RenderCards subPath={subPath} page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
           ))}
         </Carousel>
       ) : (

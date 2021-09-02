@@ -248,7 +248,6 @@ export default function Index({
   } = translations[locale || 'zh']
 
   const hotTagIdString = translatedHotTags.map((tag) => tag._id).join(',')
-  console.log('hotTagIdString',hotTagIdString)
 
 
   const postSections: SectionProps[] = [

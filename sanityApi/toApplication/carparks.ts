@@ -20,6 +20,7 @@ export const orderCarparkByPriceToday = (
         name,
         imagePath,
         priceDetails,
+        dayNightPriceDetails,
         descriptions,
         slug,
       }) => {
@@ -33,6 +34,7 @@ export const orderCarparkByPriceToday = (
           descriptions,
           slug,
           paymentMethods,
+          dayNightPriceDetails,
           priceDetails: priceDetails.filter((item) => {
             const { day } = item
             const today = new Date().getDay()

@@ -13,6 +13,7 @@ export interface CarparkResponse extends ResponseElement {
   subDistricts: ResponseElement[]
   tags: ResponseElement[]
   priceDetails: PriceDetail[]
+  dayNightPriceDetails: PriceDetail[]
   descriptions: { [key: string]: string }
   paymentMethods: {
     name: { [key: string]: string }

@@ -35,6 +35,12 @@ const carparkFields = `
     'price': cells[2],
     'hr': cells[3]
   },
+  'dayNightPriceDetails': dayNightPriceDetails.rows[1...10]{
+    'day': cells[0],
+    'time': cells[1],
+    'price': cells[2],
+    'hr': cells[3]
+  },
   'paymentMethods': paymentMethods[] -> {
     'name': {
       'en': name.en,
@@ -61,6 +67,7 @@ const defaultValues: CarparkResponse = {
   subDistricts: [],
   tags: [],
   priceDetails: [],
+  dayNightPriceDetails: [],
   descriptions: {},
   paymentMethods: [],
   posts: [],

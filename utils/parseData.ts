@@ -3,7 +3,7 @@ import translations from '../locales'
 
 export const parseDayData = (dayString: string, locale: SupportedLanguages) => {
   const {
-    priceDetailsDayAllLabel,
+    priceDetailsAllDaysLabel,
     toLabel,
     orLabel,
     monLabel,
@@ -18,7 +18,7 @@ export const parseDayData = (dayString: string, locale: SupportedLanguages) => {
   } = translations[locale]
 
   const carparkDayField: { [key: string]: string } = {
-    all: priceDetailsDayAllLabel,
+    all: priceDetailsAllDaysLabel,
     to: toLabel,
     or: orLabel,
     mon: monLabel,
@@ -60,9 +60,9 @@ export const parseTimeData = (
   timeString: string,
   locale: SupportedLanguages
 ) => {
-  const { priceDetailsTimeAllLabel } = translations[locale]
+  const { priceDetailsAllTimesLabel } = translations[locale]
   const carparkTimeField: { [key: string]: string } = {
-    all: priceDetailsTimeAllLabel,
+    all: priceDetailsAllTimesLabel,
   }
   if (timeString === 'all') {
     return carparkTimeField[timeString]

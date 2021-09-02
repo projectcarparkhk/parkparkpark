@@ -47,6 +47,7 @@ import {
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
+import PriceDetailTable from '../../components/table/PriceDetailTable'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -151,10 +152,7 @@ const CarparkPage = ({
   const {
     latestPromotionsLabel,
     carparkFeeLabel,
-    priceDetailsDayLabel,
-    priceDetailsTimeLabel,
-    priceDetailsHourLabel,
-    priceDetailsPriceLabel,
+    dayNightFeeLabel,
     nearbyCarparksLabel,
     checkoutAll,
     paymentMethodLabel,
@@ -297,57 +295,16 @@ const CarparkPage = ({
                 {carparkFeeLabel}
               </StyledText>
             </div>
-            <TableContainer component={Paper}>
-              <Table size="small" aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={classes.tableTitle}>
-                      <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
-                    </TableCell>
-                    <TableCell className={classes.tableTitle}>
-                      <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
-                    </TableCell>
-                    <TableCell className={classes.tableTitle}>
-                      <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
-                    </TableCell>
-                    <TableCell className={classes.tableTitle}>
-                      <StyledText size="h6">
-                        {priceDetailsPriceLabel}
-                      </StyledText>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {carpark.priceDetails.map((detail) => (
-                    <TableRow
-                      key={`${detail.day}_${detail.hr}_${detail.price}`}
-                    >
-                      <TableCell className={classes.tableCell}>
-                        <StyledText size="body1">
-                          {parseDayData(detail.day, fallbackLocale)}
-                        </StyledText>
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <StyledText size="body1">
-                          {parseTimeData(detail.time, fallbackLocale)}
-                        </StyledText>
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <StyledText size="body1">
-                          {parseHourData(detail.hr, fallbackLocale)}
-                        </StyledText>
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <StyledText size="body1">
-                          {`$ ${detail.price}`}
-                        </StyledText>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <PriceDetailTable priceDetails={carpark.priceDetails}/>
           </div>
+          {carpark.dayNightPriceDetails.length > 0 && <div className={classes.section}>
+            <div className={classes.feeContainer}>
+              <StyledText size="h4" bold className={classes.title}>
+                {dayNightFeeLabel}
+              </StyledText>
+            </div>
+            <PriceDetailTable priceDetails={carpark.dayNightPriceDetails}/>
+          </div>}
           <div className={classes.section}>
             <StyledText size="h4" bold className={classes.title}>
               {paymentMethodLabel}

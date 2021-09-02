@@ -152,7 +152,7 @@ export const StyledCard = ({
   const router = useRouter()
   return (
     <Card className={`${classes.card}`}>
-      <CardActionArea onClick={() => router.push(`${subPath}/${slug}}`)}>
+      <CardActionArea onClick={() => router.push(`${subPath}/${slug}`)}>
         <CardMedia
           className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
           image={imagePath}
