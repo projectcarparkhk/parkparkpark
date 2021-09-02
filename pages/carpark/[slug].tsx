@@ -47,7 +47,6 @@ import {
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
-import subDistrict from '../../studio/schemas/documents/subDistrict'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
