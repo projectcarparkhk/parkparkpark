@@ -47,6 +47,7 @@ import {
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
+import subDistrict from '../../studio/schemas/documents/subDistrict'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -168,16 +169,19 @@ const CarparkPage = ({
 
   const translatedNearbyBestPromotions = useMemo(
     () => translatePosts(nearbyBestPromotions, fallbackLocale),
-    []
+    [nearbyBestPromotions, fallbackLocale]
   )
+
+  const carparkSubDistrictIdsString = carpark.subDistricts.map(subDistrict => subDistrict._id).join(',')
 
   const postSections: SectionProps[] = [
     {
+      subPath: '/carpark',
       sectionHeader: nearbyCarparksLabel,
       postItems: translatedNearbyCarparks,
       limited: true,
       renderButton: () => (
-        <Link href="/nearby" style={{ width: '100%' }}>
+        <Link href={`/carparks?subDistricts=${carparkSubDistrictIdsString}`} style={{ width: '100%' }}>
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
               {checkoutAll}

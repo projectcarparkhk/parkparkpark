@@ -58,6 +58,7 @@ export interface SectionProps {
   slidingCard?: boolean
   fullImage?: boolean
   limited?: boolean
+  subPath?: string
   renderButton?: () => JSX.Element
   renderSideLink?: () => JSX.Element
 }
@@ -68,6 +69,7 @@ export const Section = ({
   fullImage = false,
   fullWidth = false,
   limited = false,
+  subPath,
   renderSideLink,
   renderButton,
 }: SectionProps) => {
@@ -101,7 +103,7 @@ export const Section = ({
       {slidingCard ? (
         <div><RenderSlidingCards page={postItems} option={{ fullImage: true }}/></div>
       ) : fullImage ? (
-        <div><RenderCards page={postItems} option={ {fullImage: true, fullWidth, smOrAbove} } /></div>
+        <div><RenderCards subPath={subPath} page={postItems} option={ {fullImage: true, fullWidth, smOrAbove} } /></div>
       ) : smOrAbove ? (
         <Carousel
           swipe
@@ -111,11 +113,11 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page, i) => (
-            <div key={page[i].slug}><RenderCards page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
+            <div key={page[i].slug}><RenderCards subPath={subPath} page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
           ))}
         </Carousel>
       ) : (
-        <><RenderCards page={limited ? smPosts : postItems} option={{ fullImage, fullWidth, smOrAbove }}/></>
+        <><RenderCards subPath={subPath} page={limited ? smPosts : postItems} option={{ fullImage, fullWidth, smOrAbove }}/></>
       )}
       {renderButton && (
         <div className={classes.buttonContainer}>{renderButton()}</div>

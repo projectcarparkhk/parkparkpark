@@ -1,33 +1,28 @@
-
 import { makeStyles, Theme } from '@material-ui/core'
 import React from 'react'
 import { PostItem } from './Section'
 import { StyledCard } from './StyledCard'
 import { StyledText } from './StyledText'
 
-const usePostStyles = makeStyles(() => ({
+const usePostStyles = makeStyles((theme: Theme) => ({
   postContainer: {
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent: 'flex-start'
   },
-}))
-
-interface StyleProps {
-  index: number
-}
-
-const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   cardContainer: {
     marginBottom: theme.spacing(2),
-    marginRight: (props) => (props.index % 2 === 0 ? theme.spacing(1.5) : '0'),
+    marginRight: theme.spacing(1),
     display: 'flex',
     justifyContent: 'center',
     [theme.breakpoints.up('sm')]: {
-      flex: 1,
-      maxWidth: '25%',
+      flex: '1 0 auto',
     },
     [theme.breakpoints.down('sm')]: {
-      width: `calc(50% - ${theme.spacing(1)}px)`,
+      minWidth: '40%',
+      maxWidth: '49%',
+      flex: '1 0 auto',
+      
     },
   },
   cardContainerFull: {
@@ -38,6 +33,7 @@ const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
 }))
 
 interface RenderCardsProps {
+  subPath?: string
   page: PostItem[]
   option?: {
     fullImage: boolean
@@ -46,7 +42,7 @@ interface RenderCardsProps {
   }
 }
 
-export const RenderCards = ({ page, option }: RenderCardsProps) => {
+export const RenderCards = ({ subPath, page, option }: RenderCardsProps) => {
   const classes = usePostStyles()
 
   return (
@@ -66,13 +62,13 @@ export const RenderCards = ({ page, option }: RenderCardsProps) => {
           },
           i
         ) => {
-          const classes = useCardStyles({index: i})
           return (
             <div
               className={`${classes.cardContainer} ${
                 option?.fullWidth && classes.cardContainerFull
               }`}
               key={slug}
+              style={i%2===0?{}:{marginRight: 0}}
             >
               <StyledCard
                 slug={slug}
@@ -84,6 +80,7 @@ export const RenderCards = ({ page, option }: RenderCardsProps) => {
                 comments={comments}
                 header={location}
                 index={i}
+                subPath={subPath}
                 renderCaption={() => (
                   <div style={{ color: option?.fullImage ? 'white' : 'black' }}>
                     <StyledText size="h4" bold>
