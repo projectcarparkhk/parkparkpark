@@ -52,6 +52,11 @@ export default {
       type: 'table',
     },
     {
+      title: 'Day/night price details',
+      name: 'dayNightPriceDetails',
+      type: 'table',
+    },
+    {
       name: 'tag',
       title: 'Tag',
       type: 'array',
@@ -72,7 +77,7 @@ export default {
     {
       name: 'descriptions',
       title: 'Descriptions',
-      type: 'localeBlockContent',
+      type: 'localeString',
     },
     {
       name: 'isHot',
@@ -135,6 +140,16 @@ export default {
   ],
   initialValue: {
     priceDetails: {
+      rows: [
+        {
+          cells: ['day', 'time', 'price', 'hr'],
+        },
+        {
+          cells: ['', '', '', ''],
+        },
+      ],
+    },
+    dayNightPriceDetails: {
       rows: [
         {
           cells: ['day', 'time', 'price', 'hr'],

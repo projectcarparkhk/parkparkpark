@@ -1,3 +1,5 @@
 export default interface Translations {
-    [key: string]: any
+    [key: string]: {
+      [key: string]: string
+    }
   }

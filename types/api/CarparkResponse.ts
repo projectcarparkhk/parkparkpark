@@ -1,4 +1,4 @@
-import { ResponseElement } from './ResponseElement';
+import { ResponseElement } from './ResponseElement'
 export interface PriceDetail {
   day: string
   hr: string
@@ -8,16 +8,23 @@ export interface PriceDetail {
 
 // define types and only take what matters for the component in the transformation section
 export interface CarparkResponse extends ResponseElement {
-  imagePath: string
+  imagePath: string[]
   name: { [key: string]: string }
   subDistricts: ResponseElement[]
   tags: ResponseElement[]
   priceDetails: PriceDetail[]
+  dayNightPriceDetails: PriceDetail[]
+  descriptions: { [key: string]: string }
+  paymentMethods: {
+    name: { [key: string]: string }
+    iconPath: string
+  }[]
+  posts: CarparkPost[]
 }
 
-export interface CarparkContextToday extends ResponseElement {
-  tags: ResponseElement[]
-  subDistrict: ResponseElement
+export interface CarparkPost {
+  title: { [key: string]: string }
+  slug: string
+  shortDescription: { [key: string]: string }
   imagePath: string
-  priceDetail?: PriceDetail
 }

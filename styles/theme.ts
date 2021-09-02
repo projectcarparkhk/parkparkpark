@@ -4,7 +4,7 @@ import { createMuiTheme } from '@material-ui/core/styles'
 const theme = createMuiTheme({
   mixins: {
     toolbar: {
-      minHeight: 48,
+      minHeight: 54,
     },
   },
   breakpoints: {
@@ -70,7 +70,8 @@ theme.typography.body1 = {
 }
 
 theme.typography.subtitle1 = {
-  fontSize: '0.6rem',
+  fontSize: '0.7rem',
+  fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.6rem',
   },

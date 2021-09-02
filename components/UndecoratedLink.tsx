@@ -5,13 +5,14 @@ import React from 'react'
 interface IProps {
   href: string
   children: React.ReactNode
+  main?: boolean
 }
 
-const UndecoratedLink = ({ href, children }: IProps) => {
+const UndecoratedLink = ({ href, children, main }: IProps) => {
   const theme = useTheme()
   return (
     <Link href={href}>
-      <a style={{ textDecoration: 'none', color: theme.palette.primary.main, fontWeight: 'bold' }}>{children}</a>
+      <a style={{ textDecoration: 'none', color: main ? theme.palette.primary.main : 'inherit', fontWeight: 'bold' }}>{children}</a>
     </Link>
   )
 }

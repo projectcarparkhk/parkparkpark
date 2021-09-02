@@ -4,19 +4,19 @@ export const supportedLanguages: Array<SupportedLanguages> = ['zh', 'en']
 
 export const durationTranslations = {
   '0.5': {
-    en: '0.5 hour',
+    en: 'Half hourly',
     zh: '毎半小時',
   },
   '1': {
-    en: 'hour',
+    en: 'Hourly',
     zh: '毎小時',
   },
   '1.5': {
-    en: '1 1/2 hours',
+    en: '1 1/2 hourly',
     zh: '毎1.5小時',
   },
   '2': {
-    en: '2 hours',
+    en: '2 hourly',
     zh: '毎2小時',
   },
 }

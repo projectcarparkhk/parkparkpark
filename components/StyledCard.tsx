@@ -108,6 +108,7 @@ export interface StyledCardProps {
   likes?: number
   comments?: number
   index: number
+  subPath?: string
 }
 
 const StyledCardContent = withStyles((theme: Theme) => ({
@@ -129,12 +130,13 @@ export const StyledCard = ({
   likes,
   comments,
   index,
+  subPath,
 }: StyledCardProps) => {
   const classes = useStyles({index})
   const router = useRouter()
   return (
     <Card className={`${classes.card}`}>
-      <CardActionArea onClick={() => router.push(`/${slug}`)}>
+      <CardActionArea onClick={() => router.push(`${subPath}/${slug}`)}>
         <CardMedia
           className={`${classes.media} ${fullImage && classes.fullImageMedia}`}
           image={imagePath}

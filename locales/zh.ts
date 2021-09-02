@@ -18,7 +18,33 @@ const locale = {
   filterContinueBtnLabel: '繼續',
   areaSelection: '地區分類',
   allCategories: '所有分類',
-  allSubDistricts: '所有分區'
+  allSubDistricts: '所有分區',
+  latestPromotionsLabel: '最新推廣',
+  carparkFeeLabel: '收費',
+  dayNightFeeLabel: '日/夜泊',
+  priceDetailsDayLabel: '日子',
+  priceDetailsTimeLabel: '時段',
+  priceDetailsHourLabel: '模式',
+  priceDetailsPriceLabel: '港幣',
+  priceDetailsAllDaysLabel: '所有日子',
+  weekLabel: '星期',
+  toLabel: '至',
+  orLabel: '、',
+  monLabel: '一',
+  tueLabel: '二',
+  wedLabel: '三',
+  thuLabel: '四',
+  friLabel: '五',
+  satLabel: '六',
+  sunLabel: '日',
+  holidayLabel: '公眾假期',
+  priceDetailsAllTimesLabel: '所有時段',
+  nearbyCarparksLabel: '附近停車場',
+  paymentMethodLabel: '付費方式',
+  nearbyBestPromotionsLabel: '附近至抵優惠',
+  aboutParkLabel: '關於ParkParkPark',
+  termsLabel: '網絡條款'
+
 }
 
 export default locale
