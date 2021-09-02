@@ -7,13 +7,6 @@ import {
   Container,
   Link,
   makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Theme,
 } from '@material-ui/core'
 import React from 'react'
@@ -42,11 +35,6 @@ import { withStyles } from '@material-ui/core'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
-import {
-  parseDayData,
-  parseHourData,
-  parseTimeData,
-} from '../../utils/parseData'
 import PriceDetailTable from '../../components/table/PriceDetailTable'
 interface IProps {
   carpark: CarparkResponse
@@ -88,13 +76,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   details: {
     display: 'flex',
     alignItems: 'center',
-  },
-  tableTitle: {
-    padding: theme.spacing(0.5, 1),
-    minWidth: '25%',
-  },
-  tableCell: {
-    padding: theme.spacing(0.5, 1),
   },
   feeContainer: {
     display: 'flex',
