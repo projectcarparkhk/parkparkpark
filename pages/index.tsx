@@ -247,6 +247,10 @@ export default function Index({
     checkoutAll,
   } = translations[locale || 'zh']
 
+  const hotTagIdString = translatedHotTags.map((tag) => tag._id).join(',')
+  console.log('hotTagIdString',hotTagIdString)
+
+
   const postSections: SectionProps[] = [
     {
       sectionHeader: latestCarparkPromotions,
@@ -259,14 +263,15 @@ export default function Index({
       slidingCard: true,
     },
     {
+      subPath: '/carpark',
       sectionHeader: cheapestCarparksHeader,
       postItems: translatedCarparks,
       limited: true,
       renderSideLink: () => (
-        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
+        <UndecoratedLink href="/carparks">{checkoutAll}</UndecoratedLink>
       ),
       renderButton: () => (
-        <Link href="/nearby">
+        <Link href="/carparks">
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
               {checkoutAll}
@@ -276,15 +281,16 @@ export default function Index({
       ),
     },
     {
+      subPath: '/categories',
       sectionHeader: hotCarparkTagsHeader,
       postItems: translatedHotTags,
       limited: true,
       fullImage: true,
       renderSideLink: () => (
-        <UndecoratedLink href="/nearby">{checkoutAll}</UndecoratedLink>
+        <UndecoratedLink href={`/carparks?categories=${hotTagIdString}`}>{checkoutAll}</UndecoratedLink>
       ),
       renderButton: () => (
-        <Link href="/nearby">
+        <Link href={`/carparks?categories=${hotTagIdString}`}>
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
               {checkoutAll}

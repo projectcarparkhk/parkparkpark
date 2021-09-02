@@ -8,7 +8,7 @@ const usePostStyles = makeStyles((theme: Theme) => ({
   postContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   cardContainer: {
     marginBottom: theme.spacing(2),
@@ -22,7 +22,6 @@ const usePostStyles = makeStyles((theme: Theme) => ({
       minWidth: '40%',
       maxWidth: '49%',
       flex: '1 0 auto',
-      
     },
   },
   cardContainerFull: {
@@ -68,7 +67,7 @@ export const RenderCards = ({ subPath, page, option }: RenderCardsProps) => {
                 option?.fullWidth && classes.cardContainerFull
               }`}
               key={slug}
-              style={i%2===0?{}:{marginRight: 0}}
+              style={i % 2 === 0 ? {} : { marginRight: 0 }}
             >
               <StyledCard
                 slug={slug}
