@@ -150,7 +150,9 @@ const CarparkPage = ({
     [nearbyBestPromotions, fallbackLocale]
   )
 
-  const carparkSubDistrictIdsString = carpark.subDistricts.map(subDistrict => subDistrict._id).join(',')
+  const carparkSubDistrictIdsString = carpark.subDistricts
+    .map((subDistrict) => subDistrict._id)
+    .join(',')
 
   const postSections: SectionProps[] = [
     {
@@ -159,7 +161,10 @@ const CarparkPage = ({
       postItems: translatedNearbyCarparks,
       limited: true,
       renderButton: () => (
-        <Link href={`/carparks?subDistricts=${carparkSubDistrictIdsString}`} style={{ width: '100%' }}>
+        <Link
+          href={`/carparks?subDistricts=${carparkSubDistrictIdsString}`}
+          style={{ width: '100%' }}
+        >
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
               {checkoutAll}
@@ -183,7 +188,7 @@ const CarparkPage = ({
           image={imageBuilder(post.imagePath).toString() || '/hk.webp'}
         />
         <div className={classes.content}>
-          <StyledText size="body1" bold className={classes.title}>
+          <StyledText size="subtitle2" bold className={classes.title}>
             {post.title[fallbackLocale]}
           </StyledText>
           <StyledText size="subtitle1">
@@ -237,7 +242,7 @@ const CarparkPage = ({
             <StyledText size="h3" bold className={classes.title}>
               {carpark.name[fallbackLocale]}
             </StyledText>
-            <StyledText size="body1" className={classes.description}>
+            <StyledText size="subtitle2" className={classes.description}>
               {carpark.descriptions[fallbackLocale]}
             </StyledText>
             {carpark.tags.map((tag) => (
@@ -276,16 +281,18 @@ const CarparkPage = ({
                 {carparkFeeLabel}
               </StyledText>
             </div>
-            <PriceDetailTable priceDetails={carpark.priceDetails}/>
+            <PriceDetailTable priceDetails={carpark.priceDetails} />
           </div>
-          {carpark.dayNightPriceDetails.length > 0 && <div className={classes.section}>
-            <div className={classes.feeContainer}>
-              <StyledText size="h4" bold className={classes.title}>
-                {dayNightFeeLabel}
-              </StyledText>
+          {carpark.dayNightPriceDetails.length > 0 && (
+            <div className={classes.section}>
+              <div className={classes.feeContainer}>
+                <StyledText size="h4" bold className={classes.title}>
+                  {dayNightFeeLabel}
+                </StyledText>
+              </div>
+              <PriceDetailTable priceDetails={carpark.dayNightPriceDetails} />
             </div>
-            <PriceDetailTable priceDetails={carpark.dayNightPriceDetails}/>
-          </div>}
+          )}
           <div className={classes.section}>
             <StyledText size="h4" bold className={classes.title}>
               {paymentMethodLabel}
@@ -302,7 +309,7 @@ const CarparkPage = ({
                     objectFit="contain"
                   />
                 </div>
-                <StyledText size="body1">
+                <StyledText size="subtitle2">
                   {method.name[fallbackLocale]}
                 </StyledText>
               </div>

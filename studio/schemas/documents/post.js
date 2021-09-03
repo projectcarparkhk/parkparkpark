@@ -11,6 +11,12 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'postType',
+      title: 'Post type',
+      type: 'reference',
+      to: { type: 'postType' },
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -42,7 +48,7 @@ export default {
     {
       title: 'Promotion details',
       name: 'promotionDetails',
-      type: 'localeTable',
+      type: 'table',
     },
     {
       name: 'body',
@@ -90,6 +96,18 @@ export default {
       to: { type: 'author' },
     },
   ],
+  initialValue: {
+    promotionDetails: {
+      rows: [
+        {
+          cells: ['day', 'type', 'value', 'hr'],
+        },
+        {
+          cells: ['', '', '', ''],
+        },
+      ],
+    },
+  },
 
   preview: {
     select: {

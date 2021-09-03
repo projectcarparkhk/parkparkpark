@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const PriceDetailTable = ({ priceDetails }: IProps) => {
   const classes = useStyles()
-  const {locale} = useRouter();
-  const fallbackLocale = locale || 'zh';
+  const { locale } = useRouter()
+  const fallbackLocale = locale || 'zh'
   const {
     priceDetailsDayLabel,
     priceDetailsTimeLabel,
@@ -68,22 +68,31 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
           {priceDetails.map((detail) => (
             <TableRow key={`${detail.day}_${detail.hr}_${detail.price}`}>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseDayData(detail.day, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseDayData(
+                    detail.day,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseTimeData(detail.time, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseTimeData(
+                    detail.time,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseHourData(detail.hr, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseHourData(
+                    detail.hr,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">{`$ ${detail.price}`}</StyledText>
+                <StyledText size="subtitle2">{`$ ${detail.price}`}</StyledText>
               </TableCell>
             </TableRow>
           ))}

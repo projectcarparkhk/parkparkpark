@@ -18,6 +18,7 @@ import comment from './components/comment'
 import subDistrict from './documents/subDistrict'
 import area from './documents/area'
 import paymentMethod from './documents/paymentMethod'
+import postType from './documents/postType'
 import tag from './documents/tag'
 import category from './documents/category'
 
@@ -47,5 +48,6 @@ export default createSchema({
     paymentMethod,
     tag,
     category,
+    postType,
   ]),
 })

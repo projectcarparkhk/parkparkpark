@@ -43,8 +43,10 @@ const locale = {
   paymentMethodLabel: '付費方式',
   nearbyBestPromotionsLabel: '附近至抵優惠',
   aboutParkLabel: '關於ParkParkPark',
-  termsLabel: '網絡條款'
-
+  termsLabel: '網絡條款',
+  createdAtLabel: '日期',
+  updatedAtLabel: '更新',
+  authorLabel: '作者',
 }
 
 export default locale

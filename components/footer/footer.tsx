@@ -58,7 +58,7 @@ const Footer = () => {
 
   const fallbackLocale = router.locale || 'zh'
 
-  const {aboutParkLabel, termsLabel} = translations[fallbackLocale]
+  const { aboutParkLabel, termsLabel } = translations[fallbackLocale]
 
   const StyledButton = withStyles(() =>
     createStyles({
@@ -105,18 +105,17 @@ const Footer = () => {
       </FormControl>
       <div className={classes.aboutContainer}>
         <UndecoratedLink href="/about">
-          <StyledText size="body1" inline>
+          <StyledText size="subtitle2" inline>
             {aboutParkLabel}
           </StyledText>
         </UndecoratedLink>
-        <StyledText size="body1" inline className={classes.separator}>
+        <StyledText size="subtitle2" inline className={classes.separator}>
           |
         </StyledText>
         <UndecoratedLink href="/terms">
-
-        <StyledText size="body1" inline>
-          {termsLabel}
-        </StyledText>
+          <StyledText size="subtitle2" inline>
+            {termsLabel}
+          </StyledText>
         </UndecoratedLink>
       </div>
       <div className={classes.iconsContainer}>

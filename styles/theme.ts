@@ -23,10 +23,10 @@ const theme = createMuiTheme({
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
-  }
+  },
 })
 theme.typography.h1 = {
-  fontSize: '1rem'
+  fontSize: '2rem',
 }
 theme.typography.h2 = {
   fontSize: '1.45rem',
@@ -62,15 +62,8 @@ theme.typography.h6 = {
   },
 }
 
-theme.typography.body1 = {
-  fontSize: '0.8rem',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '0.8rem',
-  },
-}
-
 theme.typography.subtitle1 = {
-  fontSize: '0.7rem',
+  fontSize: '1rem',
   fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.6rem',
@@ -78,9 +71,17 @@ theme.typography.subtitle1 = {
 }
 
 theme.typography.subtitle2 = {
-  fontSize: '0.5rem',
+  fontSize: '0.8rem',
+  fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.45rem',
+  },
+}
+
+theme.typography.body1 = {
+  fontSize: '0.6rem',
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '0.8rem',
   },
 }
 
