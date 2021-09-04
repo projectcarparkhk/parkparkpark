@@ -33,6 +33,7 @@ import { StyledButton } from '../../components/StyledButton'
 import { getAllPosts, getPostBySlug } from '../../sanityApi/posts'
 import Footer from '../../components/footer/footer'
 import { format } from 'date-fns'
+import PromotionDetailTable from '../../components/table/PromotionDetailTable'
 
 interface IProps {
   post: PostResponse
@@ -57,8 +58,16 @@ const PostPage = ({ post }: IProps) => {
   const classes = useStyles()
   const router = useRouter()
   const fallbackLocale = (router.locale as SupportedLanguages) || 'zh'
-  const { authorLabel, createdAtLabel, updatedAtLabel } =
-    translations[fallbackLocale]
+  const {
+    authorLabel,
+    createdAtLabel,
+    updatedAtLabel,
+    promotionDatesLabel,
+    fromDateLabel,
+    toDateLabel,
+    promotionDetailsLabel,
+  } = translations[fallbackLocale]
+
   return (
     <div>
       <Container>
@@ -118,6 +127,49 @@ const PostPage = ({ post }: IProps) => {
             </div>
           </div>
           <Divider light />
+          <StyledText size="h5" className={classes.subSection}>
+            {promotionDatesLabel}
+          </StyledText>
+          <div className={classes.subSection}>
+            <div>
+              <StyledText
+                bold
+                inline
+                size="subtitle1"
+                className={classes.infoTitle}
+              >
+                {fromDateLabel}
+              </StyledText>
+              <StyledText inline size="subtitle2">
+                {format(
+                  new Date(post.startAndExpiryDates.startDate),
+                  'yyyy-MM-dd'
+                )}
+              </StyledText>
+            </div>
+            <div>
+              <StyledText
+                bold
+                inline
+                size="subtitle1"
+                className={classes.infoTitle}
+              >
+                {toDateLabel}
+              </StyledText>
+              <StyledText inline size="subtitle2">
+                {format(
+                  new Date(post.startAndExpiryDates.expiryDate),
+                  'yyyy-MM-dd'
+                )}
+              </StyledText>
+            </div>
+          </div>
+          <div className={classes.subSection}>
+            <StyledText size="h5" className={classes.subSection}>
+              {promotionDetailsLabel}
+            </StyledText>
+            <PromotionDetailTable promotionDetails={post.promotionDetails}/>
+          </div>
         </main>
       </Container>
       <Footer />

@@ -6,13 +6,13 @@ export interface PostTranslation {
 }
 
 export interface PromotionDetail {
-  condition: string
-  day: string
-  dining: string
-  hr: string
-  movie: string
-  spending: string
   time: string
+  day: string
+  hr: string
+  condition?: string
+  dining?: string
+  movie?: string
+  spending?: string
 }
 
 export interface PostResponse {
@@ -28,7 +28,7 @@ export interface PostResponse {
   promotionDetails: PromotionDetail[]
   startAndExpiryDates: {
     startDate: string
-    endDate: string
+    expiryDate: string
   }
   tags: ResponseElement[]
   author: ResponseElement

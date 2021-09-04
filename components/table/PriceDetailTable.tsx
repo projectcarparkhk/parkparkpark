@@ -16,7 +16,7 @@ import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import translations from '../../locales'
 import { PriceDetail } from '../../types/api/CarparkResponse'
 import {
-  parseDayData,
+  parseDayDetailData,
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
@@ -69,7 +69,7 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
             <TableRow key={`${detail.day}_${detail.hr}_${detail.price}`}>
               <TableCell className={classes.tableCell}>
                 <StyledText size="subtitle2">
-                  {parseDayData(
+                  {parseDayDetailData(
                     detail.day,
                     fallbackLocale as SupportedLanguages
                   )}
