@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Header from '../components/header'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
+import { getTags } from '../sanityApi/tags'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import Chip from '@material-ui/core/Chip'
@@ -13,12 +14,24 @@ import { StyledText } from '../components/StyledText'
 import { getArrayData } from '../sanityApi/helper'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import { AreaResponse } from '../types/api/AreaResponse'
+import { TagResponse } from '../types/api/TagResponse'
 import translations from '../locales'
 import { ResponseElement } from '../types/api/ResponseElement'
-interface IProps {
-  areas: AreaResponse[]
+
+interface ListProps {
   preview?: boolean
   locale: SupportedLanguages
+}
+interface SubDistrictListProps extends ListProps {
+  areas: AreaResponse[]
+}
+interface TagListProps extends ListProps {
+  tags: TagResponse[]
+}
+
+interface SearchAllPageProps extends ListProps {
+  areas: AreaResponse[]
+  tags: TagResponse[]
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -45,10 +58,39 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-function SubDistrictList({ areas, locale }: IProps) {
+function TagList({ tags, locale }: TagListProps) {
+  const classes = useStyles()
+  return (
+    <>
+      <div>
+        {tags.map((tag) => (
+          <Link
+            key={tag.slug}
+            href={{
+              pathname: '/carparks',
+              query: { tags: tag.slug },
+            }}
+          >
+            <Button
+              className={classes.flexItem}
+              variant="outlined"
+              color="primary"
+            >
+              {tag.name[locale]}
+            </Button>
+          </Link>
+        ))}
+      </div>
+    </>
+  )
+}
+
+function SubDistrictList({ areas, locale }: SubDistrictListProps) {
   const classes = useStyles()
   const { query } = useRouter()
-  const [selectedArea, setSelectedArea] = useState(query['sub-district'] || areas[0]._id)
+  const [selectedArea, setSelectedArea] = useState(
+    query['sub-district'] || areas[0]._id
+  )
 
   const { subDistricts: subDistrictsLabel } = translations[locale]
   const subDistricts = useMemo(
@@ -97,7 +139,7 @@ function SubDistrictList({ areas, locale }: IProps) {
   )
 }
 
-function SearchAll({ areas }: IProps) {
+function SearchAll({ areas, tags }: SearchAllPageProps) {
   const classes = useStyles()
   const router = useRouter()
   const fallbackLocale = router.locale || 'zh'
@@ -161,7 +203,9 @@ function SearchAll({ areas }: IProps) {
             locale={fallbackLocale as SupportedLanguages}
           />
         )}
-        {pageType === 'categories' && <>All cats</>}
+        {pageType === 'categories' && (
+          <TagList tags={tags} locale={fallbackLocale as SupportedLanguages} />
+        )}
       </Container>
     </>
   )
@@ -171,8 +215,9 @@ export default SearchAll
 
 export async function getStaticProps({ preview = false }) {
   const areas = await getSubDistrictsGroupByArea(preview)
+  const tags = await getTags(preview)
   return {
-    props: { areas, preview },
+    props: { areas, tags, preview },
     revalidate: 1,
   }
 }

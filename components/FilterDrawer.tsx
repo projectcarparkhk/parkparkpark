@@ -10,7 +10,11 @@ import Container from '@material-ui/core/Container'
 import translations from '../locales'
 import { useRouter } from 'next/router'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
-import { FilterOption, Filters, FilterSection } from '../types/components/filters'
+import {
+  FilterOption,
+  Filters,
+  FilterSection,
+} from '../types/components/filters'
 import { useState } from 'react'
 import { cloneDeep } from 'lodash'
 
@@ -26,15 +30,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   filterDrawerHeader: {
     height: theme.spacing(6),
-    padding: theme.spacing(1.5 ,1.5 ,1.5, 0),
+    padding: theme.spacing(1.5, 1.5, 1.5, 0),
     '& svg': {
-        cursor: 'pointer',
-    }
+      cursor: 'pointer',
+    },
   },
-  filterCatalogue: {
-    display: 'flex',
-  },
-
   filterOptionContainer: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -42,21 +42,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(0, 1, 0.75, 0),
     },
   },
-    filterTypeButton: {
-        display: 'flex',
-        padding: theme.spacing(1),
-        '& .MuiFormControlLabel-label': {
-            fontSize: '1rem',
-        },
-        cursor: 'pointer',
-    },
-    checkedItem: {
-        color: theme.palette.primary.main,
-        fontWeight: 700,
-    },
-   
+  selectedChip: {
+    color: 'white',
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
 }))
-
 
 interface SubFilterSectionProps {
   title: string
@@ -74,7 +64,7 @@ function SubFilterSection({
   onFilterStateUpdate,
 }: SubFilterSectionProps) {
   const classes = useStyles()
-  const {locale} = useRouter();
+  const { locale } = useRouter()
 
   const fallbackLocale = locale || 'zh'
   // i think the selection should be the only source of truth and should govern the "prop" of the parent checkbox
@@ -104,10 +94,9 @@ function SubFilterSection({
   }, [subFilterState, parentCheckBoxStatus, index])
 
   const onSubFilterUpdate = (subIndex: number) => {
-    const newSubFilterState = subFilterState.slice();
-    newSubFilterState[subIndex] = !newSubFilterState[subIndex];
-    onFilterStateUpdate(newSubFilterState, index);
-
+    const newSubFilterState = subFilterState.slice()
+    newSubFilterState[subIndex] = !newSubFilterState[subIndex]
+    onFilterStateUpdate(newSubFilterState, index)
   }
 
   return (
@@ -128,8 +117,10 @@ function SubFilterSection({
         {subFilters.map((subFilter, subIndex: number) => {
           return (
             <Chip
-              onClick={()=>onSubFilterUpdate(subIndex)}
+              onClick={() => onSubFilterUpdate(subIndex)}
               variant={subFilterState[subIndex] ? 'default' : 'outlined'}
+              className={subFilterState[subIndex] ? classes.selectedChip : ''}
+              color={subFilterState[subIndex] ? 'primary' : 'default'}
               size="small"
               key={subFilter._id}
               label={subFilter.name[fallbackLocale]}
@@ -157,20 +148,19 @@ export function FilterDrawer({
   locale,
 }: FilterDrawerProps) {
   const classes = useStyles()
-  const {filterContinueBtnLabel} = translations[locale];
+  const { filterContinueBtnLabel } = translations[locale]
   const [filterState, setFilterState] = useState(filterStateProps)
 
-  const onFilterStateUpdate = useCallback((subFilterState: boolean[], index: number)=> {
-    const newFilterState = cloneDeep(filterState)
-    newFilterState[index] = subFilterState;
-    setFilterState(newFilterState)
-  }, [filterState])
+  const onFilterStateUpdate = useCallback(
+    (subFilterState: boolean[], index: number) => {
+      const newFilterState = cloneDeep(filterState)
+      newFilterState[index] = subFilterState
+      setFilterState(newFilterState)
+    },
+    [filterState]
+  )
   return (
-    <Drawer
-      className={classes.panelDrawer}
-      anchor={'bottom'}
-      open={true}
-    >
+    <Drawer className={classes.panelDrawer} anchor={'bottom'} open={true}>
       <Container maxWidth="lg">
         <div className={classes.filterDrawerHeader}>
           <CloseIcon onClick={() => setActivePanel(null)} />
@@ -194,7 +184,7 @@ export function FilterDrawer({
             fullWidth
             variant="contained"
             color="primary"
-            onClick={()=>{
+            onClick={() => {
               onUpdateRoute(filterState)
               setActivePanel(null)
             }}
