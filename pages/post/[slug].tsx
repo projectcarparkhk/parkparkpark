@@ -43,6 +43,26 @@ const PostPage = ({ post }: IProps) => {
     promotionMoreDetailsLabel
   } = translations[fallbackLocale]
 
+  const serializers = {
+    types: {
+      block: (props: any) => {
+        const {style = 'normal'} = props.node
+      
+        if (style === 'normal') {
+          return <div style={{fontSize: '5px'}}> {props.children}</div>
+        }
+      
+        if (style === 'blockquote') {
+          return <blockquote>- {props.children}</blockquote>
+        }
+      
+        // Fall back to default handling
+        return (BlockContent as any).defaultSerializers.types.block(props)
+      }
+    },
+  }
+
+  console.log('bodyyy', JSON.stringify(post.body, null, 2))
   return (
     <div>
       <Container>
@@ -131,7 +151,7 @@ const PostPage = ({ post }: IProps) => {
             <StyledText size="h2" className={classes.subSection}>
               {promotionMoreDetailsLabel}
             </StyledText>
-            <BlockContent blocks={post.body[fallbackLocale]}/>
+            <BlockContent blocks={post.body[fallbackLocale]} serializers={serializers}/>
           </div>
         </main>
       </Container>
