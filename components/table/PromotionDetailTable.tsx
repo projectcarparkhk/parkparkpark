@@ -26,15 +26,14 @@ interface IProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   tableTitle: {
-    padding: theme.spacing(0.5, 1),
-    whiteSpace: 'nowrap'
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
   tableCell: {
-    padding: theme.spacing(0.5, 1),
-    whiteSpace: 'nowrap'
-
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
-  table: { overflowX: 'scroll' }
+  table: { overflowX: 'scroll' },
 }))
 
 const PromotionDetailTable = ({ promotionDetails }: IProps) => {
@@ -44,81 +43,56 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
   console.log(promotionDetails)
   const hasData = promotionDetails.length > 0
   const headers = hasData ? Object.keys(promotionDetails[0]) : []
+  const {
+    promotionDetailsLabel,
+    promotionConditionLabel,
+    promotionDayLabel,
+    promotionDiningLabel,
+    promotionHrLabel,
+    promotionMovieLabel,
+    promotionSpendingLabel,
+    promotionTimeLabel,
+    hourLabel,
+  } = translations[fallbackLocale]
   return (
     <TableContainer component={Paper}>
-      <Table
-        size="small"
-        aria-label="simple table"
-        className={classes.table}
-      >
+      <Table size="small" aria-label="simple table" className={classes.table}>
         <TableHead>
           <TableRow>
-            {/* {headers.map((key) => (
-              <TableCell key={key} className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {translations[fallbackLocale][`promotion_${key}_label`]}
-                </StyledText>
-              </TableCell>
-            ))} */}
-            <TableCell  className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {}
-                </StyledText>
-              </TableCell>
-              <TableCell  className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {}
-                </StyledText>
-              </TableCell>
-              <TableCell  className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {}
-                </StyledText>
-              </TableCell>
-              <TableCell  className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {}
-                </StyledText>
-              </TableCell>
-              <TableCell  className={classes.tableTitle}>
-                <StyledText size="h6">
-                  {}
-                </StyledText>
-              </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionDayLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionTimeLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionHrLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionSpendingLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionMovieLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionDiningLabel}</StyledText>
+            </TableCell>
+            <TableCell className={classes.tableTitle}>
+              <StyledText size="h6">{promotionConditionLabel}</StyledText>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {promotionDetails.map((detail: PromotionDetail) => (
             <TableRow key={`${detail.day}_${detail.time}_${detail.hr}`}>
-              {/* {(Object.keys(detail) as  Array<keyof PromotionDetail>).map((key) => {
-                let renderData
-                if (key === 'day') {
-                  renderData = parseDayDetailData(
+              <TableCell className={classes.tableCell}>
+                <StyledText size="subtitle2">
+                  {parseDayDetailData(
                     detail.day,
                     fallbackLocale as SupportedLanguages
-                  )
-                } else if (key === 'time') {
-                  renderData = parseTimeData(
-                    detail.time,
-                    fallbackLocale as SupportedLanguages
-                  )
-                } else {
-                  renderData = detail[key];
-
-                }
-                return (
-                  <TableCell className={classes.tableCell}>
-                    <StyledText size="subtitle2">{renderData}</StyledText>
-                  </TableCell>
-                )
-              })} */}
-              <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
-                  {parseTimeData(
-                    detail.time,
-                    fallbackLocale as SupportedLanguages
                   )}
                 </StyledText>
+              </TableCell>
               <TableCell className={classes.tableCell}>
                 <StyledText size="subtitle2">
                   {parseTimeData(
@@ -129,14 +103,20 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
               </TableCell>
               <TableCell className={classes.tableCell}>
                 <StyledText size="subtitle2">
-                  {parseHourData(
-                    detail.hr,
-                    fallbackLocale as SupportedLanguages
-                  )}
+                  {`${detail.hr} ${hourLabel}`}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{`$ ${detail.price}`}</StyledText>
+                <StyledText size="subtitle2">{detail.spending ? `$${detail.spending}` : ''}</StyledText>
+              </TableCell>
+              <TableCell className={classes.tableCell}>
+                <StyledText size="subtitle2">{detail.movie}</StyledText>
+              </TableCell>
+              <TableCell className={classes.tableCell}>
+                <StyledText size="subtitle2">{detail.dining ? `$${detail.dining}` : ''}</StyledText>
+              </TableCell>
+              <TableCell className={classes.tableCell}>
+                <StyledText size="subtitle2">{detail.condition}</StyledText>
               </TableCell>
             </TableRow>
           ))}

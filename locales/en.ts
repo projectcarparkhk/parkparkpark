@@ -48,20 +48,21 @@ const locale = {
   updatedAtLabel: 'Updated on',
   authorLabel: 'Author',
   promotionDatesLabel: 'Promotion dates',
-  fromDateLabel: 'From',
-  toDateLabel: 'To',
   promotionDetailsLabel: 'Promotion details',
-  promotion_condition_label: 'Conditions',
-  promotion_day_label: 'Days',
-  promotion_dining_label: 'Dining',
-  promotion_hr_label: 'Hours free',
-  promotion_movie_label: '# Movie tickets',
-  promotion_spending_label: 'Spending',
-  promotion_time_label: 'Periods',
+  promotionConditionLabel: 'Conditions',
+  promotionDayLabel: 'Days',
+  promotionDiningLabel: 'Dining',
+  promotionHrLabel: 'Hours free',
+  promotionMovieLabel: '# Movie tickets',
+  promotionSpendingLabel: 'Spending',
+  promotionTimeLabel: 'Periods',
   beforeTimeEnterLabelPost: '',
   afterTimeEnterLabelPost: '',
   beforeTimeEnterLabelPre: 'Enter before ',
   afterTimeEnterLabelPre: 'Enter after ',
+  hourLabel: 'hour/s',
+  promotionMoreDetailsLabel: 'More details'
+
 }
 
 

@@ -1,50 +1,26 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CardMedia,
-  Chip,
-  Container,
-  Divider,
-  Link,
-  makeStyles,
-  Theme,
-} from '@material-ui/core'
+import { Container, Divider, makeStyles, Theme } from '@material-ui/core'
 import React from 'react'
-import Carousel from 'react-material-ui-carousel'
 import Header from '../../components/header'
-import {
-  getCarparkBySlug,
-  getCarparks,
-  getNearbyCarparks,
-} from '../../sanityApi/carparks'
-import { CarparkResponse, PostResponse } from '../../types/pages'
-import Image from 'next/image'
-import { imageBuilder } from '../../sanityApi/sanity'
+import { PostResponse } from '../../types/pages'
 import { StyledText } from '../../components/StyledText'
 import { useRouter } from 'next/router'
 import translations from '../../locales'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
-import { CarparkPost } from '../../types/api/CarparkResponse'
-import { Section, SectionProps } from '../../components/Section'
-import { useMemo } from 'react'
-import { StyledButton } from '../../components/StyledButton'
 import { getAllPosts, getPostBySlug } from '../../sanityApi/posts'
 import Footer from '../../components/footer/footer'
 import { format } from 'date-fns'
 import PromotionDetailTable from '../../components/table/PromotionDetailTable'
-
+import BlockContent from '@sanity/block-content-to-react'
 interface IProps {
   post: PostResponse
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   main: {
-    margin: theme.spacing(3, 0),
+    margin: theme.spacing(2.5, 0),
   },
   subSection: {
-    margin: theme.spacing(1.5, 0),
+    margin: theme.spacing(3, 0),
   },
   postType: {
     color: theme.palette.primary.main,
@@ -63,9 +39,8 @@ const PostPage = ({ post }: IProps) => {
     createdAtLabel,
     updatedAtLabel,
     promotionDatesLabel,
-    fromDateLabel,
-    toDateLabel,
     promotionDetailsLabel,
+    promotionMoreDetailsLabel
   } = translations[fallbackLocale]
 
   return (
@@ -125,12 +100,6 @@ const PostPage = ({ post }: IProps) => {
                 {format(new Date(post._updatedAt), 'yyyy-MM-dd')}
               </StyledText>
             </div>
-          </div>
-          <Divider light />
-          <StyledText size="h5" className={classes.subSection}>
-            {promotionDatesLabel}
-          </StyledText>
-          <div className={classes.subSection}>
             <div>
               <StyledText
                 bold
@@ -138,37 +107,31 @@ const PostPage = ({ post }: IProps) => {
                 size="subtitle1"
                 className={classes.infoTitle}
               >
-                {fromDateLabel}
+                {promotionDatesLabel}
               </StyledText>
               <StyledText inline size="subtitle2">
-                {format(
+                {`${format(
                   new Date(post.startAndExpiryDates.startDate),
                   'yyyy-MM-dd'
-                )}
-              </StyledText>
-            </div>
-            <div>
-              <StyledText
-                bold
-                inline
-                size="subtitle1"
-                className={classes.infoTitle}
-              >
-                {toDateLabel}
-              </StyledText>
-              <StyledText inline size="subtitle2">
-                {format(
+                )} - ${format(
                   new Date(post.startAndExpiryDates.expiryDate),
                   'yyyy-MM-dd'
-                )}
+                )}`}
               </StyledText>
             </div>
           </div>
+          <Divider light />
           <div className={classes.subSection}>
-            <StyledText size="h5" className={classes.subSection}>
+            <StyledText size="h2" className={classes.subSection}>
               {promotionDetailsLabel}
             </StyledText>
-            <PromotionDetailTable promotionDetails={post.promotionDetails}/>
+            <PromotionDetailTable promotionDetails={post.promotionDetails} />
+          </div>
+          <div className={classes.subSection}>
+            <StyledText size="h2" className={classes.subSection}>
+              {promotionMoreDetailsLabel}
+            </StyledText>
+            <BlockContent blocks={post.body[fallbackLocale]}/>
           </div>
         </main>
       </Container>
