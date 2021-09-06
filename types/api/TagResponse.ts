@@ -1,3 +1,4 @@
+import { ResponseElement } from './ResponseElement'
 export interface HotTagResponse {
   _id: string
   en: TagTranslation
@@ -14,4 +15,12 @@ export interface TagTranslation {
 export interface TagFilterResponse {
   _id: string
   name: { [key: string]: string }
+  slug: string
+}
+
+export interface TagResponse {
+  _id: string
+  name: { [key: string]: string }
+  tags: ResponseElement[]
+  slug: string
 }

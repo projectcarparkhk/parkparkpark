@@ -27,11 +27,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: theme.spacing(1),
     marginRight: theme.spacing(2),
   },
-  subDistricts: {
-    marginRight: theme.spacing(1),
-  },
-  chipContainer: {
-    marginTop: theme.spacing(1),
+  cardContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
   },
   chip: {
     marginRight: theme.spacing(1),
@@ -49,18 +48,18 @@ export default function CarparkListItem({ carpark, locale }: CarparkListProps) {
         className={classes.image}
         src={imageBuilder(imagePath).width(144).height(144).url() || '/hk.webp'}
       />
-      <div>
-        <div className={classes.subDistricts}>
-          <StyledText size="subtitle2" inline={true}>
+      <div className={classes.cardContent}>
+        <div>
+          <StyledText size="body1" inline={true}>
             {subDistricts
               .map((subDistrict) => subDistrict.name[locale])
               .join('/')}
           </StyledText>
+          <StyledText size="h4" bold inline={false}>
+            {name[locale]}
+          </StyledText>
         </div>
-        <StyledText size="h4" bold inline={false}>
-          {name[locale]}
-        </StyledText>
-        <div className={classes.chipContainer}>
+        <div>
           {tags &&
             tags.map((tag) => (
               <StyledChip className={classes.chip} label={tag.name[locale]} />

@@ -13,14 +13,16 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import LocationOnIcon from '@material-ui/icons/LocationOn'
+import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation'
 import InputBase from '@material-ui/core/InputBase'
 import { Suggestion } from './type'
 import { makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import translations from '../../locales'
-import { SupportedLanguages } from '../../constants/SupportedLanguages';
-import { useRouter } from 'next/router';
+import { SupportedLanguages } from '../../constants/SupportedLanguages'
+import { useRouter } from 'next/router'
+import { StyledText } from '../StyledText'
 
 export const useStyles = makeStyles((theme: Theme) => ({
   searchBox: {
@@ -57,6 +59,16 @@ export const useStyles = makeStyles((theme: Theme) => ({
       fontSize: '1rem',
     },
   },
+  suggestion: {
+    '& .MuiAvatar-root': {
+      background: theme.palette.primary.main,
+    },
+  },
+  suggestionList: {
+    listStyleType: 'none',
+    margin: 0,
+    padding: 0,
+  },
 }))
 
 const searchEndpoint = (query: string) => `/api/search?q=${query}`
@@ -82,17 +94,25 @@ const getSuggestionValue = (suggestion: Suggestion) => suggestion.name
 // Use your imagination to render suggestions.
 const renderSuggestion = (
   suggestion: Suggestion,
-  locale:  SupportedLanguages,
+  locale: SupportedLanguages
 ) => {
   return (
     <ListItem button>
-    <ListItemAvatar>
-      <Avatar>
-        <LocationOnIcon />
-      </Avatar>
-    </ListItemAvatar>
-    <ListItemText primary={suggestion.name} secondary={translations[locale][suggestion.type]} />
-  </ListItem>
+      <ListItemAvatar>
+        <Avatar>
+          {suggestion.type === 'subDistrict' && <LocationOnIcon />}
+          {suggestion.type === 'carpark' && <EmojiTransportationIcon />}
+        </Avatar>
+      </ListItemAvatar>
+      <ListItemText
+        primary={
+          <StyledText size="h5" bold>
+            {suggestion.name}
+          </StyledText>
+        }
+        secondary={translations[locale][suggestion.type]}
+      />
+    </ListItem>
   )
 }
 
@@ -104,7 +124,7 @@ const renderSuggestionsContainer = ({
 }
 
 interface IProps {
-  onSuggestionClick: (suggestion: Suggestion) => void;
+  onSuggestionClick: (suggestion: Suggestion) => void
   children: React.ReactChild
 }
 
@@ -113,11 +133,9 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const classes = useStyles()
   const { locale } = useRouter()
-  const fallBackLocale = (locale as SupportedLanguages) 
+  const fallBackLocale = locale as SupportedLanguages
 
-  const {
-    searchPlaceholder,
-  } = translations[fallBackLocale]
+  const { searchPlaceholder } = translations[fallBackLocale]
 
   function onChange(
     event: React.FormEvent<HTMLElement>,
@@ -158,28 +176,32 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
       onSuggestionsClearRequested={onSuggestionsClearRequested}
       onSuggestionSelected={onSuggestionSelected}
       getSuggestionValue={getSuggestionValue}
-      renderSuggestion={(suggestion) => renderSuggestion(suggestion, fallBackLocale)}
+      renderSuggestion={(suggestion) =>
+        renderSuggestion(suggestion, fallBackLocale)
+      }
       renderSuggestionsContainer={renderSuggestionsContainer}
       renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (
           <div>
-          <div className={classes.searchBox}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            <div className={classes.searchBox}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="搜尋地區 / 停車場"
+                className={classes.inputInput}
+                inputProps={inputProps}
+              />
             </div>
-            <InputBase
-              placeholder="搜尋地區 / 停車場"
-              className={classes.inputInput}
-              inputProps={inputProps}
-            />
-          </div>
-          {!suggestions.length && <div>
-            {children}
-          </div>}
+            {!suggestions.length && <div>{children}</div>}
           </div>
         )
       }}
       inputProps={inputProps}
+      theme={{
+        suggestion: classes.suggestion,
+        suggestionsList: classes.suggestionList,
+      }}
     />
   )
 }
