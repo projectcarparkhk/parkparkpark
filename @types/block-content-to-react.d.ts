@@ -1,5 +1,4 @@
-declare module '@sanity/block-content-to-react'
- {
+declare module '@sanity/block-content-to-react' {
   import * as React from 'react'
 
   export interface BlockContentProps {
@@ -8,7 +7,7 @@ declare module '@sanity/block-content-to-react'
      *
      * *This is the only required prop*
      */
-    blocks: any[] | any,
+    blocks: any[] | any
     /**
      * When more than one block is given, a container node has to be created. Passing a className will pass it on to the container.
      * @note see `renderContainerOnSingleChild`
@@ -57,7 +56,7 @@ declare module '@sanity/block-content-to-react'
        * />
        * ```
        */
-      types?: Record<string, (props: any) => JSX.Element | null>
+      types?: any
       /**
        * Serializers for marks - data that annotates a text child of a block.
        * @example
@@ -91,18 +90,18 @@ declare module '@sanity/block-content-to-react'
        * />
        * ```
        */
-      marks?: Record<string, (props: any) => JSX.Element | null>
+      marks?: any
       /** React component to use when rendering a list node */
-      list?: React.Component
+      list?: any
       /** React component to use when rendering a list item node */
-      listItem?: React.Component
+      listItem?: any
       /**
        * React component to use when transforming newline characters
        * to a hard break (<br/> by default, pass false to render newline character)
        */
-      hardBreak?: React.Component
+      hardBreak?: any
       /** Serializer for the container wrapping the blocks */
-      container?: React.Component
+      container?: any
     }
     /**
      * When encountering image blocks,

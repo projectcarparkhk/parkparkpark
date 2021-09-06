@@ -61,7 +61,9 @@ const locale = {
   beforeTimeEnterLabelPre: '',
   afterTimeEnterLabelPre: '',
   hourLabel: '小時',
-  promotionMoreDetailsLabel: '更多資訊'
+  promotionMoreDetailsLabel: '更多資訊',
+  sourceListLabel: '資料來源',
+  shareLabel: '分享',
 }
 
 export default locale

@@ -32,7 +32,14 @@ const postFields = `
     'zh': shortDescription.zh
   },
   isHot,
-  externalLink,
+  'externalLink': externalLink[]{
+    'title': {
+      'en': title.en,
+      'zh': title.zh
+    },
+    url
+
+  },
   'promotionDetails': promotionDetails.rows[1...40]{
     'day': cells[0],
     'time': cells[1],
@@ -68,7 +75,7 @@ const defaultValues = {
   shortDescription: {},
   imagePath: '',
   slug: '',
-  externalLink: '',
+  externalLink: [],
   isHot: false,
   promotionDetails: [],
   startAndExpiryDates: {},
@@ -119,8 +126,8 @@ export async function getPostBySlug(
   const post: PostResponse[] = await SanityClient(preview)
     .fetch(`*[_type == 'post' && slug.current == '${slug}'] | order(publishedAt desc)[0]{
       ${postFields}
-    }`)
 
+    }`)
   return {
     ...defaultValues,
     ...post,

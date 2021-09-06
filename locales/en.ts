@@ -61,9 +61,9 @@ const locale = {
   beforeTimeEnterLabelPre: 'Enter before ',
   afterTimeEnterLabelPre: 'Enter after ',
   hourLabel: 'hour/s',
-  promotionMoreDetailsLabel: 'More details'
-
+  promotionMoreDetailsLabel: 'More details',
+  sourceListLabel: 'Source',
+  shareLabel: 'Share',
 }
 
-
-export default locale;
+export default locale

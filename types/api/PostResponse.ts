@@ -15,6 +15,10 @@ export interface PromotionDetail {
   spending?: string
 }
 
+interface ExternalLink {
+  title: { [key: string]: string }
+  url: string
+}
 export interface PostResponse {
   _id: string
   _updatedAt: string
@@ -23,7 +27,7 @@ export interface PostResponse {
   shortDescription: { [key: string]: string }
   imagePath: string
   slug: string
-  externalLink: string
+  externalLink: ExternalLink[]
   isHot: boolean
   promotionDetails: PromotionDetail[]
   startAndExpiryDates: {

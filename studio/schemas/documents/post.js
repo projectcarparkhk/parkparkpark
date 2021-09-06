@@ -69,7 +69,25 @@ export default {
     {
       name: 'externalLink',
       title: 'External link',
-      type: 'url',
+      type: 'array',
+      of: [
+        {
+          title: 'URL',
+          type: 'object',
+          fields: [
+            {
+              title: 'Title',
+              name: 'title',
+              type: 'localeString',
+            },
+            {
+              title: 'URL',
+              name: 'url',
+              type: 'url',
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'infoTables',

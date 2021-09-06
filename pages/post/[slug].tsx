@@ -1,5 +1,5 @@
 import { Container, Divider, makeStyles, Theme } from '@material-ui/core'
-import React from 'react'
+import React, { ReactNode, useState } from 'react'
 import Header from '../../components/header'
 import { PostResponse } from '../../types/pages'
 import { StyledText } from '../../components/StyledText'
@@ -11,22 +11,53 @@ import Footer from '../../components/footer/footer'
 import { format } from 'date-fns'
 import PromotionDetailTable from '../../components/table/PromotionDetailTable'
 import BlockContent from '@sanity/block-content-to-react'
+import UndecoratedAnchor from '../../components/UndecoratedAnchor'
+import LinkIcon from '@material-ui/icons/Link'
+import FacebookIcon from '@material-ui/icons/Facebook'
+import WhatsAppIcon from '@material-ui/icons/WhatsApp'
+
+import { FacebookShareButton, WhatsappShareButton } from 'react-share'
+import { useEffect } from 'react'
 interface IProps {
   post: PostResponse
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   main: {
-    margin: theme.spacing(2.5, 0),
+    margin: theme.spacing(3, 0),
   },
   subSection: {
-    margin: theme.spacing(3, 0),
+    margin: theme.spacing(3.5, 0),
   },
   postType: {
     color: theme.palette.primary.main,
   },
   infoTitle: {
-    marginRight: theme.spacing(1.5),
+    marginRight: theme.spacing(2),
+  },
+  pageSource: {
+    border: '1px solid ' + theme.palette.grey[400],
+    padding: theme.spacing(3, 3),
+  },
+  pageSourceTitle: {
+    marginBottom: theme.spacing(2),
+  },
+  number: {
+    marginRight: theme.spacing(2),
+  },
+  shareContainer: {
+    display: 'flex',
+    alignItem: 'center',
+  },
+  shareBtnContainer: {
+    display: 'flex',
+    alignItem: 'center',
+  },
+  shareBtn: {
+    '&hover:': {
+      color: theme.palette.grey[400],
+    },
+    marginRight: theme.spacing(2),
   },
 }))
 
@@ -40,29 +71,28 @@ const PostPage = ({ post }: IProps) => {
     updatedAtLabel,
     promotionDatesLabel,
     promotionDetailsLabel,
-    promotionMoreDetailsLabel
+    promotionMoreDetailsLabel,
+    sourceListLabel,
+    shareLabel,
   } = translations[fallbackLocale]
 
-  const serializers = {
-    types: {
-      block: (props: any) => {
-        const {style = 'normal'} = props.node
-      
-        if (style === 'normal') {
-          return <div style={{fontSize: '5px'}}> {props.children}</div>
-        }
-      
-        if (style === 'blockquote') {
-          return <blockquote>- {props.children}</blockquote>
-        }
-      
-        // Fall back to default handling
-        return (BlockContent as any).defaultSerializers.types.block(props)
-      }
-    },
-  }
+  const [share, setShare] = useState<Array<ReactNode>>([])
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setShare([
+        <FacebookShareButton
+          children={<FacebookIcon />}
+          url={window ? window.location.href : ''}
+        />,
+        <WhatsappShareButton
+          children={<WhatsAppIcon />}
+          url={window ? window.location.href : ''}
+        />,
+      ])
+    }
+  }, [])
 
-  console.log('bodyyy', JSON.stringify(post.body, null, 2))
+  // console.log('body', JSON.stringify(post.body[fallbackLocale], null, 2))
   return (
     <div>
       <Container>
@@ -151,7 +181,50 @@ const PostPage = ({ post }: IProps) => {
             <StyledText size="h2" className={classes.subSection}>
               {promotionMoreDetailsLabel}
             </StyledText>
-            <BlockContent blocks={post.body[fallbackLocale]} serializers={serializers}/>
+            <BlockContent blocks={post.body[fallbackLocale]} />
+          </div>
+          <div className={classes.pageSource}>
+            <StyledText size="subtitle1" className={classes.pageSourceTitle}>
+              {sourceListLabel}
+            </StyledText>
+            {post.externalLink.map((link, i) => (
+              <UndecoratedAnchor href={link.url}>
+                <StyledText
+                  size="subtitle1"
+                  className={classes.number}
+                  bold
+                  inline
+                >
+                  {i + 1}
+                </StyledText>
+                <StyledText size="subtitle1" bold inline>
+                  {link.title[fallbackLocale]}
+                </StyledText>
+              </UndecoratedAnchor>
+            ))}
+          </div>
+          <div className={classes.subSection}>
+            <div className={classes.shareContainer}>
+              <StyledText
+                bold
+                inline
+                size="subtitle1"
+                className={classes.infoTitle}
+              >
+                {shareLabel}
+              </StyledText>
+              <div className={classes.shareBtnContainer}>
+                <LinkIcon
+                  className={classes.shareBtn}
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href)
+                  }}
+                />
+                {share.map((elem) => (
+                  <div className={classes.shareBtn}>{elem}</div>
+                ))}
+              </div>
+            </div>
           </div>
         </main>
       </Container>
