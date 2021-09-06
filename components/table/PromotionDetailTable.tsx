@@ -14,11 +14,7 @@ import React from 'react'
 import { StyledText } from '../StyledText'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import translations from '../../locales'
-import {
-  parseDayDetailData,
-  parseHourData,
-  parseTimeData,
-} from '../../utils/parseData'
+import { parseDayDetailData, parseTimeData } from '../../utils/parseData'
 import { PromotionDetail } from '../../types/api/PostResponse'
 interface IProps {
   promotionDetails: PromotionDetail[]
@@ -40,11 +36,7 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
   const classes = useStyles()
   const { locale } = useRouter()
   const fallbackLocale = locale || 'zh'
-  console.log(promotionDetails)
-  const hasData = promotionDetails.length > 0
-  const headers = hasData ? Object.keys(promotionDetails[0]) : []
   const {
-    promotionDetailsLabel,
     promotionConditionLabel,
     promotionDayLabel,
     promotionDiningLabel,
@@ -107,13 +99,17 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{detail.spending ? `$${detail.spending}` : ''}</StyledText>
+                <StyledText size="subtitle2">
+                  {detail.spending ? `$${detail.spending}` : ''}
+                </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
                 <StyledText size="subtitle2">{detail.movie}</StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{detail.dining ? `$${detail.dining}` : ''}</StyledText>
+                <StyledText size="subtitle2">
+                  {detail.dining ? `$${detail.dining}` : ''}
+                </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
                 <StyledText size="subtitle2">{detail.condition}</StyledText>

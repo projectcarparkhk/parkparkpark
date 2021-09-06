@@ -92,7 +92,6 @@ const PostPage = ({ post }: IProps) => {
     }
   }, [])
 
-  // console.log('body', JSON.stringify(post.body[fallbackLocale], null, 2))
   return (
     <div>
       <Container>

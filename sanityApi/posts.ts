@@ -80,8 +80,8 @@ const defaultValues = {
   promotionDetails: [],
   startAndExpiryDates: {},
   tags: [],
-  postType: {},
-  author: {},
+  postType: { name: {} },
+  author: { name: {} },
 }
 
 export async function getLatestPosts(
