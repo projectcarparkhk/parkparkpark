@@ -13,9 +13,14 @@ const postFields = `
   },
   'author': author -> {
     _id,
+    'imagePath': mainImage.asset._ref,
     'name': {
       'en': name.en,
       'zh': name.zh
+    },
+    'bio': {
+      'en': bio.en,
+      'zh': bio.zh
     },
     'slug': slug.current
   },
@@ -71,8 +76,8 @@ const defaultValues = {
   _id: 'default-id',
   _updatedAt: '',
   _createdAt: '',
-  title: {},
-  shortDescription: {},
+  title: { en: '', zh: '' },
+  shortDescription: { en: '', zh: '' },
   imagePath: '',
   slug: '',
   externalLink: [],
@@ -80,8 +85,8 @@ const defaultValues = {
   promotionDetails: [],
   startAndExpiryDates: {},
   tags: [],
-  postType: { name: {} },
-  author: { name: {} },
+  postType: { name: { en: '', zh: '' } },
+  author: { name: { en: '', zh: '' } },
 }
 
 export async function getLatestPosts(
@@ -128,6 +133,7 @@ export async function getPostBySlug(
       ${postFields}
 
     }`)
+  console.log('postttt', post)
   return {
     ...defaultValues,
     ...post,

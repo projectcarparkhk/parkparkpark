@@ -22,8 +22,8 @@ export default {
       },
     },
     {
-      name: 'image',
-      title: 'Image',
+      name: 'mainImage',
+      title: 'Main image',
       type: 'image',
       options: {
         hotspot: true,
@@ -32,15 +32,7 @@ export default {
     {
       name: 'bio',
       title: 'Bio',
-      type: 'array',
-      of: [
-        {
-          title: 'Block',
-          type: 'block',
-          styles: [{ title: 'Normal', value: 'normal' }],
-          lists: [],
-        },
-      ],
+      type: 'localeString',
     },
   ],
   preview: {

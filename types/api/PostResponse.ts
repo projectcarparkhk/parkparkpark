@@ -35,7 +35,10 @@ export interface PostResponse {
     expiryDate: string
   }
   tags: ResponseElement[]
-  author: ResponseElement
+  author: ResponseElement & {
+    bio: { [key: string]: string }
+    imagePath: string
+  }
   postType: ResponseElement
   body: { [key: string]: any }
 }

@@ -64,6 +64,7 @@ const locale = {
   promotionMoreDetailsLabel: 'More details',
   sourceListLabel: 'Source',
   shareLabel: 'Share',
+  imageLabel: 'Image',
 }
 
 export default locale

@@ -63,7 +63,7 @@ theme.typography.h6 = {
 }
 
 theme.typography.subtitle1 = {
-  fontSize: '1rem',
+  fontSize: '1.1rem',
   fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.6rem',
@@ -71,7 +71,7 @@ theme.typography.subtitle1 = {
 }
 
 theme.typography.subtitle2 = {
-  fontSize: '0.8rem',
+  fontSize: '1rem',
   fontWeight: 'lighter',
   [theme.breakpoints.up('sm')]: {
     fontSize: '0.45rem',

@@ -64,6 +64,7 @@ const locale = {
   promotionMoreDetailsLabel: '更多資訊',
   sourceListLabel: '資料來源',
   shareLabel: '分享',
+  imageLabel: '圖片',
 }
 
 export default locale
