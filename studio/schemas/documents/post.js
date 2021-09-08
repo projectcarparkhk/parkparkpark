@@ -67,7 +67,7 @@ export default {
       type: 'boolean',
     },
     {
-      name: 'externalLink',
+      name: 'externalLinks',
       title: 'External link',
       type: 'array',
       of: [

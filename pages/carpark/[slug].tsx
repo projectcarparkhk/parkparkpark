@@ -181,18 +181,18 @@ const CarparkPage = ({
   ]
 
   const Promotions = ({ post }: { post: CarparkPost }) => (
-    <UndecoratedLink href={post.slug}>
+    <UndecoratedLink href={`/post/${post.slug}`}>
       <div className={classes.details}>
         <CardMedia
           className={classes.media}
           image={imageBuilder(post.imagePath).toString() || '/hk.webp'}
         />
         <div className={classes.content}>
-          <StyledText size="subtitle2" bold className={classes.title}>
+          <StyledText size="h6" bold className={classes.title}>
             {post.title[fallbackLocale]}
           </StyledText>
-          <StyledText size="subtitle1">
-            {post.shortDescription[fallbackLocale]}
+          <StyledText size="subtitle2">
+            {post.shortDescription[fallbackLocale].slice(0, 30) + '...'}
           </StyledText>
         </div>
       </div>

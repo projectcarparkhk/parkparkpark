@@ -1,14 +1,4 @@
-import {
-  makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Theme,
-} from '@material-ui/core'
+import { makeStyles, TableCell, TableRow, Theme } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { StyledText } from '../StyledText'
@@ -16,6 +6,7 @@ import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import translations from '../../locales'
 import { parseDayDetailData, parseTimeData } from '../../utils/parseData'
 import { PromotionDetail } from '../../types/api/PostResponse'
+import DataTable from './DataTable'
 interface IProps {
   promotionDetails: PromotionDetail[]
 }
@@ -29,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(0.7, 1.5),
     whiteSpace: 'nowrap',
   },
-  table: { overflowX: 'scroll' },
 }))
 
 const PromotionDetailTable = ({ promotionDetails }: IProps) => {
@@ -47,34 +37,34 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
     hourLabel,
   } = translations[fallbackLocale]
   return (
-    <TableContainer component={Paper}>
-      <Table size="small" aria-label="simple table" className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionDayLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionTimeLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionHrLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionSpendingLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionMovieLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionDiningLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{promotionConditionLabel}</StyledText>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <DataTable
+      headerRow={
+        <>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionDayLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionTimeLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionHrLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionSpendingLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionMovieLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionDiningLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{promotionConditionLabel}</StyledText>
+          </TableCell>
+        </>
+      }
+      dataRows={
+        <>
           {promotionDetails.map((detail: PromotionDetail) => (
             <TableRow key={`${detail.day}_${detail.time}_${detail.hr}`}>
               <TableCell className={classes.tableCell}>
@@ -116,9 +106,9 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </>
+      }
+    />
   )
 }
 

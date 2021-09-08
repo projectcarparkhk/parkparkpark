@@ -65,6 +65,7 @@ const locale = {
   sourceListLabel: 'Source',
   shareLabel: 'Share',
   imageLabel: 'Image',
+  carparksAppliedLabel: 'Carparks Applied',
 }
 
 export default locale

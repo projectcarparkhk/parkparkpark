@@ -37,7 +37,7 @@ const postFields = `
     'zh': shortDescription.zh
   },
   isHot,
-  'externalLink': externalLink[]{
+  'externalLinks': externalLinks[]{
     'title': {
       'en': title.en,
       'zh': title.zh
@@ -72,7 +72,7 @@ const postFields = `
   }
 `
 
-const defaultValues = {
+const defaultValues: PostResponse = {
   _id: 'default-id',
   _updatedAt: '',
   _createdAt: '',
@@ -80,13 +80,10 @@ const defaultValues = {
   shortDescription: { en: '', zh: '' },
   imagePath: '',
   slug: '',
-  externalLink: [],
   isHot: false,
-  promotionDetails: [],
-  startAndExpiryDates: {},
   tags: [],
-  postType: { name: { en: '', zh: '' } },
-  author: { name: { en: '', zh: '' } },
+  postType: { name: { en: '', zh: '' }, _id: 'default-id', slug: '' },
+  body: { en: '', zh: '' },
 }
 
 export async function getLatestPosts(
@@ -127,13 +124,12 @@ export async function getAllPosts(preview?: boolean): Promise<PostResponse[]> {
 export async function getPostBySlug(
   slug: string,
   preview?: boolean
-): Promise<PostResponse[]> {
+): Promise<PostResponse> {
   const post: PostResponse[] = await SanityClient(preview)
     .fetch(`*[_type == 'post' && slug.current == '${slug}'] | order(publishedAt desc)[0]{
       ${postFields}
 
     }`)
-  console.log('postttt', post)
   return {
     ...defaultValues,
     ...post,

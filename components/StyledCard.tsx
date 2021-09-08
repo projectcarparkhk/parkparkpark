@@ -135,7 +135,6 @@ export const StyledCard = ({
 }: StyledCardProps) => {
   const classes = useStyles({ index })
   const router = useRouter()
-  console.log('subpathhh', subPath)
   return (
     <Card className={`${classes.card}`}>
       <CardActionArea onClick={() => router.push(`${subPath}/${slug}`)}>

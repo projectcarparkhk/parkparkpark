@@ -1,14 +1,4 @@
-import {
-  makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Theme,
-} from '@material-ui/core'
+import { makeStyles, TableCell, TableRow, Theme } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { StyledText } from '../../components/StyledText'
@@ -20,17 +10,19 @@ import {
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
+import DataTable from './DataTable'
 interface IProps {
   priceDetails: PriceDetail[]
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   tableTitle: {
-    padding: theme.spacing(0.5, 1),
-    minWidth: '25%',
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
   tableCell: {
-    padding: theme.spacing(0.5, 1),
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
 }))
 
@@ -46,25 +38,25 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
   } = translations[fallbackLocale]
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small" aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsPriceLabel}</StyledText>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <DataTable
+      headerRow={
+        <>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsPriceLabel}</StyledText>
+          </TableCell>
+        </>
+      }
+      dataRows={
+        <>
           {priceDetails.map((detail) => (
             <TableRow key={`${detail.day}_${detail.hr}_${detail.price}`}>
               <TableCell className={classes.tableCell}>
@@ -96,9 +88,9 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </>
+      }
+    />
   )
 }
 

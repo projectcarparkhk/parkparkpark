@@ -27,15 +27,15 @@ export interface PostResponse {
   shortDescription: { [key: string]: string }
   imagePath: string
   slug: string
-  externalLink: ExternalLink[]
+  externalLinks?: ExternalLink[]
   isHot: boolean
-  promotionDetails: PromotionDetail[]
-  startAndExpiryDates: {
+  promotionDetails?: PromotionDetail[]
+  startAndExpiryDates?: {
     startDate: string
     expiryDate: string
   }
   tags: ResponseElement[]
-  author: ResponseElement & {
+  author?: ResponseElement & {
     bio: { [key: string]: string }
     imagePath: string
   }

@@ -65,6 +65,7 @@ const locale = {
   sourceListLabel: '資料來源',
   shareLabel: '分享',
   imageLabel: '圖片',
+  carparksAppliedLabel: '適用車場',
 }
 
 export default locale

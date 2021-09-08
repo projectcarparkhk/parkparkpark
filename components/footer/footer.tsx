@@ -129,7 +129,7 @@ const Footer = () => {
           <WhatsAppIcon className={classes.icon} />
         </StyledButton>
       </div>
-      <StyledText size="subtitle1" className={classes.copyright}>
+      <StyledText size="subtitle2" className={classes.copyright}>
         © 2021 ParkParkPark. All Rights Reserved.
       </StyledText>
     </div>

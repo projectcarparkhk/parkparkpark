@@ -1,7 +1,11 @@
 import { Container, Divider, makeStyles, Theme } from '@material-ui/core'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 import Header from '../../components/header'
-import { PostResponse } from '../../types/pages'
+import {
+  CarparkResponse,
+  PostResponse,
+  TranslatedCarpark,
+} from '../../types/pages'
 import { StyledText } from '../../components/StyledText'
 import { useRouter } from 'next/router'
 import translations from '../../locales'
@@ -20,8 +24,13 @@ import Image from 'next/image'
 import { FacebookShareButton, WhatsappShareButton } from 'react-share'
 import { useEffect } from 'react'
 import { imageBuilder } from '../../sanityApi/sanity'
+import { getCarparks } from '../../sanityApi/carparks'
+import { filterCarparksByPostSlug } from '../../sanityApi/toApplication/carparks'
+import { translateCarparks } from '../../utils/translateCarparks'
+import { Section, SectionProps } from '../../components/Section'
 interface IProps {
   post: PostResponse
+  carparksApplied: CarparkResponse[]
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -36,14 +45,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   infoTitle: {
     marginRight: theme.spacing(2),
-    color: theme.palette.grey[700],
+    color: theme.palette.text.secondary,
   },
   pageSource: {
     border: '1px solid ' + theme.palette.grey[400],
     padding: theme.spacing(3, 3),
   },
   pageSourceTitle: {
-    color: theme.palette.grey[700],
+    color: theme.palette.text.secondary,
     marginBottom: theme.spacing(2),
   },
   number: {
@@ -93,11 +102,22 @@ const useStyles = makeStyles((theme: Theme) => ({
     flex: 2,
   },
   authorText: {
-    margin: theme.spacing(1, 0),
+    margin: theme.spacing(0.5, 0),
+  },
+  author: {
+    margin: theme.spacing(0.5, 0),
+    color: theme.palette.text.secondary,
+  },
+  blockContent: {
+    color: theme.palette.grey[800],
+  },
+  sectionContainer: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2, 0),
   },
 }))
 
-const PostPage = ({ post }: IProps) => {
+const PostPage = ({ post, carparksApplied }: IProps) => {
   const classes = useStyles()
   const router = useRouter()
   const fallbackLocale = (router.locale as SupportedLanguages) || 'zh'
@@ -111,7 +131,22 @@ const PostPage = ({ post }: IProps) => {
     sourceListLabel,
     shareLabel,
     imageLabel,
+    carparksAppliedLabel,
   } = translations[fallbackLocale]
+
+  const translatedCarparks: TranslatedCarpark[] = useMemo(
+    () => translateCarparks(carparksApplied, fallbackLocale),
+    [carparksApplied, fallbackLocale]
+  )
+
+  const postSections: SectionProps[] = [
+    {
+      subPath: '/carpark',
+      sectionHeader: carparksAppliedLabel,
+      postItems: translatedCarparks,
+      limited: true,
+    },
+  ]
 
   const [share, setShare] = useState<Array<ReactNode>>([])
   useEffect(() => {
@@ -142,19 +177,21 @@ const PostPage = ({ post }: IProps) => {
             {post.shortDescription[fallbackLocale]}
           </StyledText>
           <div className={classes.subSection}>
-            <div>
-              <StyledText
-                bold
-                inline
-                size="subtitle1"
-                className={classes.infoTitle}
-              >
-                {authorLabel}
-              </StyledText>
-              <StyledText inline size="subtitle2">
-                {post.author.name[fallbackLocale]}
-              </StyledText>
-            </div>
+            {post.author && (
+              <div>
+                <StyledText
+                  bold
+                  inline
+                  size="subtitle1"
+                  className={classes.infoTitle}
+                >
+                  {authorLabel}
+                </StyledText>
+                <StyledText inline size="subtitle2">
+                  {post.author.name[fallbackLocale]}
+                </StyledText>
+              </div>
+            )}
             <div>
               <StyledText
                 bold
@@ -181,38 +218,45 @@ const PostPage = ({ post }: IProps) => {
                 {format(new Date(post._updatedAt), 'yyyy-MM-dd')}
               </StyledText>
             </div>
-            <div>
-              <StyledText
-                bold
-                inline
-                size="subtitle1"
-                className={classes.infoTitle}
-              >
-                {promotionDatesLabel}
-              </StyledText>
-              <StyledText inline size="subtitle2">
-                {`${format(
-                  new Date(post.startAndExpiryDates.startDate),
-                  'yyyy-MM-dd'
-                )} - ${format(
-                  new Date(post.startAndExpiryDates.expiryDate),
-                  'yyyy-MM-dd'
-                )}`}
-              </StyledText>
-            </div>
+            {post.startAndExpiryDates && (
+              <div>
+                <StyledText
+                  bold
+                  inline
+                  size="subtitle1"
+                  className={classes.infoTitle}
+                >
+                  {promotionDatesLabel}
+                </StyledText>
+                <StyledText inline size="subtitle2">
+                  {`${format(
+                    new Date(post.startAndExpiryDates.startDate),
+                    'yyyy-MM-dd'
+                  )} - ${format(
+                    new Date(post.startAndExpiryDates.expiryDate),
+                    'yyyy-MM-dd'
+                  )}`}
+                </StyledText>
+              </div>
+            )}
           </div>
           <Divider light />
-          <div className={classes.subSection}>
-            <StyledText size="h2" className={classes.subSection}>
-              {promotionDetailsLabel}
-            </StyledText>
-            <PromotionDetailTable promotionDetails={post.promotionDetails} />
-          </div>
+          {post.promotionDetails && (
+            <div className={classes.subSection}>
+              <StyledText size="h2" className={classes.subSection}>
+                {promotionDetailsLabel}
+              </StyledText>
+              <PromotionDetailTable promotionDetails={post.promotionDetails} />
+            </div>
+          )}
           <div className={classes.subSection}>
             <StyledText size="h2" className={classes.subSection}>
               {promotionMoreDetailsLabel}
             </StyledText>
-            <BlockContent blocks={post.body[fallbackLocale]} />
+            <BlockContent
+              className={classes.blockContent}
+              blocks={post.body[fallbackLocale]}
+            />
           </div>
           <div className={classes.subSection}>
             <StyledText size="h2" className={classes.subSection}>
@@ -229,30 +273,32 @@ const PostPage = ({ post }: IProps) => {
             </div>
           </div>
 
-          <div className={classes.pageSource}>
-            <StyledText
-              bold
-              size="subtitle1"
-              className={classes.pageSourceTitle}
-            >
-              {sourceListLabel}
-            </StyledText>
-            {post.externalLink.map((link, i) => (
-              <UndecoratedAnchor href={link.url}>
-                <StyledText
-                  size="subtitle1"
-                  className={classes.number}
-                  bold
-                  inline
-                >
-                  {i + 1}
-                </StyledText>
-                <StyledText size="subtitle1" bold inline>
-                  {link.title[fallbackLocale]}
-                </StyledText>
-              </UndecoratedAnchor>
-            ))}
-          </div>
+          {post.externalLinks && (
+            <div className={classes.pageSource}>
+              <StyledText
+                bold
+                size="subtitle1"
+                className={classes.pageSourceTitle}
+              >
+                {sourceListLabel}
+              </StyledText>
+              {post.externalLinks.map((link, i) => (
+                <UndecoratedAnchor href={link.url}>
+                  <StyledText
+                    size="subtitle1"
+                    className={classes.number}
+                    bold
+                    inline
+                  >
+                    {i + 1}
+                  </StyledText>
+                  <StyledText size="subtitle1" bold inline>
+                    {link.title[fallbackLocale]}
+                  </StyledText>
+                </UndecoratedAnchor>
+              ))}
+            </div>
+          )}
 
           <div className={classes.subSection}>
             <div className={classes.shareContainer}>
@@ -279,37 +325,44 @@ const PostPage = ({ post }: IProps) => {
           </div>
 
           <Divider light />
-          <div className={classes.subSection}>
-            <div className={classes.authorContainer}>
-              <div className={classes.iconContainer}>
-                <div className={classes.icon}>
-                  <Image
-                    src={
-                      imageBuilder(post.author.imagePath).toString() ||
-                      '/hk.webp'
-                    }
-                    layout="fill"
-                    objectFit="cover"
-                  />
+          {post.author && (
+            <div className={classes.subSection}>
+              <div className={classes.authorContainer}>
+                <div className={classes.iconContainer}>
+                  <div className={classes.icon}>
+                    <Image
+                      src={
+                        imageBuilder(post.author.imagePath).toString() ||
+                        '/hk.webp'
+                      }
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                </div>
+                <div className={classes.authorTextContainer}>
+                  <StyledText bold size="subtitle1" className={classes.author}>
+                    {authorLabel}
+                  </StyledText>
+                  <StyledText size="subtitle1" className={classes.authorText}>
+                    {post.author.name[fallbackLocale]}
+                  </StyledText>
+                  <StyledText size="subtitle1" className={classes.author}>
+                    {post.author.bio[fallbackLocale]}
+                  </StyledText>
                 </div>
               </div>
-              <div className={classes.authorTextContainer}>
-                <StyledText
-                  bold
-                  size="subtitle1"
-                  className={classes.authorText}
-                >
-                  {authorLabel}
-                </StyledText>
-                <StyledText size="subtitle1" className={classes.authorText}>
-                  {post.author.name[fallbackLocale]}
-                </StyledText>
-                <StyledText size="subtitle1" className={classes.authorText}>
-                  {post.author.bio[fallbackLocale]}
-                </StyledText>
-              </div>
             </div>
-          </div>
+          )}
+          <Divider light />
+          {postSections.map((section) => (
+            <div
+              key={section.sectionHeader}
+              className={classes.sectionContainer}
+            >
+              <Section {...section} />
+            </div>
+          ))}
         </main>
       </Container>
       <Footer />
@@ -349,8 +402,10 @@ interface StaticPropsContext {
 
 export async function getStaticProps({ params, preview }: StaticPropsContext) {
   const post = await getPostBySlug(params.slug, preview)
+  const carparks = await getCarparks()
+  const carparksApplied = filterCarparksByPostSlug(carparks, post.slug)
   return {
-    props: { post },
+    props: { post, carparksApplied },
     revalidate: 1,
   }
 }
