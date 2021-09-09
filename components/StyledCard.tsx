@@ -29,14 +29,15 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
   },
   cardOverlay: {
     position: 'absolute',
-    width:'100%',
+    width: '100%',
     height: '100%',
     top: '0',
     left: '0',
     zIndex: 1,
-    background: 'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)',
+    background:
+      'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.1) 70%, grey 100%)',
     display: 'flex',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   mediaText: {
     padding: '1rem',
@@ -132,7 +133,7 @@ export const StyledCard = ({
   index,
   subPath,
 }: StyledCardProps) => {
-  const classes = useStyles({index})
+  const classes = useStyles({ index })
   const router = useRouter()
   return (
     <Card className={`${classes.card}`}>
@@ -147,7 +148,7 @@ export const StyledCard = ({
           </div>
         ) : (
           <StyledCardContent>
-            <StyledText size="body1">{header}</StyledText>
+            <StyledText size="subtitle2">{header}</StyledText>
             <StyledText className={classes.titles} size="h6" bold>
               {subHeader}
             </StyledText>
@@ -165,20 +166,24 @@ export const StyledCard = ({
             <div className={classes.captionContainer}>
               {renderCaption()}
               <div className={classes.iconSection}>
-               {likes && <div
-                  className={`${classes.iconContainer} ${classes.iconContainerStart}`}
-                >
-                  <div className={classes.icons}>
-                    <FavoriteBorderIcon fontSize="inherit" />
+                {likes && (
+                  <div
+                    className={`${classes.iconContainer} ${classes.iconContainerStart}`}
+                  >
+                    <div className={classes.icons}>
+                      <FavoriteBorderIcon fontSize="inherit" />
+                    </div>
+                    <div>{likes}</div>
                   </div>
-                  <div>{likes}</div>
-                </div>}
-                {comments && <div className={classes.iconContainer}>
-                  <div className={classes.icons}>
-                    <ChatBubbleOutlineIcon fontSize="inherit" />
+                )}
+                {comments && (
+                  <div className={classes.iconContainer}>
+                    <div className={classes.icons}>
+                      <ChatBubbleOutlineIcon fontSize="inherit" />
+                    </div>
+                    <div>{comments}</div>
                   </div>
-                  <div>{comments}</div>
-                </div>}
+                )}
               </div>
             </div>
           </StyledCardContent>

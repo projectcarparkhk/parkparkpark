@@ -20,9 +20,7 @@ import {
 import translations from '../locales'
 import { useRouter } from 'next/router'
 import { imageBuilder } from '../sanityApi/sanity'
-import {
-  SupportedLanguages,
-} from '../constants/SupportedLanguages'
+import { SupportedLanguages } from '../constants/SupportedLanguages'
 import { getCarparks } from '../sanityApi/carparks'
 import { getHotTags } from '../sanityApi/tags'
 import FilterHdrIcon from '@material-ui/icons/FilterHdr'
@@ -249,14 +247,15 @@ export default function Index({
 
   const hotTagIdString = translatedHotTags.map((tag) => tag._id).join(',')
 
-
   const postSections: SectionProps[] = [
     {
+      subPath: '/post',
       sectionHeader: latestCarparkPromotions,
       postItems: translatedLatestPosts,
       slidingCard: true,
     },
     {
+      subPath: '/post',
       sectionHeader: cheapestCarparkPromotions,
       postItems: translatedHotPosts,
       slidingCard: true,
@@ -286,7 +285,9 @@ export default function Index({
       limited: true,
       fullImage: true,
       renderSideLink: () => (
-        <UndecoratedLink href={`/carparks?categories=${hotTagIdString}`}>{checkoutAll}</UndecoratedLink>
+        <UndecoratedLink href={`/carparks?categories=${hotTagIdString}`}>
+          {checkoutAll}
+        </UndecoratedLink>
       ),
       renderButton: () => (
         <Link href={`/carparks?categories=${hotTagIdString}`}>

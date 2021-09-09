@@ -1,14 +1,4 @@
-import {
-  makeStyles,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Theme,
-} from '@material-ui/core'
+import { makeStyles, TableCell, TableRow, Theme } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { StyledText } from '../../components/StyledText'
@@ -16,28 +6,30 @@ import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import translations from '../../locales'
 import { PriceDetail } from '../../types/api/CarparkResponse'
 import {
-  parseDayData,
+  parseDayDetailData,
   parseHourData,
   parseTimeData,
 } from '../../utils/parseData'
+import DataTable from './DataTable'
 interface IProps {
   priceDetails: PriceDetail[]
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
   tableTitle: {
-    padding: theme.spacing(0.5, 1),
-    minWidth: '25%',
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
   tableCell: {
-    padding: theme.spacing(0.5, 1),
+    padding: theme.spacing(0.7, 1.5),
+    whiteSpace: 'nowrap',
   },
 }))
 
 const PriceDetailTable = ({ priceDetails }: IProps) => {
   const classes = useStyles()
-  const {locale} = useRouter();
-  const fallbackLocale = locale || 'zh';
+  const { locale } = useRouter()
+  const fallbackLocale = locale || 'zh'
   const {
     priceDetailsDayLabel,
     priceDetailsTimeLabel,
@@ -46,50 +38,59 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
   } = translations[fallbackLocale]
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small" aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
-            </TableCell>
-            <TableCell className={classes.tableTitle}>
-              <StyledText size="h6">{priceDetailsPriceLabel}</StyledText>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <DataTable
+      headerRow={
+        <>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsDayLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsTimeLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsHourLabel}</StyledText>
+          </TableCell>
+          <TableCell className={classes.tableTitle}>
+            <StyledText size="h6">{priceDetailsPriceLabel}</StyledText>
+          </TableCell>
+        </>
+      }
+      dataRows={
+        <>
           {priceDetails.map((detail) => (
             <TableRow key={`${detail.day}_${detail.hr}_${detail.price}`}>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseDayData(detail.day, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseDayDetailData(
+                    detail.day,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseTimeData(detail.time, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseTimeData(
+                    detail.time,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">
-                  {parseHourData(detail.hr, fallbackLocale as SupportedLanguages)}
+                <StyledText size="subtitle2">
+                  {parseHourData(
+                    detail.hr,
+                    fallbackLocale as SupportedLanguages
+                  )}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="body1">{`$ ${detail.price}`}</StyledText>
+                <StyledText size="subtitle2">{`$ ${detail.price}`}</StyledText>
               </TableCell>
             </TableRow>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </>
+      }
+    />
   )
 }
 

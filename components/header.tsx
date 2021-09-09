@@ -51,7 +51,7 @@ export default function Header({ imageToTop }: HeaderProps) {
           <div className={classes.title}>
             <Link href="/">
               <span className="hover:underline">
-                <StyledText size="h1" bold>
+                <StyledText size="h5" bold>
                   {homeTitle}
                 </StyledText>
               </span>

@@ -1,8 +1,8 @@
 import { defaultLanguage } from '../supportedLanguages'
 
 export default {
-  name: 'author',
-  title: 'Author',
+  name: 'postType',
+  title: 'Post type',
   type: 'document',
   fields: [
     {
@@ -22,23 +22,14 @@ export default {
       },
     },
     {
-      name: 'mainImage',
-      title: 'Main image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    },
-    {
-      name: 'bio',
-      title: 'Bio',
+      name: 'shortDescription',
+      title: 'Short description',
       type: 'localeString',
     },
   ],
   preview: {
     select: {
       title: `name.${defaultLanguage}`,
-      media: 'image',
     },
   },
 }

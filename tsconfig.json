@@ -26,5 +26,8 @@
     ".eslintrc.js",
     "**/*.spec.ts",
     "**/*.spec.tsx"
-  ]
+  ],
+  "files": [
+    "@types/block-content-to-react.d.ts"
+  ],
 }

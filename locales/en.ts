@@ -38,13 +38,34 @@ const locale = {
   sunLabel: 'Sun',
   weekLabel: '',
   holidayLabel: 'Public holidays',
-  priceDetailsAllTimesLabel: 'All times',
+  allTimesLabel: 'All times',
   nearbyCarparksLabel: 'Nearby Carparks',
   paymentMethodLabel: 'Payment Methods',
   nearbyBestPromotionsLabel: 'Nearby Best Promotions',
   aboutParkLabel: 'About ParkParkPark',
-  termsLabel: 'Terms & conditions'
+  termsLabel: 'Terms & conditions',
+  createdAtLabel: 'Created on',
+  updatedAtLabel: 'Updated on',
+  authorLabel: 'Author',
+  promotionDatesLabel: 'Promotion dates',
+  promotionDetailsLabel: 'Promotion details',
+  promotionConditionLabel: 'Conditions',
+  promotionDayLabel: 'Days',
+  promotionDiningLabel: 'Dining',
+  promotionHrLabel: 'Hours free',
+  promotionMovieLabel: '# Movie tickets',
+  promotionSpendingLabel: 'Spending',
+  promotionTimeLabel: 'Periods',
+  beforeTimeEnterLabelPost: '',
+  afterTimeEnterLabelPost: '',
+  beforeTimeEnterLabelPre: 'Enter before ',
+  afterTimeEnterLabelPre: 'Enter after ',
+  hourLabel: 'hour/s',
+  promotionMoreDetailsLabel: 'More details',
+  sourceListLabel: 'Source',
+  shareLabel: 'Share',
+  imageLabel: 'Image',
+  carparksAppliedLabel: 'Carparks Applied',
 }
 
-
-export default locale;
+export default locale

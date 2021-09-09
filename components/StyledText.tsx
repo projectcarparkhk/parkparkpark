@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography, withStyles } from '@material-ui/core'
 import { Variant } from '@material-ui/core/styles/createTypography'
 import React from 'react'
 

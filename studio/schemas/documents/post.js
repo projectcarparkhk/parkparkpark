@@ -11,6 +11,12 @@ export default {
       type: 'localeString',
     },
     {
+      name: 'postType',
+      title: 'Post type',
+      type: 'reference',
+      to: { type: 'postType' },
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -42,7 +48,7 @@ export default {
     {
       title: 'Promotion details',
       name: 'promotionDetails',
-      type: 'localeTable',
+      type: 'table',
     },
     {
       name: 'body',
@@ -61,9 +67,27 @@ export default {
       type: 'boolean',
     },
     {
-      name: 'externalLink',
+      name: 'externalLinks',
       title: 'External link',
-      type: 'url',
+      type: 'array',
+      of: [
+        {
+          title: 'URL',
+          type: 'object',
+          fields: [
+            {
+              title: 'Title',
+              name: 'title',
+              type: 'localeString',
+            },
+            {
+              title: 'URL',
+              name: 'url',
+              type: 'url',
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'infoTables',
@@ -90,6 +114,18 @@ export default {
       to: { type: 'author' },
     },
   ],
+  initialValue: {
+    promotionDetails: {
+      rows: [
+        {
+          cells: ['day', 'type', 'value', 'hr'],
+        },
+        {
+          cells: ['', '', '', ''],
+        },
+      ],
+    },
+  },
 
   preview: {
     select: {

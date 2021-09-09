@@ -98,13 +98,15 @@ export const structureFilters = (
 }
 
 export const structureCarparks = (carparkResponse: CarparkResponse[]) => {
-  return carparkResponse.map(({ _id, imagePath = '', name, subDistricts, tags }) => ({
-    _id,
-    imagePath,
-    name,
-    subDistricts,
-    tags,
-  }))
+  return carparkResponse.map(
+    ({ _id, imagePath = '', name, subDistricts, tags }) => ({
+      _id,
+      imagePath,
+      name,
+      subDistricts,
+      tags,
+    })
+  )
 }
 
 export const getNearbyCarparks = (
@@ -117,4 +119,13 @@ export const getNearbyCarparks = (
     subDistrictIds.includes(response.subDistricts[0]._id)
   )
   // return carparkResponse.filter((response) => subDistrictIds.includes(response.subDistricts[0]._id) && carpark._id !==response._id)
+}
+
+export const filterCarparksByPostSlug = (
+  carparkResponse: CarparkResponse[],
+  slug: string
+) => {
+  return carparkResponse.filter((carpark) =>
+    carpark.posts.some((post) => post.slug === slug)
+  )
 }

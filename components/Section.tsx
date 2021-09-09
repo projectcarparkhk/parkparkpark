@@ -101,9 +101,21 @@ export const Section = ({
         {renderSideLink && renderSideLink()}
       </div>
       {slidingCard ? (
-        <div><RenderSlidingCards page={postItems} option={{ fullImage: true }}/></div>
+        <div>
+          <RenderSlidingCards
+            subPath={subPath}
+            page={postItems}
+            option={{ fullImage: true }}
+          />
+        </div>
       ) : fullImage ? (
-        <div><RenderCards subPath={subPath} page={postItems} option={ {fullImage: true, fullWidth, smOrAbove} } /></div>
+        <div>
+          <RenderCards
+            subPath={subPath}
+            page={postItems}
+            option={{ fullImage: true, fullWidth, smOrAbove }}
+          />
+        </div>
       ) : smOrAbove ? (
         <Carousel
           swipe
@@ -113,11 +125,23 @@ export const Section = ({
           indicators={false}
         >
           {windowPosts.map((page) => (
-            <div key={page.map(elem => elem.slug).join(',')}><RenderCards subPath={subPath} page={page} option= {{ fullImage, fullWidth, smOrAbove }}/></div>
+            <div key={page.map((elem) => elem.slug).join(',')}>
+              <RenderCards
+                subPath={subPath}
+                page={page}
+                option={{ fullImage, fullWidth, smOrAbove }}
+              />
+            </div>
           ))}
         </Carousel>
       ) : (
-        <><RenderCards subPath={subPath} page={limited ? smPosts : postItems} option={{ fullImage, fullWidth, smOrAbove }}/></>
+        <>
+          <RenderCards
+            subPath={subPath}
+            page={limited ? smPosts : postItems}
+            option={{ fullImage, fullWidth, smOrAbove }}
+          />
+        </>
       )}
       {renderButton && (
         <div className={classes.buttonContainer}>{renderButton()}</div>
@@ -125,4 +149,3 @@ export const Section = ({
     </div>
   )
 }
-

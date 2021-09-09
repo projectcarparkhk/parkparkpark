@@ -1,7 +1,13 @@
-import { durationTranslations, SupportedLanguages } from '../constants/SupportedLanguages'
+import {
+  durationTranslations,
+  SupportedLanguages,
+} from '../constants/SupportedLanguages'
 import translations from '../locales'
 
-export const parseDayData = (dayString: string, locale: SupportedLanguages) => {
+export const parseDayDetailData = (
+  dayString: string,
+  locale: SupportedLanguages
+) => {
   const {
     priceDetailsAllDaysLabel,
     toLabel,
@@ -60,12 +66,19 @@ export const parseTimeData = (
   timeString: string,
   locale: SupportedLanguages
 ) => {
-  const { priceDetailsAllTimesLabel } = translations[locale]
+  const { allTimesLabel, beforeTimeEnterLabelPre, afterTimeEnterLabelPre, beforeTimeEnterLabelPost, afterTimeEnterLabelPost } =
+    translations[locale]
   const carparkTimeField: { [key: string]: string } = {
-    all: priceDetailsAllTimesLabel,
+    all: allTimesLabel,
   }
   if (timeString === 'all') {
     return carparkTimeField[timeString]
+  }
+  if (timeString.includes('>')) {
+    return beforeTimeEnterLabelPre + timeString.replace('>', '') + ' ' + afterTimeEnterLabelPost
+  }
+  if (timeString.includes('<')) {
+    return afterTimeEnterLabelPre + timeString.replace('<', '') + ' ' + beforeTimeEnterLabelPost
   }
   return timeString
 }
