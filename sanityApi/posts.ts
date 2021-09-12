@@ -1,76 +1,7 @@
 import { PostResponse } from '../types/pages'
+import { getNearbyCarparks } from './carparks'
+import { postFields } from './constants'
 import { SanityClient } from './sanity'
-
-const postFields = `
-  _id,
-  _updatedAt,
-  _createdAt,
-  'imagePath': mainImage.asset._ref,
-  'slug': slug.current,
-  'title': {
-    'en': title.en,
-    'zh': title.zh,
-  },
-  'author': author -> {
-    _id,
-    'imagePath': mainImage.asset._ref,
-    'name': {
-      'en': name.en,
-      'zh': name.zh
-    },
-    'bio': {
-      'en': bio.en,
-      'zh': bio.zh
-    },
-    'slug': slug.current
-  },
-  'postType': postType -> {
-    _id,
-    'name': {
-      'en': name.en,
-      'zh': name.zh
-    },
-    'slug': slug.current
-  },
-  'shortDescription': {
-    'en': shortDescription.en,
-    'zh': shortDescription.zh
-  },
-  isHot,
-  'externalLinks': externalLinks[]{
-    'title': {
-      'en': title.en,
-      'zh': title.zh
-    },
-    url
-
-  },
-  'promotionDetails': promotionDetails.rows[1...40]{
-    'day': cells[0],
-    'time': cells[1],
-    'hr': cells[2],
-    'spending': cells[3],
-    'dining': cells[4],
-    'movie': cells[5],
-    'condition': cells[6],
-  },
-  'startAndExpiryDates': {
-    'startDate': startAndExpiryDates.startDate,
-    'expiryDate': startAndExpiryDates.expiryDate
-  },
-  'tags': tag[] -> {
-    _id,
-    'name': {
-      'en': name.en,
-      'zh': name.zh,
-    },
-    'slug': slug.current
-  },
-  'body': {
-    'zh': body.zh,
-    'en': body.en
-  }
-`
 
 const defaultValues: PostResponse = {
   _id: 'default-id',
@@ -84,6 +15,7 @@ const defaultValues: PostResponse = {
   tags: [],
   postType: { name: { en: '', zh: '' }, _id: 'default-id', slug: '' },
   body: { en: '', zh: '' },
+  promotionDetails: [],
 }
 
 export async function getLatestPosts(
@@ -134,4 +66,16 @@ export async function getPostBySlug(
     ...defaultValues,
     ...post,
   }
+}
+
+export async function getNearbyPosts(
+  subDistricts: string[],
+  preview?: boolean
+): Promise<PostResponse[]> {
+  const carparks = await getNearbyCarparks(subDistricts)
+  const nearbyPosts = carparks.map(({ posts }) => posts)
+  return nearbyPosts.flat().map((post) => ({
+    ...defaultValues,
+    ...post,
+  }))
 }

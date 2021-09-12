@@ -93,59 +93,65 @@ export const Section = ({
   const smPosts = useMemo(() => postItems.slice(0, 4), [postItems])
 
   return (
-    <div>
-      <div className={classes.titleContainer}>
-        <StyledText size={smOrAbove ? 'h3' : 'h4'} bold>
-          {sectionHeader}
-        </StyledText>
-        {renderSideLink && renderSideLink()}
-      </div>
-      {slidingCard ? (
+    <>
+      {postItems.length > 0 ? (
         <div>
-          <RenderSlidingCards
-            subPath={subPath}
-            page={postItems}
-            option={{ fullImage: true }}
-          />
-        </div>
-      ) : fullImage ? (
-        <div>
-          <RenderCards
-            subPath={subPath}
-            page={postItems}
-            option={{ fullImage: true, fullWidth, smOrAbove }}
-          />
-        </div>
-      ) : smOrAbove ? (
-        <Carousel
-          swipe
-          animation="slide"
-          className={classes.carousel}
-          autoPlay={false}
-          indicators={false}
-        >
-          {windowPosts.map((page) => (
-            <div key={page.map((elem) => elem.slug).join(',')}>
-              <RenderCards
+          <div className={classes.titleContainer}>
+            <StyledText size={smOrAbove ? 'h3' : 'h4'} bold>
+              {sectionHeader}
+            </StyledText>
+            {renderSideLink && renderSideLink()}
+          </div>
+          {slidingCard ? (
+            <div>
+              <RenderSlidingCards
                 subPath={subPath}
-                page={page}
-                option={{ fullImage, fullWidth, smOrAbove }}
+                page={postItems}
+                option={{ fullImage: true }}
               />
             </div>
-          ))}
-        </Carousel>
+          ) : fullImage ? (
+            <div>
+              <RenderCards
+                subPath={subPath}
+                page={postItems}
+                option={{ fullImage: true, fullWidth, smOrAbove }}
+              />
+            </div>
+          ) : smOrAbove ? (
+            <Carousel
+              swipe
+              animation="slide"
+              className={classes.carousel}
+              autoPlay={false}
+              indicators={false}
+            >
+              {windowPosts.map((page) => (
+                <div key={page.map((elem) => elem.slug).join(',')}>
+                  <RenderCards
+                    subPath={subPath}
+                    page={page}
+                    option={{ fullImage, fullWidth, smOrAbove }}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          ) : (
+            <>
+              <RenderCards
+                subPath={subPath}
+                page={limited ? smPosts : postItems}
+                option={{ fullImage, fullWidth, smOrAbove }}
+              />
+            </>
+          )}
+          {renderButton && (
+            <div className={classes.buttonContainer}>{renderButton()}</div>
+          )}
+        </div>
       ) : (
-        <>
-          <RenderCards
-            subPath={subPath}
-            page={limited ? smPosts : postItems}
-            option={{ fullImage, fullWidth, smOrAbove }}
-          />
-        </>
+        <></>
       )}
-      {renderButton && (
-        <div className={classes.buttonContainer}>{renderButton()}</div>
-      )}
-    </div>
+    </>
   )
 }

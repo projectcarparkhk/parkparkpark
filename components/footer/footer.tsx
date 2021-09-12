@@ -51,9 +51,13 @@ const Footer = () => {
   const router = useRouter()
 
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    router.push(`${router.query.slug}`, `${router.query.slug}`, {
-      locale: event.target.value as string,
-    })
+    router.push(
+      `${router.query.slug ? router.query.slug : ''}`,
+      `${router.query.slug ? router.query.slug : ''}`,
+      {
+        locale: event.target.value as string,
+      }
+    )
   }
 
   const fallbackLocale = router.locale || 'zh'

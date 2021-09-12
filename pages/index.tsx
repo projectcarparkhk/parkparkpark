@@ -279,7 +279,7 @@ export default function Index({
       ),
     },
     {
-      subPath: '/categories',
+      subPath: '/carparks?tags=',
       sectionHeader: hotCarparkTagsHeader,
       postItems: translatedHotTags,
       limited: true,

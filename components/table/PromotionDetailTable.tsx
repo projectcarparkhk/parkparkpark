@@ -4,7 +4,7 @@ import React from 'react'
 import { StyledText } from '../StyledText'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import translations from '../../locales'
-import { parseDayDetailData, parseTimeData } from '../../utils/parseData'
+import { parseDayDetailData, parseTimeData } from '../../utils/parseTableData'
 import { PromotionDetail } from '../../types/api/PostResponse'
 import DataTable from './DataTable'
 interface IProps {

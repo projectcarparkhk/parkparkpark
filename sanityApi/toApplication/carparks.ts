@@ -3,12 +3,12 @@ import { CarparkResponse } from '../../types/pages'
 import { TagFilterResponse } from '../../types/api/TagResponse'
 import { FilterSection } from '../../types/components/filters'
 import { AreaResponse } from '../../types/api/AreaResponse'
+import { isToday } from '../../utils/isToday'
 
 // Data transformation before going into applications
 export const orderCarparkByPriceToday = (
   carparkResponse: CarparkResponse[]
 ): CarparkResponse[] => {
-  const week = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
   return carparkResponse
     .map(
       ({
@@ -37,18 +37,7 @@ export const orderCarparkByPriceToday = (
           dayNightPriceDetails,
           priceDetails: priceDetails.filter((item) => {
             const { day } = item
-            const today = new Date().getDay()
-            if (day === 'all') {
-              return true
-            } else if (day.includes('-')) {
-              const [startDay, endDay] = day.split('-')
-              return (
-                today >= week.indexOf(startDay) && today <= week.indexOf(endDay)
-              )
-            } else {
-              const dates = day.split(',')
-              return dates.some((date) => date === week[today])
-            }
+            return isToday(day)
           }) as PriceDetail[],
         }
       }
@@ -99,12 +88,13 @@ export const structureFilters = (
 
 export const structureCarparks = (carparkResponse: CarparkResponse[]) => {
   return carparkResponse.map(
-    ({ _id, imagePath = '', name, subDistricts, tags }) => ({
+    ({ _id, imagePath = '', name, subDistricts, tags, slug }) => ({
       _id,
       imagePath,
       name,
       subDistricts,
       tags,
+      slug,
     })
   )
 }
