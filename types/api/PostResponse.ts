@@ -29,7 +29,7 @@ export interface PostResponse {
   slug: string
   externalLinks?: ExternalLink[]
   isHot: boolean
-  promotionDetails?: PromotionDetail[]
+  promotionDetails: PromotionDetail[]
   startAndExpiryDates?: {
     startDate: string
     expiryDate: string

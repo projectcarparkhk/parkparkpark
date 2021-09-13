@@ -91,11 +91,13 @@ function Carparks({ carparks, filters }: IProps) {
   useEffect(() => {
     setFilterState({
       areas: filters.areas.map((area) =>
-        area.subFilters.map((subFilter) => subDistricts.includes(subFilter._id))
+        area.subFilters.map((subFilter) =>
+          subDistricts.includes(subFilter.slug)
+        )
       ),
       categories: filters.categories.map((category) =>
         category.subFilters.map((subFilter) =>
-          categories.includes(subFilter._id)
+          categories.includes(subFilter.slug)
         )
       ),
     })
@@ -170,7 +172,7 @@ function Carparks({ carparks, filters }: IProps) {
       <div>
         {filteredCarparks.map((carpark) => (
           <CarparkListItem
-            key={carpark._id}
+            key={carpark.slug}
             carpark={carpark}
             locale={fallbackLocale as SupportedLanguages}
           />

@@ -89,13 +89,13 @@ function SubDistrictList({ areas, locale }: SubDistrictListProps) {
   const classes = useStyles()
   const { query } = useRouter()
   const [selectedArea, setSelectedArea] = useState(
-    query['sub-district'] || areas[0]._id
+    query['sub-district'] || areas[0].slug
   )
 
   const { subDistricts: subDistrictsLabel } = translations[locale]
   const subDistricts = useMemo(
     () =>
-      getArrayData(areas.find((area) => area._id === selectedArea))
+      getArrayData(areas.find((area) => area.slug === selectedArea))
         .subDistricts,
     [areas, selectedArea]
   )
@@ -108,8 +108,8 @@ function SubDistrictList({ areas, locale }: SubDistrictListProps) {
             className={classes.flexItem}
             color="primary"
             label={area.name[locale]}
-            variant={area._id === selectedArea ? 'default' : 'outlined'}
-            onClick={() => setSelectedArea(area._id)}
+            variant={area.slug === selectedArea ? 'default' : 'outlined'}
+            onClick={() => setSelectedArea(area.slug)}
           />
         ))}
       </div>

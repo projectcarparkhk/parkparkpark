@@ -66,8 +66,13 @@ export const parseTimeData = (
   timeString: string,
   locale: SupportedLanguages
 ) => {
-  const { allTimesLabel, beforeTimeEnterLabelPre, afterTimeEnterLabelPre, beforeTimeEnterLabelPost, afterTimeEnterLabelPost } =
-    translations[locale]
+  const {
+    allTimesLabel,
+    beforeTimeEnterLabelPre,
+    afterTimeEnterLabelPre,
+    beforeTimeEnterLabelPost,
+    afterTimeEnterLabelPost,
+  } = translations[locale]
   const carparkTimeField: { [key: string]: string } = {
     all: allTimesLabel,
   }
@@ -75,10 +80,20 @@ export const parseTimeData = (
     return carparkTimeField[timeString]
   }
   if (timeString.includes('>')) {
-    return beforeTimeEnterLabelPre + timeString.replace('>', '') + ' ' + afterTimeEnterLabelPost
+    return (
+      beforeTimeEnterLabelPre +
+      timeString.replace('>', '') +
+      ' ' +
+      afterTimeEnterLabelPost
+    )
   }
   if (timeString.includes('<')) {
-    return afterTimeEnterLabelPre + timeString.replace('<', '') + ' ' + beforeTimeEnterLabelPost
+    return (
+      afterTimeEnterLabelPre +
+      timeString.replace('<', '') +
+      ' ' +
+      beforeTimeEnterLabelPost
+    )
   }
   return timeString
 }
