@@ -88,8 +88,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
   },
   paymentIconContainer: {
-    height: '20px',
-    width: '20px',
+    height: '40px',
+    width: '40px',
     position: 'relative',
     marginRight: theme.spacing(2),
   },
