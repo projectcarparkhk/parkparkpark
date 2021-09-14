@@ -41,7 +41,7 @@ theme.typography.h2 = {
 theme.typography.h3 = {
   fontSize: '1.3rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '1.75rem',
+    fontSize: '2rem',
   },
 }
 

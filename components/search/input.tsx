@@ -33,9 +33,11 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-      height: '3rem',
+      height: '5rem',
+      borderRadius: '20px',
       width: '50%',
       left: '50%',
+      top: '50%',
       transform: 'translateX(-50%)',
     },
   },
@@ -56,7 +58,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       margin: theme.spacing(1, 1),
-      fontSize: '1rem',
+      fontSize: '1.5rem',
     },
   },
   suggestion: {
