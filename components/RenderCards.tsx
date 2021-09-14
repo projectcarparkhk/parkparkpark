@@ -1,5 +1,6 @@
-import { makeStyles, Theme } from '@material-ui/core'
+import { makeStyles, Theme, useMediaQuery } from '@material-ui/core'
 import React from 'react'
+import theme from '../styles/theme'
 import { PostItem } from './Section'
 import { StyledCard } from './StyledCard'
 import { StyledText } from './StyledText'
@@ -9,25 +10,31 @@ const usePostStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
+
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'space-between',
+    },
   },
   cardContainer: {
     marginBottom: theme.spacing(2),
-    marginRight: theme.spacing(1),
     display: 'flex',
     justifyContent: 'center',
     [theme.breakpoints.up('sm')]: {
-      flex: '1 0 auto',
+      marginRight: theme.spacing(2),
+      flex: 1,
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '40%',
-      maxWidth: '49%',
-      flex: '1 0 auto',
+      minWidth: '44vw',
+      maxWidth: '45vw',
     },
   },
   cardContainerFull: {
     [theme.breakpoints.down('sm')]: {
       minWidth: '100%',
     },
+  },
+  cardContainerNoMargin: {
+    marginRight: 0,
   },
 }))
 
@@ -42,7 +49,8 @@ interface RenderCardsProps {
 }
 
 export const RenderCards = ({ subPath, page, option }: RenderCardsProps) => {
-  const classes = usePostStyles()
+  const classes = usePostStyles(theme)
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
 
   return (
     <div className={`${classes.postContainer}`}>
@@ -63,11 +71,16 @@ export const RenderCards = ({ subPath, page, option }: RenderCardsProps) => {
         ) => {
           return (
             <div
-              className={`${classes.cardContainer} ${
-                option?.fullWidth && classes.cardContainerFull
-              }`}
+              className={`${classes.cardContainer} 
+              ${option?.fullWidth && classes.cardContainerFull} 
+              ${
+                smOrAbove &&
+                i === page.length - 1 &&
+                classes.cardContainerNoMargin
+              }
+              ${!smOrAbove && i % 2 !== 0 && classes.cardContainerNoMargin}
+              `}
               key={slug}
-              style={i % 2 === 0 ? {} : { marginRight: 0 }}
             >
               <StyledCard
                 slug={slug}

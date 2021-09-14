@@ -47,7 +47,7 @@ const useStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
       height: '10rem',
     },
     [theme.breakpoints.up('sm')]: {
-      height: '20rem',
+      height: '15rem',
     },
   },
   iconSection: {
