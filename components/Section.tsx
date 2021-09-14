@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import Link from 'next/link'
 import { AreaResponse } from '../types/api/AreaResponse'
+import { CarouselBanner } from './carousel'
 
 interface IndexStyleProps {
   iconColor?: string
@@ -95,6 +96,7 @@ export interface PostItem {
   shortDescription?: string
 }
 export interface SectionProps {
+  fullCarousel?: boolean
   sectionHeader: string
   postItems: PostItem[]
   fullWidth?: boolean
@@ -106,6 +108,7 @@ export interface SectionProps {
   renderSideLink?: () => JSX.Element
 }
 export const Section = ({
+  fullCarousel,
   sectionHeader,
   postItems,
   slidingCard = false,
@@ -147,48 +150,72 @@ export const Section = ({
             </div>
             {renderSideLink && renderSideLink()}
           </div>
-          {slidingCard ? (
+          {smOrAbove ? (
             <div>
-              <RenderSlidingCards
-                subPath={subPath}
-                page={postItems}
-                option={{ fullImage: true }}
-              />
-            </div>
-          ) : fullImage ? (
-            <div>
-              <RenderCards
-                subPath={subPath}
-                page={postItems}
-                option={{ fullImage: true, fullWidth, smOrAbove }}
-              />
-            </div>
-          ) : smOrAbove ? (
-            <Carousel
-              swipe
-              animation="slide"
-              className={classes.carousel}
-              autoPlay={false}
-              indicators={false}
-            >
-              {windowPosts.map((page) => (
-                <div key={page.map((elem) => elem.slug).join(',')}>
-                  <RenderCards
+              {fullCarousel ? (
+                <Carousel
+                  swipe
+                  animation="slide"
+                  className={classes.carousel}
+                  autoPlay={false}
+                  indicators={false}
+                >
+                  <CarouselBanner items={postItems} />
+                </Carousel>
+              ) : slidingCard ? (
+                <div>
+                  <RenderSlidingCards
                     subPath={subPath}
-                    page={page}
-                    option={{ fullImage, fullWidth, smOrAbove }}
+                    page={postItems}
+                    option={{ fullImage: true }}
                   />
                 </div>
-              ))}
-            </Carousel>
+              ) : fullImage ? (
+                <div>
+                  <RenderCards
+                    subPath={subPath}
+                    page={postItems}
+                    option={{ fullImage: true, fullWidth, smOrAbove }}
+                  />
+                </div>
+              ) : (
+                <>
+                  <RenderCards
+                    subPath={subPath}
+                    page={limited ? smPosts : postItems}
+                    option={{ fullImage, fullWidth, smOrAbove }}
+                  />
+                </>
+              )}
+            </div>
           ) : (
-            <>
-              <RenderCards
-                subPath={subPath}
-                page={limited ? smPosts : postItems}
-                option={{ fullImage, fullWidth, smOrAbove }}
-              />
-            </>
+            <div>
+              {slidingCard ? (
+                <div>
+                  <RenderSlidingCards
+                    subPath={subPath}
+                    page={postItems}
+                    option={{ fullImage: true }}
+                  />
+                </div>
+              ) : fullImage ? (
+                <div>
+                  <RenderCards
+                    subPath={subPath}
+                    page={postItems}
+                    option={{ fullImage: true, fullWidth, smOrAbove }}
+                  />
+                </div>
+              ) : (
+                <>
+                  <RenderCards
+                    subPath={subPath}
+                    page={limited ? smPosts : postItems}
+                    option={{ fullImage, fullWidth, smOrAbove }}
+                  />
+                </>
+              )}
+            </div>
           )}
           {renderButton && (
             <div className={classes.buttonContainer}>{renderButton()}</div>

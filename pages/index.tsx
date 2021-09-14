@@ -40,45 +40,48 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     zIndex: -1,
     height: '45vh',
     [theme.breakpoints.up('sm')]: {
-      height: '70vh',
+      height: '65vh',
+      justifyContent: 'center',
     },
     padding: theme.spacing(8, 2, 2, 2),
     backgroundImage:
       'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    justifyContent: 'space-between',
     backgroundPosition: 'center',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
     boxShadow: '3px 6px 15px -8px #000000;',
   },
+  sloganContainerLarge: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
   sloganContainer: {
     position: 'relative',
     color: 'white',
     width: '100%',
-
-    [theme.breakpoints.up('sm')]: {
-      position: 'absolute',
-      left: '50%',
-      top: '20%',
-      transform: 'translateX(-50%)',
-    },
   },
   subSlogan: {
     fontWeight: 700,
+    color: 'white',
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '2rem',
+      fontSize: '1.5rem',
     },
   },
   mainSlogan: {
     fontSize: '1.8rem',
     fontWeight: 700,
+    color: 'white',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '4.5rem',
+      fontSize: '3rem',
+      marginBottom: '1.5rem',
     },
   },
   tagSelect: {
@@ -172,6 +175,7 @@ export default function Index({
   const postSections: SectionProps[] = [
     {
       subPath: '/post',
+      fullCarousel: true,
       sectionHeader: latestCarparkPromotions,
       postItems: translatedLatestPosts,
       slidingCard: true,
@@ -223,33 +227,46 @@ export default function Index({
     },
   ]
 
+  const SearchSection = () => (
+    <Link href="/search">
+      <div className={searchBoxClasses.searchBox}>
+        <div className={searchBoxClasses.searchIcon}>
+          <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
+        </div>
+        <InputBase
+          placeholder={searchPlaceholder}
+          className={searchBoxClasses.inputInput}
+          inputProps={{ 'aria-label': 'search' }}
+        />
+      </div>
+    </Link>
+  )
   return (
     <>
       <Header imageToTop />
       <div className={classes.backdrop}>
-        <Link href="/search">
-          <div className={searchBoxClasses.searchBox}>
-            <div className={searchBoxClasses.searchIcon}>
-              <SearchIcon fontSize="large" />
-            </div>
-            <InputBase
-              placeholder={searchPlaceholder}
-              className={searchBoxClasses.inputInput}
-              inputProps={{ 'aria-label': 'search' }}
-            />
+        {smOrAbove ? (
+          <div className={classes.sloganContainerLarge}>
+            <div className={classes.subSlogan}>{subSlogan}</div>
+            <div className={classes.mainSlogan}>{mainSlogan}</div>
+            <SearchSection />
           </div>
-        </Link>
-
-        <div className={classes.sloganContainer}>
-          <div className={classes.subSlogan}>{subSlogan}</div>
-          <div className={classes.mainSlogan}>{mainSlogan}</div>
-        </div>
+        ) : (
+          <>
+            <SearchSection />
+            <div className={classes.sloganContainer}>
+              <div className={classes.subSlogan}>{subSlogan}</div>
+              <div className={classes.mainSlogan}>{mainSlogan}</div>
+            </div>
+          </>
+        )}
       </div>
       <div className={classes.sectionContainer}>
         <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
           <AreaCategory areas={areas} />
         </Container>
       </div>
+
       {postSections.map((section, i) => (
         <div
           key={section.sectionHeader}

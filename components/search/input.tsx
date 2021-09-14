@@ -33,12 +33,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-      height: '5rem',
-      borderRadius: '20px',
+      height: '3.5rem',
+      borderRadius: '10px',
       width: '50%',
-      left: '50%',
-      top: '50%',
-      transform: 'translateX(-50%)',
     },
   },
   searchIcon: {

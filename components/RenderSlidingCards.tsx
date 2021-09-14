@@ -1,5 +1,6 @@
 import { makeStyles, Theme } from '@material-ui/core'
 import React from 'react'
+import theme from '../styles/theme'
 import { PostItem } from './Section'
 import { StyledCard } from './StyledCard'
 import { StyledText } from './StyledText'
@@ -12,17 +13,13 @@ const usePostStyles = makeStyles(() => ({
   },
 }))
 
-interface StyleProps {
-  index: number
-}
-
-const useCardStyles = makeStyles<Theme, StyleProps>((theme: Theme) => ({
+const useCardStyles = makeStyles((theme: Theme) => ({
   cardContainer: {
     marginBottom: theme.spacing(2),
     marginRight: theme.spacing(2),
     flexShrink: 0,
     [theme.breakpoints.up('sm')]: {
-      width: '20%',
+      width: '45%',
     },
     [theme.breakpoints.down('sm')]: {
       width: '90%',
@@ -60,7 +57,7 @@ export const RenderSlidingCards = ({
           },
           i
         ) => {
-          const classes = useCardStyles({ index: i })
+          const classes = useCardStyles(theme)
           return (
             <div className={classes.cardContainer} key={slug}>
               <StyledCard

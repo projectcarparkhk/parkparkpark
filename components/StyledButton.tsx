@@ -6,7 +6,7 @@ export const StyledButton = withStyles((theme: Theme) => ({
       width: '100%',
     },
     [theme.breakpoints.up('sm')]: {
-      width: '30%',
+      width: '40%',
     },
   },
 }))(Button)
