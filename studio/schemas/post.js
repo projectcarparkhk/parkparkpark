@@ -1,28 +1,33 @@
-import { baseLanguage } from './localeString'
-
 export default {
-  name: 'carpark',
-  title: 'Carpark',
+  name: 'post',
+  title: 'Post',
   type: 'document',
   fields: [
     {
-      name: 'name',
-      title: 'Display Name',
-      type: 'localeString',
+      name: 'title',
+      title: 'Title',
+      type: 'string',
     },
     {
       name: 'slug',
       title: 'Slug',
-      type: 'localeSlug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
     },
     {
       name: 'subDistrict',
       title: 'Sub District',
       type: 'array',
       of: [{ type: 'reference', to: { type: 'subDistrict' } }],
-      options: {
-        layout: 'tags',
-      },
+    },
+    {
+      name: 'author',
+      title: 'Author',
+      type: 'reference',
+      to: { type: 'author' },
     },
     {
       name: 'mainImage',
@@ -49,10 +54,18 @@ export default {
       type: 'blockContent',
     },
   ],
+
   preview: {
     select: {
-      title: `name.${baseLanguage.id}`,
+      title: 'title',
+      author: 'author.name',
       media: 'mainImage',
+    },
+    prepare(selection) {
+      const { author } = selection
+      return Object.assign({}, selection, {
+        subtitle: author && `by ${author}`,
+      })
     },
   },
 }
