@@ -28,6 +28,7 @@ import { getCarparks } from '../../sanityApi/carparks'
 import { filterCarparksByPostSlug } from '../../sanityApi/toApplication/carparks'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { Section, SectionProps } from '../../components/Section'
+import { useGetWindow } from '../../hooks/useGetWindow'
 interface IProps {
   post: PostResponse
   carparksApplied: CarparkResponse[]
@@ -149,20 +150,19 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
   ]
 
   const [share, setShare] = useState<Array<ReactNode>>([])
+  const windowObj = useGetWindow()
   useEffect(() => {
-    if (typeof window !== undefined) {
-      setShare([
-        <FacebookShareButton
-          children={<FacebookIcon />}
-          url={window ? window.location.href : ''}
-        />,
-        <WhatsappShareButton
-          children={<WhatsAppIcon />}
-          url={window ? window.location.href : ''}
-        />,
-      ])
-    }
-  }, [])
+    setShare([
+      <FacebookShareButton
+        children={<FacebookIcon />}
+        url={windowObj ? windowObj.location.href : ''}
+      />,
+      <WhatsappShareButton
+        children={<WhatsAppIcon />}
+        url={windowObj ? windowObj.location.href : ''}
+      />,
+    ])
+  }, [windowObj])
 
   return (
     <div>

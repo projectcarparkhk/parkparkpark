@@ -35,6 +35,7 @@ import theme from '../styles/theme'
 import { Suggestion } from '../components/search/type'
 import { Fade } from '@material-ui/core'
 import { useScrollPosition } from '../hooks/useScrollPosition'
+import { useGetWindow } from '../hooks/useGetWindow'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -134,7 +135,7 @@ export default function Index({
   const searchBoxClasses = useSearchBoxStyles()
   const { push, locale } = useRouter()
   const fallbackLocale = (locale as SupportedLanguages) || 'zh'
-
+  const windowObj = useGetWindow()
   const [scrollTop] = useScrollPosition()
 
   const translatedLatestPosts = useMemo(
@@ -293,10 +294,12 @@ export default function Index({
         )}
       </div>
 
-      <Header appear={scrollTop > window.innerHeight * 0.6} />
+      <Header
+        appear={windowObj ? scrollTop > windowObj.innerHeight * 0.6 : true}
+      />
 
       <div className={classes.sectionContainer}>
-        <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+        <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
           <AreaCategory areas={areas} />
         </Container>
       </div>
@@ -309,7 +312,7 @@ export default function Index({
           }
           className={classes.sectionContainer}
         >
-          <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+          <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
             <Section {...section} />
           </Container>
         </div>
