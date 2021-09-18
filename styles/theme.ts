@@ -5,6 +5,7 @@ const theme = createMuiTheme({
   mixins: {
     toolbar: {
       minHeight: 54,
+      maxHeight: 75,
     },
   },
   breakpoints: {
@@ -22,6 +23,9 @@ const theme = createMuiTheme({
       main: '#54B175',
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    background: {
+      default: '#f5f5f5',
     },
     text: {
       primary: '#333333',

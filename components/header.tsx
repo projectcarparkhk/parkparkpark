@@ -10,7 +10,8 @@ import translations from '../locales'
 import { useRouter } from 'next/router'
 
 type HeaderProps = {
-  imageToTop: boolean
+  imageToTop?: boolean
+  appear?: boolean
 }
 
 type AppBarStyleProps = HeaderProps
@@ -19,28 +20,45 @@ const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
     height: theme.mixins.toolbar.minHeight,
     color: (props) => (props.imageToTop ? 'white' : theme.palette.primary.main),
+    backgroundColor: (props) => (props.imageToTop ? 'transparent' : 'white'),
+    [theme.breakpoints.up('sm')]: {
+      height: theme.mixins.toolbar.maxHeight,
+    },
+    opacity: 0,
+    visibility: (props) => (props.appear ? 'visible' : 'hidden'),
+    transition: 'visibility 0.01s, opacity 0.01s ease-in-out',
+  },
+  appBarVisible: {
+    opacity: 1,
+    visibility: 'visible',
   },
   toolBar: {
     minHeight: theme.mixins.toolbar.minHeight,
+    [theme.breakpoints.up('sm')]: {
+      height: theme.mixins.toolbar.maxHeight,
+    },
   },
   title: {
     flexGrow: 1,
   },
-  offset: theme.mixins.toolbar,
+  offset: {
+    marginTop: theme.spacing(4),
+  },
 }))
-export default function Header({ imageToTop }: HeaderProps) {
+export default function Header({ imageToTop, appear = true }: HeaderProps) {
   const classes = useStyles({
     imageToTop,
+    appear,
   })
   const { locale } = useRouter()
   const { homeTitle } = translations[locale || 'zh']
   return (
     <>
       <AppBar
-        position="absolute"
+        position="sticky"
         elevation={0}
         color="transparent"
-        className={classes.appBar}
+        className={`${classes.appBar} ${appear && classes.appBarVisible}`}
       >
         <Toolbar className={classes.toolBar}>
           <Link href="/search-all">

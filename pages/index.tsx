@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
@@ -8,7 +8,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
 import { AreaCategory, Section, SectionProps } from '../components/Section'
-import { useStyles as useSearchBoxStyles } from '../components/search/input'
+import SearchInput, {
+  useStyles as useSearchBoxStyles,
+} from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
 import {
@@ -30,20 +32,20 @@ import Footer from '../components/footer/footer'
 import { translatePosts } from '../utils/translatePosts'
 import { translateCarparks } from '../utils/translateCarparks'
 import theme from '../styles/theme'
+import { Suggestion } from '../components/search/type'
+import { Fade } from '@material-ui/core'
+import { useScrollPosition } from '../hooks/useScrollPosition'
 
-interface IndexStyleProps {
-  iconColor?: string
-}
-
-const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
-    zIndex: -1,
+    zIndex: 10,
     height: '45vh',
     [theme.breakpoints.up('sm')]: {
       height: '65vh',
-      justifyContent: 'center',
+      position: 'relative',
+      overflow: 'visible',
     },
-    padding: theme.spacing(8, 2, 2, 2),
+    padding: theme.spacing(0, 2, 2, 2),
     backgroundImage:
       'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
@@ -55,9 +57,12 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     boxShadow: '3px 6px 15px -8px #000000;',
   },
   sloganContainerLarge: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    position: 'absolute',
+    top: '20vh',
   },
 
   sloganContainer: {
@@ -71,7 +76,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '1.5rem',
+      fontSize: '2rem',
     },
   },
   mainSlogan: {
@@ -80,7 +85,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     color: 'white',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '3rem',
+      fontSize: '3.5rem',
       marginBottom: '1.5rem',
     },
   },
@@ -125,10 +130,12 @@ export default function Index({
   hotTags,
   areas,
 }: IProps) {
-  const classes = useStyles({})
+  const classes = useStyles()
   const searchBoxClasses = useSearchBoxStyles()
-  const { locale } = useRouter()
+  const { push, locale } = useRouter()
   const fallbackLocale = (locale as SupportedLanguages) || 'zh'
+
+  const [scrollTop] = useScrollPosition()
 
   const translatedLatestPosts = useMemo(
     () => translatePosts(latestPosts, fallbackLocale),
@@ -227,24 +234,48 @@ export default function Index({
     },
   ]
 
+  function onSuggestionClick(suggestion: Suggestion) {
+    switch (suggestion.type) {
+      case 'subDistrict':
+        push({
+          pathname: '/carparks',
+          query: { subDistricts: suggestion.slug },
+        })
+        break
+      case 'carpark':
+        push({
+          pathname: `/carparks/${suggestion.slug}`,
+        })
+        break
+    }
+  }
+
   const SearchSection = () => (
-    <Link href="/search">
-      <div className={searchBoxClasses.searchBox}>
-        <div className={searchBoxClasses.searchIcon}>
-          <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
-        </div>
-        <InputBase
-          placeholder={searchPlaceholder}
-          className={searchBoxClasses.inputInput}
-          inputProps={{ 'aria-label': 'search' }}
-        />
-      </div>
-    </Link>
+    <>
+      {smOrAbove ? (
+        <SearchInput onSuggestionClick={onSuggestionClick}>
+          <></>
+        </SearchInput>
+      ) : (
+        <Link href="/search">
+          <div className={searchBoxClasses.searchBox}>
+            <div className={searchBoxClasses.searchIcon}>
+              <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
+            </div>
+            <InputBase
+              placeholder={searchPlaceholder}
+              className={searchBoxClasses.inputInput}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </div>
+        </Link>
+      )}
+    </>
   )
   return (
     <>
-      <Header imageToTop />
       <div className={classes.backdrop}>
+        <Header imageToTop />
         {smOrAbove ? (
           <div className={classes.sloganContainerLarge}>
             <div className={classes.subSlogan}>{subSlogan}</div>
@@ -261,6 +292,9 @@ export default function Index({
           </>
         )}
       </div>
+
+      <Header appear={scrollTop > window.innerHeight * 0.6} />
+
       <div className={classes.sectionContainer}>
         <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
           <AreaCategory areas={areas} />

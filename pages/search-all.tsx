@@ -173,7 +173,7 @@ function SearchAll({ areas, tags }: SearchAllPageProps) {
   }, [areas])
   return (
     <>
-      <Header imageToTop={false} />
+      <Header />
       <div className={classes.pageTypeButtonContainer}>
         {tabConfig.map((tab) => {
           return (

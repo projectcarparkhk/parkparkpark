@@ -167,7 +167,7 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
   return (
     <div>
       <Container>
-        <Header imageToTop={false} />
+        <Header />
         <main className={classes.main}>
           <StyledText size="h5" className={`${classes.postType}`}>
             {post.postType.name[fallbackLocale]}

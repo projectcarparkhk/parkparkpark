@@ -151,7 +151,7 @@ function Carparks({ carparks, filters }: IProps) {
 
   return (
     <Container>
-      <Header imageToTop={false} />
+      <Header />
       <FilterCatalogue
         applyFilterCatalogue={(activeItem: keyof Filters) =>
           setActivePanel(activeItem)

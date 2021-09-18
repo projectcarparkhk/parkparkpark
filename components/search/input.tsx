@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { memo, useState } from 'react'
 import Autosuggest, {
   ChangeEvent,
   InputProps,
@@ -26,16 +26,14 @@ import { StyledText } from '../StyledText'
 
 export const useStyles = makeStyles((theme: Theme) => ({
   searchBox: {
-    position: 'relative',
     borderRadius: '30px',
     backgroundColor: '#EEEEEE',
     height: '2.5rem',
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-      height: '3.5rem',
+      height: '4rem',
       borderRadius: '10px',
-      width: '50%',
     },
   },
   searchIcon: {
@@ -63,10 +61,19 @@ export const useStyles = makeStyles((theme: Theme) => ({
       background: theme.palette.primary.main,
     },
   },
+
   suggestionList: {
     listStyleType: 'none',
     margin: 0,
     padding: 0,
+    backgroundColor: theme.palette.background.default,
+    borderRadius: '5px',
+    boxShadow: '0 6px 20px rgb(0 0 0 / 8%)',
+  },
+  container: {
+    [theme.breakpoints.up('sm')]: {
+      width: '40%',
+    },
   },
 }))
 
@@ -198,6 +205,7 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
       }}
       inputProps={inputProps}
       theme={{
+        container: classes.container,
         suggestion: classes.suggestion,
         suggestionsList: classes.suggestionList,
       }}
@@ -205,4 +213,4 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
   )
 }
 
-export default SearchInput
+export default memo(SearchInput)

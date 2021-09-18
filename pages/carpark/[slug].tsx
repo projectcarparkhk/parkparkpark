@@ -8,6 +8,7 @@ import {
   Link,
   makeStyles,
   Theme,
+  useMediaQuery,
 } from '@material-ui/core'
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
@@ -36,6 +37,7 @@ import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
 import PriceDetailTable from '../../components/table/PriceDetailTable'
 import { orderCarparkPosts } from '../../sanityApi/toApplication/posts'
+import theme from '../../styles/theme'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -48,6 +50,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    [theme.breakpoints.up('sm')]: {
+      height: '50vh',
+    },
   },
   container: {
     padding: theme.spacing(2, 0),
@@ -129,6 +134,7 @@ const CarparkPage = ({
 }: IProps) => {
   const classes = useStyles()
   const router = useRouter()
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
   const fallbackLocale = (router.locale as SupportedLanguages) || 'zh'
   const {
     latestPromotionsLabel,
@@ -211,17 +217,16 @@ const CarparkPage = ({
     },
   }))(Chip)
 
-  return (
-    <div>
-      <Container>
-        <Header imageToTop={false} />
-      </Container>
+  const renderCarousel = () => {
+    const carousel = (
       <Carousel
         swipe
         navButtonsAlwaysInvisible
         autoPlay={false}
         IndicatorIcon={<div></div>}
-        activeIndicatorIconButtonProps={{ className: classes.activeIndicator }}
+        activeIndicatorIconButtonProps={{
+          className: classes.activeIndicator,
+        }}
         indicatorIconButtonProps={{ className: classes.nonActiveIndicator }}
         indicatorContainerProps={{ className: classes.indicator }}
       >
@@ -237,6 +242,18 @@ const CarparkPage = ({
           ></div>
         ))}
       </Carousel>
+    )
+    if (smOrAbove) {
+      return <Container>{carousel}</Container>
+    }
+    return carousel
+  }
+
+  return (
+    <div>
+      <Header />
+
+      {renderCarousel()}
       <Container>
         <div className={classes.container}>
           <div className={classes.section}>

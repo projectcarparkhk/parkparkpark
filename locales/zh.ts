@@ -12,7 +12,7 @@ const locale = {
   cheapestCarparksHeader: '最抵停車場',
   hotCarparkTagsHeader: '熱門停車場分類',
   checkoutAll: '查看全部',
-  hot: '熱門',
+  hotLabel: '熱門',
   subDistrict: '分區',
   carpark: '停車場',
   filterContinueBtnLabel: '繼續',
