@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
