@@ -128,8 +128,8 @@ function SearchInput({ children, size = 'lg' }: ISearchProps) {
       setSuggestions(res.result.data)
 
       gtag.event({
-        action: 'search',
-        category: 'input',
+        action: 'type',
+        category: 'site search',
         label: query,
       })
     }, 1000),
