@@ -14,6 +14,8 @@ import CarparkListItem from '../components/filter/CarparkListItem'
 import { FilterCatalogue } from '../components/filter/FilterCatalogue'
 import { CarparkItem, FilterSection } from '../types/components/filters'
 import { getTags } from '../sanityApi/tags'
+import { makeStyles, Theme, useMediaQuery } from '@material-ui/core'
+import theme from '../styles/theme'
 
 const FILTER_TYPES: Array<keyof Filters> = ['areas', 'categories']
 
@@ -73,6 +75,14 @@ function filterCarparksByQuery(
   return filteredCarparks
 }
 
+const useStyles = makeStyles((theme: Theme) => ({
+  filterContainer: {
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}))
+
 function Carparks({ carparks, filters }: IProps) {
   const router = useRouter()
   const { locale, query } = router
@@ -104,6 +114,8 @@ function Carparks({ carparks, filters }: IProps) {
   }, [filters, query])
 
   const [activePanel, setActivePanel] = useState<null | keyof FilterState>(null)
+
+  const classes = useStyles()
 
   const fallbackLocale = locale || 'zh'
 
@@ -148,37 +160,43 @@ function Carparks({ carparks, filters }: IProps) {
     },
     [activePanel, filters, query]
   )
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
 
   return (
-    <Container>
-      <Header />
-      <FilterCatalogue
-        applyFilterCatalogue={(activeItem: keyof Filters) =>
-          setActivePanel(activeItem)
-        }
-        filterCounts={filterCounts}
-        filterTypes={FILTER_TYPES}
-        locale={fallbackLocale as SupportedLanguages}
-      />
-      {activePanel && (
-        <FilterDrawer
-          filters={activePanel && filters[activePanel]}
-          filterStateProps={activePanel && filterState[activePanel]}
-          onUpdateRoute={onUpdateRoute}
-          setActivePanel={setActivePanel}
+    <>
+      <Header position="sticky" />
+      <Container
+        className={classes.filterContainer}
+        maxWidth={smOrAbove ? 'lg' : 'md'}
+      >
+        <FilterCatalogue
+          applyFilterCatalogue={(activeItem: keyof Filters) =>
+            setActivePanel(activeItem)
+          }
+          filterCounts={filterCounts}
+          filterTypes={FILTER_TYPES}
           locale={fallbackLocale as SupportedLanguages}
         />
-      )}
-      <div>
-        {filteredCarparks.map((carpark) => (
-          <CarparkListItem
-            key={carpark.slug}
-            carpark={carpark}
+        {activePanel && (
+          <FilterDrawer
+            filters={activePanel && filters[activePanel]}
+            filterStateProps={activePanel && filterState[activePanel]}
+            onUpdateRoute={onUpdateRoute}
+            setActivePanel={setActivePanel}
             locale={fallbackLocale as SupportedLanguages}
           />
-        ))}
-      </div>
-    </Container>
+        )}
+        <div>
+          {filteredCarparks.map((carpark) => (
+            <CarparkListItem
+              key={carpark.slug}
+              carpark={carpark}
+              locale={fallbackLocale as SupportedLanguages}
+            />
+          ))}
+        </div>
+      </Container>
+    </>
   )
 }
 

@@ -19,10 +19,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   tableTitle: {
     padding: theme.spacing(0.7, 1.5),
     whiteSpace: 'nowrap',
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(2, 2),
+    },
   },
   tableCell: {
     padding: theme.spacing(0.7, 1.5),
     whiteSpace: 'nowrap',
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(2, 2),
+    },
   },
 }))
 
@@ -57,10 +63,10 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
       }
       dataRows={
         <>
-          {priceDetails.map((detail) => (
-            <TableRow key={`${detail.day}_${detail.hr}_${detail.price}`}>
+          {priceDetails.map((detail, i) => (
+            <TableRow key={`${detail.day}_${detail.hr}_${detail.price}_${i}`}>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {parseDayDetailData(
                     detail.day,
                     fallbackLocale as SupportedLanguages
@@ -68,7 +74,7 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {parseTimeData(
                     detail.time,
                     fallbackLocale as SupportedLanguages
@@ -76,7 +82,7 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {parseHourData(
                     detail.hr,
                     fallbackLocale as SupportedLanguages
@@ -84,7 +90,7 @@ const PriceDetailTable = ({ priceDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{`$ ${detail.price}`}</StyledText>
+                <StyledText size="subtitle1">{`$ ${detail.price}`}</StyledText>
               </TableCell>
             </TableRow>
           ))}

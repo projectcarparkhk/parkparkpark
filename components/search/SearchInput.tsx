@@ -3,7 +3,6 @@ import Autosuggest, {
   ChangeEvent,
   InputProps,
   RenderInputComponentProps,
-  RenderSuggestionsContainerParams,
   SuggestionSelectedEventData,
   SuggestionsFetchRequestedParams,
 } from 'react-autosuggest'
@@ -24,7 +23,10 @@ import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { useRouter } from 'next/router'
 import { StyledText } from '../StyledText'
 
-export const useStyles = makeStyles((theme: Theme) => ({
+interface StyleType {
+  size: 'sm' | 'lg'
+}
+export const useStyles = makeStyles<Theme, StyleType>((theme: Theme) => ({
   searchBox: {
     borderRadius: '30px',
     backgroundColor: '#EEEEEE',
@@ -32,13 +34,12 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-      height: '4rem',
-      borderRadius: '10px',
+      height: ({ size }) => (size === 'sm' ? '3rem' : '4rem'),
+      borderRadius: ({ size }) => (size === 'sm' ? '30px' : '10px'),
     },
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
     display: 'flex',
@@ -53,15 +54,17 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       margin: theme.spacing(1, 1),
-      fontSize: '1.5rem',
+      fontSize: ({ size }) => (size === 'sm' ? '1rem' : '1.5rem'),
     },
   },
-  suggestion: {
+  suggestionItem: {
     '& .MuiAvatar-root': {
       background: theme.palette.primary.main,
     },
   },
-
+  listItem: {
+    padding: theme.spacing(1, 1.5),
+  },
   suggestionList: {
     listStyleType: 'none',
     margin: 0,
@@ -69,11 +72,19 @@ export const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: '5px',
     boxShadow: '0 6px 20px rgb(0 0 0 / 8%)',
+    height: '40vh',
+    overflowY: 'scroll',
   },
   container: {
+    position: 'relative',
     [theme.breakpoints.up('sm')]: {
-      width: '40%',
+      width: ({ size }) => (size === 'sm' ? '30%' : '40%'),
     },
+  },
+  list: {
+    paddingTop: theme.spacing(1),
+    position: 'absolute',
+    width: '100%',
   },
 }))
 
@@ -98,49 +109,42 @@ const getSuggestions = async (query: string) => {
 const getSuggestionValue = (suggestion: Suggestion) => suggestion.name
 
 // Use your imagination to render suggestions.
-const renderSuggestion = (
-  suggestion: Suggestion,
-  locale: SupportedLanguages
-) => {
-  return (
-    <ListItem button>
-      <ListItemAvatar>
-        <Avatar>
-          {suggestion.type === 'subDistrict' && <LocationOnIcon />}
-          {suggestion.type === 'carpark' && <EmojiTransportationIcon />}
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText
-        primary={
-          <StyledText size="h5" bold>
-            {suggestion.name}
-          </StyledText>
-        }
-        secondary={translations[locale][suggestion.type]}
-      />
-    </ListItem>
-  )
+
+interface ISearchProps {
+  size?: 'sm' | 'lg'
+  children?: React.ReactChild
 }
 
-const renderSuggestionsContainer = ({
-  containerProps,
-  children,
-}: RenderSuggestionsContainerParams) => {
-  return <List {...containerProps}>{children}</List>
-}
-
-interface IProps {
-  onSuggestionClick: (suggestion: Suggestion) => void
-  children: React.ReactChild
-}
-
-function SearchInput({ onSuggestionClick, children }: IProps) {
+function SearchInput({ children, size = 'lg' }: ISearchProps) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const classes = useStyles()
-  const { locale } = useRouter()
+  const classes = useStyles({ size })
+  const { push, locale } = useRouter()
   const fallBackLocale = locale as SupportedLanguages
 
+  const renderSuggestion = (
+    suggestion: Suggestion,
+    locale: SupportedLanguages
+  ) => {
+    return (
+      <ListItem className={classes.listItem} button>
+        <ListItemAvatar>
+          <Avatar>
+            {suggestion.type === 'subDistrict' && <LocationOnIcon />}
+            {suggestion.type === 'carpark' && <EmojiTransportationIcon />}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={
+            <StyledText size="h5" bold>
+              {suggestion.name}
+            </StyledText>
+          }
+          secondary={translations[locale][suggestion.type]}
+        />
+      </ListItem>
+    )
+  }
   const { searchPlaceholder } = translations[fallBackLocale]
 
   function onChange(
@@ -175,6 +179,22 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
     onChange,
   }
 
+  function onSuggestionClick(suggestion: Suggestion) {
+    switch (suggestion.type) {
+      case 'subDistrict':
+        push({
+          pathname: '/carparks',
+          query: { subDistricts: suggestion.slug },
+        })
+        break
+      case 'carpark':
+        push({
+          pathname: `/carpark/${suggestion.slug}`,
+        })
+        break
+    }
+  }
+
   return (
     <Autosuggest
       suggestions={suggestions}
@@ -185,10 +205,17 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
       renderSuggestion={(suggestion) =>
         renderSuggestion(suggestion, fallBackLocale)
       }
-      renderSuggestionsContainer={renderSuggestionsContainer}
+      renderSuggestionsContainer={({ containerProps, children }) => {
+        const { className, ...rest } = containerProps
+        return (
+          <List className={`${className} ${classes.list}`} {...rest}>
+            {children}
+          </List>
+        )
+      }}
       renderInputComponent={(inputProps: RenderInputComponentProps) => {
         return (
-          <div>
+          <div style={{ position: 'relative' }}>
             <div className={classes.searchBox}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
@@ -206,7 +233,7 @@ function SearchInput({ onSuggestionClick, children }: IProps) {
       inputProps={inputProps}
       theme={{
         container: classes.container,
-        suggestion: classes.suggestion,
+        suggestion: classes.suggestionItem,
         suggestionsList: classes.suggestionList,
       }}
     />

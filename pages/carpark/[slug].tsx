@@ -38,6 +38,7 @@ import UndecoratedLink from '../../components/UndecoratedLink'
 import PriceDetailTable from '../../components/table/PriceDetailTable'
 import { orderCarparkPosts } from '../../sanityApi/toApplication/posts'
 import theme from '../../styles/theme'
+import ShareSection from '../../components/share/ShareSection'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -169,7 +170,7 @@ const CarparkPage = ({
       renderButton: () => (
         <Link
           href={`/carparks?subDistricts=${carparkSubDistrictIdsString}`}
-          style={{ width: '100%' }}
+          style={{ width: '100%', textAlign: 'center' }}
         >
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
@@ -251,16 +252,16 @@ const CarparkPage = ({
 
   return (
     <div>
-      <Header />
-
-      {renderCarousel()}
+      <Header position="sticky" />
+      <div>{renderCarousel()}</div>
       <Container>
         <div className={classes.container}>
+          <ShareSection />
           <div className={classes.section}>
             <StyledText size="h3" bold className={classes.title}>
               {carpark.name[fallbackLocale]}
             </StyledText>
-            <StyledText size="subtitle2" className={classes.description}>
+            <StyledText size="subtitle1" className={classes.description}>
               {carpark.descriptions[fallbackLocale]}
             </StyledText>
             {carpark.tags.map((tag) => (
@@ -330,7 +331,7 @@ const CarparkPage = ({
                       objectFit="contain"
                     />
                   </div>
-                  <StyledText size="subtitle2">
+                  <StyledText size="subtitle1">
                     {method.name[fallbackLocale]}
                   </StyledText>
                 </div>

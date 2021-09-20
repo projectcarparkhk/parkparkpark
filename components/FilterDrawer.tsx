@@ -17,6 +17,7 @@ import {
 } from '../types/components/filters'
 import { useState } from 'react'
 import { cloneDeep } from 'lodash'
+import { StyledText } from './StyledText'
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -26,11 +27,26 @@ const useStyles = makeStyles((theme: Theme) => ({
   panelDrawer: {
     '& .MuiDrawer-paper': {
       height: '100vh',
+      [theme.breakpoints.up('lg')]: {
+        height: '65vh',
+      },
     },
+  },
+  filterContainer: {
+    padding: theme.spacing(2, 2),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  subFilterContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: theme.spacing(4),
   },
   filterDrawerHeader: {
     height: theme.spacing(6),
-    padding: theme.spacing(1.5, 1.5, 1.5, 0),
+    display: 'flex',
+    alignItems: 'center',
     '& svg': {
       cursor: 'pointer',
     },
@@ -40,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexWrap: 'wrap',
     '& .MuiChip-root': {
       margin: theme.spacing(0, 1, 0.75, 0),
+      [theme.breakpoints.up('sm')]: {
+        margin: theme.spacing(0, 1, 2, 0),
+      },
     },
   },
   selectedChip: {
@@ -98,9 +117,8 @@ function SubFilterSection({
     newSubFilterState[subIndex] = !newSubFilterState[subIndex]
     onFilterStateUpdate(newSubFilterState, index)
   }
-
   return (
-    <div>
+    <div style={{ flex: 1 }}>
       <FormControlLabel
         control={
           <Checkbox
@@ -111,7 +129,7 @@ function SubFilterSection({
             indeterminate={parentCheckBoxStatus === 'some'}
           />
         }
-        label={title}
+        label={<StyledText size="subtitle2">{title}</StyledText>}
       />
       <div className={classes.filterOptionContainer}>
         {subFilters.map((subFilter, subIndex: number) => {
@@ -121,9 +139,13 @@ function SubFilterSection({
               variant={subFilterState[subIndex] ? 'default' : 'outlined'}
               className={subFilterState[subIndex] ? classes.selectedChip : ''}
               color={subFilterState[subIndex] ? 'primary' : 'default'}
-              size="small"
+              size="medium"
               key={subFilter._id}
-              label={subFilter.name[fallbackLocale]}
+              label={
+                <StyledText size="subtitle2">
+                  {subFilter.name[fallbackLocale]}
+                </StyledText>
+              }
             />
           )
         })}
@@ -160,12 +182,12 @@ export function FilterDrawer({
     [filterState]
   )
   return (
-    <Drawer className={classes.panelDrawer} anchor={'bottom'} open={true}>
-      <Container maxWidth="lg">
+    <Drawer className={classes.panelDrawer} anchor="bottom" open={true}>
+      <Container className={classes.filterContainer}>
         <div className={classes.filterDrawerHeader}>
           <CloseIcon onClick={() => setActivePanel(null)} />
         </div>
-        <div>
+        <div className={classes.subFilterContainer}>
           {filters.map((filter, i) => {
             return (
               <SubFilterSection

@@ -1,5 +1,5 @@
 import { Container, Divider, makeStyles, Theme } from '@material-ui/core'
-import React, { ReactNode, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import Header from '../../components/header'
 import {
   CarparkResponse,
@@ -16,19 +16,13 @@ import { format } from 'date-fns'
 import PromotionDetailTable from '../../components/table/PromotionDetailTable'
 import BlockContent from '@sanity/block-content-to-react'
 import UndecoratedAnchor from '../../components/UndecoratedAnchor'
-import LinkIcon from '@material-ui/icons/Link'
-import FacebookIcon from '@material-ui/icons/Facebook'
-import WhatsAppIcon from '@material-ui/icons/WhatsApp'
-
 import Image from 'next/image'
-import { FacebookShareButton, WhatsappShareButton } from 'react-share'
-import { useEffect } from 'react'
 import { imageBuilder } from '../../sanityApi/sanity'
 import { getCarparks } from '../../sanityApi/carparks'
 import { filterCarparksByPostSlug } from '../../sanityApi/toApplication/carparks'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { Section, SectionProps } from '../../components/Section'
-import { useGetWindow } from '../../hooks/useGetWindow'
+import ShareSection from '../../components/share/ShareSection'
 interface IProps {
   post: PostResponse
   carparksApplied: CarparkResponse[]
@@ -57,20 +51,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
   number: {
-    marginRight: theme.spacing(2),
-  },
-  shareContainer: {
-    display: 'flex',
-    alignItem: 'center',
-  },
-  shareBtnContainer: {
-    display: 'flex',
-    alignItem: 'center',
-  },
-  shareBtn: {
-    '&:hover': {
-      color: theme.palette.grey[400],
-    },
     marginRight: theme.spacing(2),
   },
   authorContainer: {
@@ -110,6 +90,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.text.secondary,
   },
   blockContent: {
+    ...theme.typography.subtitle1,
     color: theme.palette.grey[800],
   },
   sectionContainer: {
@@ -130,7 +111,6 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
     promotionDetailsLabel,
     promotionMoreDetailsLabel,
     sourceListLabel,
-    shareLabel,
     imageLabel,
     carparksAppliedLabel,
   } = translations[fallbackLocale]
@@ -149,25 +129,10 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
     },
   ]
 
-  const [share, setShare] = useState<Array<ReactNode>>([])
-  const windowObj = useGetWindow()
-  useEffect(() => {
-    setShare([
-      <FacebookShareButton
-        children={<FacebookIcon />}
-        url={windowObj ? windowObj.location.href : ''}
-      />,
-      <WhatsappShareButton
-        children={<WhatsAppIcon />}
-        url={windowObj ? windowObj.location.href : ''}
-      />,
-    ])
-  }, [windowObj])
-
   return (
     <div>
+      <Header position="sticky" />
       <Container>
-        <Header />
         <main className={classes.main}>
           <StyledText size="h5" className={`${classes.postType}`}>
             {post.postType.name[fallbackLocale]}
@@ -241,6 +206,7 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
             )}
           </div>
           <Divider light />
+          <ShareSection />
           {post.promotionDetails && (
             <div className={classes.subSection}>
               <StyledText size="h2" className={classes.subSection}>
@@ -299,30 +265,6 @@ const PostPage = ({ post, carparksApplied }: IProps) => {
               ))}
             </div>
           )}
-
-          <div className={classes.subSection}>
-            <div className={classes.shareContainer}>
-              <StyledText
-                bold
-                inline
-                size="subtitle1"
-                className={classes.infoTitle}
-              >
-                {shareLabel}
-              </StyledText>
-              <div className={classes.shareBtnContainer}>
-                <LinkIcon
-                  className={classes.shareBtn}
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href)
-                  }}
-                />
-                {share.map((elem) => (
-                  <div className={classes.shareBtn}>{elem}</div>
-                ))}
-              </div>
-            </div>
-          </div>
 
           <Divider light />
           {post.author && (

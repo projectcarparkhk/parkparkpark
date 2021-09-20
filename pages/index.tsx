@@ -1,16 +1,13 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
-import { Container, InputBase, useMediaQuery } from '@material-ui/core'
+import { Container, useMediaQuery } from '@material-ui/core'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
-import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
 import { AreaCategory, Section, SectionProps } from '../components/Section'
-import SearchInput, {
-  useStyles as useSearchBoxStyles,
-} from '../components/search/input'
+import SearchInput from '../components/search/SearchInput'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
 import {
@@ -32,10 +29,7 @@ import Footer from '../components/footer/footer'
 import { translatePosts } from '../utils/translatePosts'
 import { translateCarparks } from '../utils/translateCarparks'
 import theme from '../styles/theme'
-import { Suggestion } from '../components/search/type'
-import { Fade } from '@material-ui/core'
 import { useScrollPosition } from '../hooks/useScrollPosition'
-import { useGetWindow } from '../hooks/useGetWindow'
 
 const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
@@ -51,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    justifyContent: 'space-between',
     backgroundPosition: 'center',
     display: 'flex',
     flexDirection: 'column',
@@ -62,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    position: 'absolute',
+    position: 'relative',
     top: '20vh',
   },
 
@@ -70,6 +63,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: 'relative',
     color: 'white',
     width: '100%',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
   subSlogan: {
     fontWeight: 700,
@@ -132,11 +129,10 @@ export default function Index({
   areas,
 }: IProps) {
   const classes = useStyles()
-  const searchBoxClasses = useSearchBoxStyles()
-  const { push, locale } = useRouter()
+  const { locale } = useRouter()
   const fallbackLocale = (locale as SupportedLanguages) || 'zh'
-  const windowObj = useGetWindow()
   const [scrollTop] = useScrollPosition()
+  const [backdropHeight, setBackdropHeight] = useState(0)
 
   const translatedLatestPosts = useMemo(
     () => translatePosts(latestPosts, fallbackLocale),
@@ -170,7 +166,6 @@ export default function Index({
   const {
     mainSlogan,
     subSlogan,
-    searchPlaceholder,
     latestCarparkPromotions,
     cheapestCarparkPromotions,
     cheapestCarparksHeader,
@@ -235,57 +230,37 @@ export default function Index({
     },
   ]
 
-  function onSuggestionClick(suggestion: Suggestion) {
-    switch (suggestion.type) {
-      case 'subDistrict':
-        push({
-          pathname: '/carparks',
-          query: { subDistricts: suggestion.slug },
-        })
-        break
-      case 'carpark':
-        push({
-          pathname: `/carparks/${suggestion.slug}`,
-        })
-        break
-    }
-  }
+  const scrollPercent = useMemo(() => {
+    const toolbarHeight = parseInt(theme.mixins.toolbar.minHeight as string)
+    const scrolled = scrollTop - backdropHeight
+    const minPercent = scrolled < 0 ? 0 : scrolled / toolbarHeight
+    const maxPercent = minPercent > 1 ? 1 : minPercent
+    return maxPercent
+  }, [scrollTop, backdropHeight])
 
-  const SearchSection = () => (
-    <>
-      {smOrAbove ? (
-        <SearchInput onSuggestionClick={onSuggestionClick}>
-          <></>
-        </SearchInput>
-      ) : (
-        <Link href="/search">
-          <div className={searchBoxClasses.searchBox}>
-            <div className={searchBoxClasses.searchIcon}>
-              <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
-            </div>
-            <InputBase
-              placeholder={searchPlaceholder}
-              className={searchBoxClasses.inputInput}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-        </Link>
-      )}
-    </>
-  )
+  const backdropRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (backdropRef.current) {
+      const current = backdropRef.current
+      setBackdropHeight(current.offsetHeight)
+    }
+  }, [backdropRef, backdropRef.current])
+
   return (
     <>
-      <div className={classes.backdrop}>
-        <Header imageToTop />
+      <div className={classes.backdrop} ref={backdropRef}>
+        <div style={{ marginTop: theme.spacing(7) }}>
+          <Header imageToTop position="absolute" />
+        </div>
         {smOrAbove ? (
           <div className={classes.sloganContainerLarge}>
             <div className={classes.subSlogan}>{subSlogan}</div>
             <div className={classes.mainSlogan}>{mainSlogan}</div>
-            <SearchSection />
+            <SearchInput />
           </div>
         ) : (
           <>
-            <SearchSection />
+            <SearchInput />
             <div className={classes.sloganContainer}>
               <div className={classes.subSlogan}>{subSlogan}</div>
               <div className={classes.mainSlogan}>{mainSlogan}</div>
@@ -294,11 +269,9 @@ export default function Index({
         )}
       </div>
 
-      <Header
-        appear={windowObj ? scrollTop > windowObj.innerHeight * 0.6 : true}
-      />
+      <Header scrolled={scrollPercent} position="sticky" />
 
-      <div className={classes.sectionContainer}>
+      <div>
         <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
           <AreaCategory areas={areas} />
         </Container>
