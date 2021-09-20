@@ -1,4 +1,5 @@
 import {
+  Container,
   createStyles,
   FormControl,
   InputBase,
@@ -6,6 +7,7 @@ import {
   MenuItem,
   Select,
   Theme,
+  useMediaQuery,
 } from '@material-ui/core'
 import React from 'react'
 import { StyledText } from '../../components/StyledText'
@@ -17,6 +19,7 @@ import { IconButton } from '@material-ui/core'
 import FacebookIcon from '@material-ui/icons/Facebook'
 import WhatsAppIcon from '@material-ui/icons/WhatsApp'
 import UndecoratedLink from '../UndecoratedLink'
+import theme from '../../styles/theme'
 
 const useStyles = makeStyles((theme: Theme) => ({
   footer: {
@@ -51,9 +54,13 @@ const Footer = () => {
   const router = useRouter()
 
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    router.push(`${router.query.slug}`, `${router.query.slug}`, {
-      locale: event.target.value as string,
-    })
+    router.push(
+      `${router.query.slug ? router.query.slug : ''}`,
+      `${router.query.slug ? router.query.slug : ''}`,
+      {
+        locale: event.target.value as string,
+      }
+    )
   }
 
   const fallbackLocale = router.locale || 'zh'
@@ -87,51 +94,65 @@ const Footer = () => {
           borderColor: '#80bdff',
           boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
         },
+        height: '20px',
+        display: 'flex',
+        alignItems: 'center',
       },
     })
   )(InputBase)
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
 
   return (
     <div className={classes.footer}>
-      <FormControl variant="filled" fullWidth>
-        <Select
-          input={<BootstrapInput />}
-          value={router.locale}
-          onChange={handleSelectChange}
-        >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="zh">繁體中文</MenuItem>
-        </Select>
-      </FormControl>
-      <div className={classes.aboutContainer}>
-        <UndecoratedLink href="/about">
-          <StyledText size="subtitle2" inline>
-            {aboutParkLabel}
+      <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+        <FormControl variant="filled" fullWidth>
+          <Select
+            input={<BootstrapInput />}
+            value={router.locale}
+            onChange={handleSelectChange}
+          >
+            <MenuItem value="en">
+              <StyledText size="subtitle2" inline>
+                English
+              </StyledText>
+            </MenuItem>
+            <MenuItem value="zh">
+              <StyledText size="subtitle2" inline>
+                繁體中文
+              </StyledText>
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <div className={classes.aboutContainer}>
+          <UndecoratedLink href="/about">
+            <StyledText size="subtitle2" inline>
+              {aboutParkLabel}
+            </StyledText>
+          </UndecoratedLink>
+          <StyledText size="subtitle2" inline className={classes.separator}>
+            |
           </StyledText>
-        </UndecoratedLink>
-        <StyledText size="subtitle2" inline className={classes.separator}>
-          |
+          <UndecoratedLink href="/terms">
+            <StyledText size="subtitle2" inline>
+              {termsLabel}
+            </StyledText>
+          </UndecoratedLink>
+        </div>
+        <div className={classes.iconsContainer}>
+          <StyledButton className={classes.button}>
+            <InstagramIcon className={classes.icon} />
+          </StyledButton>
+          <StyledButton className={classes.button}>
+            <FacebookIcon className={classes.icon} />
+          </StyledButton>
+          <StyledButton className={classes.button}>
+            <WhatsAppIcon className={classes.icon} />
+          </StyledButton>
+        </div>
+        <StyledText size="subtitle2" className={classes.copyright}>
+          © 2021 ParkParkPark. All Rights Reserved.
         </StyledText>
-        <UndecoratedLink href="/terms">
-          <StyledText size="subtitle2" inline>
-            {termsLabel}
-          </StyledText>
-        </UndecoratedLink>
-      </div>
-      <div className={classes.iconsContainer}>
-        <StyledButton className={classes.button}>
-          <InstagramIcon className={classes.icon} />
-        </StyledButton>
-        <StyledButton className={classes.button}>
-          <FacebookIcon className={classes.icon} />
-        </StyledButton>
-        <StyledButton className={classes.button}>
-          <WhatsAppIcon className={classes.icon} />
-        </StyledButton>
-      </div>
-      <StyledText size="subtitle2" className={classes.copyright}>
-        © 2021 ParkParkPark. All Rights Reserved.
-      </StyledText>
+      </Container>
     </div>
   )
 }

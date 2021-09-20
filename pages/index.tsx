@@ -2,12 +2,12 @@ import React, { useMemo } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
-import { Container, InputBase, SvgIconProps } from '@material-ui/core'
+import { Container, InputBase, useMediaQuery } from '@material-ui/core'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
-import { Section, SectionProps } from '../components/Section'
+import { AreaCategory, Section, SectionProps } from '../components/Section'
 import { useStyles as useSearchBoxStyles } from '../components/search/input'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
@@ -23,16 +23,13 @@ import { imageBuilder } from '../sanityApi/sanity'
 import { SupportedLanguages } from '../constants/SupportedLanguages'
 import { getCarparks } from '../sanityApi/carparks'
 import { getHotTags } from '../sanityApi/tags'
-import FilterHdrIcon from '@material-ui/icons/FilterHdr'
-import GestureIcon from '@material-ui/icons/Gesture'
-import NatureIcon from '@material-ui/icons/Nature'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { orderCarparkByPriceToday } from '../sanityApi/toApplication/carparks'
 import { AreaResponse } from '../types/api/AreaResponse'
 import { StyledButton } from '../components/StyledButton'
 import Footer from '../components/footer/footer'
 import { translatePosts } from '../utils/translatePosts'
 import { translateCarparks } from '../utils/translateCarparks'
+import theme from '../styles/theme'
 
 interface IndexStyleProps {
   iconColor?: string
@@ -41,28 +38,51 @@ interface IndexStyleProps {
 const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
   backdrop: {
     zIndex: -1,
-    height: '35vh',
+    height: '45vh',
+    [theme.breakpoints.up('sm')]: {
+      height: '65vh',
+      justifyContent: 'center',
+    },
     padding: theme.spacing(8, 2, 2, 2),
     backgroundImage:
       'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    justifyContent: 'space-between',
+    backgroundPosition: 'center',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
     boxShadow: '3px 6px 15px -8px #000000;',
   },
+  sloganContainerLarge: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
   sloganContainer: {
     position: 'relative',
     color: 'white',
+    width: '100%',
   },
   subSlogan: {
     fontWeight: 700,
+    color: 'white',
     fontSize: '1rem',
+    [theme.breakpoints.up('sm')]: {
+      textAlign: 'center',
+      fontSize: '1.5rem',
+    },
   },
   mainSlogan: {
     fontSize: '1.8rem',
     fontWeight: 700,
+    color: 'white',
+    [theme.breakpoints.up('sm')]: {
+      textAlign: 'center',
+      fontSize: '3rem',
+      marginBottom: '1.5rem',
+    },
   },
   tagSelect: {
     borderRadius: '30px',
@@ -82,31 +102,11 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     margin: theme.spacing(0, 2, 1, 0),
   },
   sectionContainer: {
-    marginTop: theme.spacing(2),
-    padding: theme.spacing(2, 0),
-  },
-  areaIconContainer: {
-    margin: theme.spacing(2, 0),
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    width: '100%',
-    textAlign: 'center',
-    '& div': {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+    padding: theme.spacing(4, 0),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(4, 0),
     },
-  },
-  icon: {
-    padding: theme.spacing(1.5),
-    marginBottom: theme.spacing(1),
-    borderRadius: theme.spacing(6),
-    background: (props) => props.iconColor,
-    '& svg': {
-      fill: '#666',
-      width: '0.95rem',
-      height: '0.95rem',
-    },
+    backgroundColor: theme.palette.grey[100],
   },
 }))
 
@@ -116,82 +116,6 @@ interface IProps {
   orderedCarparks: CarparkResponse[]
   hotTags: HotTagResponse[]
   areas: AreaResponse[]
-}
-interface AProps {
-  areas: AreaResponse[]
-  locale: SupportedLanguages
-}
-
-const areaConfig = [
-  {
-    icon: <FilterHdrIcon />,
-    color: '#e4f3ea',
-  },
-  {
-    icon: <GestureIcon />,
-    color: '#ffece8',
-  },
-  {
-    icon: <NatureIcon />,
-    color: '#fff6e4',
-  },
-  {
-    icon: <MoreHorizIcon />,
-    color: '#f0edfc',
-  },
-]
-
-interface IconCircleProps {
-  color: string
-  children: React.ReactElement<SvgIconProps>
-}
-
-function IconCircle({ color, children }: IconCircleProps) {
-  const classes = useStyles({
-    iconColor: color,
-  })
-
-  return <div className={classes.icon}>{children}</div>
-}
-
-function AreaCategory({ areas, locale }: AProps) {
-  const classes = useStyles({})
-  const { areaSelection } = translations[locale]
-  return (
-    <div className={classes.sectionContainer}>
-      <StyledText size="h4" bold>
-        {areaSelection}
-      </StyledText>
-      <div className={classes.areaIconContainer}>
-        {[
-          ...areas,
-          {
-            _id: 'more',
-            name: {
-              en: 'More',
-              zh: '更多',
-            },
-            slug: 'more',
-          },
-        ].map((area, i) => (
-          <Link
-            href={{
-              pathname: '/search-all',
-              query: { ['sub-district']: area.slug },
-            }}
-            key={area._id}
-          >
-            <div>
-              <IconCircle color={areaConfig[i].color}>
-                {areaConfig[i].icon}
-              </IconCircle>
-              {area.name[locale]}
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-  )
 }
 
 export default function Index({
@@ -233,6 +157,7 @@ export default function Index({
       }
     })
   }, [hotTags, fallbackLocale])
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
 
   const {
     mainSlogan,
@@ -250,6 +175,7 @@ export default function Index({
   const postSections: SectionProps[] = [
     {
       subPath: '/post',
+      fullCarousel: true,
       sectionHeader: latestCarparkPromotions,
       postItems: translatedLatestPosts,
       slidingCard: true,
@@ -279,7 +205,7 @@ export default function Index({
       ),
     },
     {
-      subPath: '/categories',
+      subPath: '/carparks?tags=',
       sectionHeader: hotCarparkTagsHeader,
       postItems: translatedHotTags,
       limited: true,
@@ -301,35 +227,59 @@ export default function Index({
     },
   ]
 
+  const SearchSection = () => (
+    <Link href="/search">
+      <div className={searchBoxClasses.searchBox}>
+        <div className={searchBoxClasses.searchIcon}>
+          <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
+        </div>
+        <InputBase
+          placeholder={searchPlaceholder}
+          className={searchBoxClasses.inputInput}
+          inputProps={{ 'aria-label': 'search' }}
+        />
+      </div>
+    </Link>
+  )
   return (
     <>
       <Header imageToTop />
       <div className={classes.backdrop}>
-        <Link href="/search">
-          <div className={searchBoxClasses.searchBox}>
-            <div className={searchBoxClasses.searchIcon}>
-              <SearchIcon />
+        {smOrAbove ? (
+          <div className={classes.sloganContainerLarge}>
+            <div className={classes.subSlogan}>{subSlogan}</div>
+            <div className={classes.mainSlogan}>{mainSlogan}</div>
+            <SearchSection />
+          </div>
+        ) : (
+          <>
+            <SearchSection />
+            <div className={classes.sloganContainer}>
+              <div className={classes.subSlogan}>{subSlogan}</div>
+              <div className={classes.mainSlogan}>{mainSlogan}</div>
             </div>
-            <InputBase
-              placeholder={searchPlaceholder}
-              className={searchBoxClasses.inputInput}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-        </Link>
-        <div className={classes.sloganContainer}>
-          <div className={classes.subSlogan}>{subSlogan}</div>
-          <div className={classes.mainSlogan}>{mainSlogan}</div>
-        </div>
+          </>
+        )}
       </div>
-      <Container maxWidth="lg">
-        <AreaCategory areas={areas} locale={fallbackLocale} />
-        {postSections.map((section) => (
-          <div key={section.sectionHeader} className={classes.sectionContainer}>
+      <div className={classes.sectionContainer}>
+        <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+          <AreaCategory areas={areas} />
+        </Container>
+      </div>
+
+      {postSections.map((section, i) => (
+        <div
+          key={section.sectionHeader}
+          style={
+            i % 2 === 0 ? {} : { backgroundColor: theme.palette.grey[200] }
+          }
+          className={classes.sectionContainer}
+        >
+          <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
             <Section {...section} />
-          </div>
-        ))}
-      </Container>
+          </Container>
+        </div>
+      ))}
       <Footer />
     </>
   )

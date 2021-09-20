@@ -25,17 +25,17 @@ import { useRouter } from 'next/router'
 import translations from '../../locales'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
-import { CarparkPost } from '../../types/api/CarparkResponse'
 import { Section, SectionProps } from '../../components/Section'
 import { useMemo } from 'react'
 import { StyledButton } from '../../components/StyledButton'
-import { getHotPosts } from '../../sanityApi/posts'
+import { getNearbyPosts } from '../../sanityApi/posts'
 import Footer from '../../components/footer/footer'
 import { withStyles } from '@material-ui/core'
 import { translateCarparks } from '../../utils/translateCarparks'
 import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
 import PriceDetailTable from '../../components/table/PriceDetailTable'
+import { orderCarparkPosts } from '../../sanityApi/toApplication/posts'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -88,8 +88,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(1),
   },
   paymentIconContainer: {
-    height: '20px',
-    width: '20px',
+    height: '40px',
+    width: '40px',
     position: 'relative',
     marginRight: theme.spacing(2),
   },
@@ -174,13 +174,14 @@ const CarparkPage = ({
       ),
     },
     {
+      subPath: '/post',
       sectionHeader: nearbyBestPromotionsLabel,
       postItems: translatedNearbyBestPromotions,
       slidingCard: true,
     },
   ]
 
-  const Promotions = ({ post }: { post: CarparkPost }) => (
+  const Promotions = ({ post }: { post: PostResponse }) => (
     <UndecoratedLink href={`/post/${post.slug}`}>
       <div className={classes.details}>
         <CardMedia
@@ -293,28 +294,32 @@ const CarparkPage = ({
               <PriceDetailTable priceDetails={carpark.dayNightPriceDetails} />
             </div>
           )}
-          <div className={classes.section}>
-            <StyledText size="h4" bold className={classes.title}>
-              {paymentMethodLabel}
-            </StyledText>
-            {carpark.paymentMethods.map((method) => (
-              <div
-                className={classes.paymentContainer}
-                key={`${method.name[fallbackLocale]}_${method.iconPath}`}
-              >
-                <div className={classes.paymentIconContainer}>
-                  <Image
-                    src={imageBuilder(method.iconPath).toString() || '/hk.webp'}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+          {carpark.paymentMethods.length > 0 && (
+            <div className={classes.section}>
+              <StyledText size="h4" bold className={classes.title}>
+                {paymentMethodLabel}
+              </StyledText>
+              {carpark.paymentMethods.map((method) => (
+                <div
+                  className={classes.paymentContainer}
+                  key={`${method.name[fallbackLocale]}_${method.iconPath}`}
+                >
+                  <div className={classes.paymentIconContainer}>
+                    <Image
+                      src={
+                        imageBuilder(method.iconPath).toString() || '/hk.webp'
+                      }
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  </div>
+                  <StyledText size="subtitle2">
+                    {method.name[fallbackLocale]}
+                  </StyledText>
                 </div>
-                <StyledText size="subtitle2">
-                  {method.name[fallbackLocale]}
-                </StyledText>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           <div className={classes.section}>
             {postSections.map((section) => (
               <div
@@ -367,9 +372,16 @@ export async function getStaticProps({ params, preview }: StaticPropsContext) {
   const subDistrictIds = carpark.subDistricts.map(
     (subDistrict) => subDistrict._id
   )
-  const nearbyCarparks = await getNearbyCarparks(subDistrictIds)
+  const nearbyCarparks = (await getNearbyCarparks(subDistrictIds)).filter(
+    (nearbyCarpark) => nearbyCarpark._id !== carpark._id
+  )
   // todo when final structure is defined
-  const nearbyBestPromotions = await getHotPosts()
+  const nearbyPosts = (await getNearbyPosts(subDistrictIds)).filter(
+    (nearbyPost) =>
+      !carpark.posts.map((post) => post._id).includes(nearbyPost._id)
+  )
+  const nearbyBestPromotions = orderCarparkPosts(nearbyPosts)
+
   return {
     props: { carpark, nearbyCarparks, nearbyBestPromotions },
     revalidate: 1,

@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItem: 'center',
   },
   shareBtn: {
-    '&hover:': {
+    '&:hover': {
       color: theme.palette.grey[400],
     },
     marginRight: theme.spacing(2),

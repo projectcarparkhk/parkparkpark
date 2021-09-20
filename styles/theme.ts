@@ -10,8 +10,8 @@ const theme = createMuiTheme({
   breakpoints: {
     values: {
       xs: 320,
-      sm: 540,
-      md: 960,
+      sm: 440,
+      md: 850,
       lg: 1280,
       xl: 1536,
     },
@@ -41,7 +41,7 @@ theme.typography.h2 = {
 theme.typography.h3 = {
   fontSize: '1.3rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '1.75rem',
+    fontSize: '2rem',
   },
 }
 
@@ -75,10 +75,10 @@ theme.typography.subtitle1 = {
 }
 
 theme.typography.subtitle2 = {
-  fontSize: '0.9rem',
+  fontSize: '0.8rem',
   fontWeight: 'normal',
   [theme.breakpoints.up('sm')]: {
-    fontSize: '0.45rem',
+    fontSize: '1rem',
   },
 }
 

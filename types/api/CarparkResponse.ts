@@ -1,3 +1,4 @@
+import { PostResponse, PromotionDetail } from './PostResponse'
 import { ResponseElement } from './ResponseElement'
 export interface PriceDetail {
   day: string
@@ -19,12 +20,5 @@ export interface CarparkResponse extends ResponseElement {
     name: { [key: string]: string }
     iconPath: string
   }[]
-  posts: CarparkPost[]
-}
-
-export interface CarparkPost {
-  title: { [key: string]: string }
-  slug: string
-  shortDescription: { [key: string]: string }
-  imagePath: string
+  posts: PostResponse[]
 }

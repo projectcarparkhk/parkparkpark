@@ -9,7 +9,7 @@ import {
   parseDayDetailData,
   parseHourData,
   parseTimeData,
-} from '../../utils/parseData'
+} from '../../utils/parseTableData'
 import DataTable from './DataTable'
 interface IProps {
   priceDetails: PriceDetail[]

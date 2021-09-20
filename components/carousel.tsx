@@ -7,8 +7,8 @@ import Link from 'next/link'
 
 interface IProps {
   items: {
-    image: string
-    postSlug: string
+    imagePath: string
+    slug: string
   }[]
   className?: string
 }
@@ -19,7 +19,6 @@ const useStyles = makeStyles(() => ({
     '&:hover': {
       cursor: 'pointer',
     },
-
   },
   carouselContainer: {
     display: 'flex',
@@ -32,11 +31,11 @@ export const CarouselBanner = ({ items, className: klasses = '' }: IProps) => {
   return (
     <div className={`${classes.carouselContainer} ${klasses}`}>
       <Carousel className={classes.carousel}>
-        {items.map(({ image, postSlug }) => (
-          <Paper key={postSlug}>
-            <Link href={postSlug}>
-              <div>
-                <Image src={image} layout="fill" objectFit="cover" />
+        {items.map(({ imagePath, slug }) => (
+          <Paper key={slug}>
+            <Link href={slug}>
+              <div style={{ height: '20vh' }}>
+                <Image src={imagePath} layout="fill" objectFit="cover" />
               </div>
             </Link>
           </Paper>

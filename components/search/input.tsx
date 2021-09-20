@@ -33,10 +33,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-      height: '3rem',
+      height: '3.5rem',
+      borderRadius: '10px',
       width: '50%',
-      left: '50%',
-      transform: 'translateX(-50%)',
     },
   },
   searchIcon: {
@@ -56,7 +55,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       margin: theme.spacing(1, 1),
-      fontSize: '1rem',
+      fontSize: '1.5rem',
     },
   },
   suggestion: {
