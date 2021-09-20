@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { AppBar, Toolbar } from '@material-ui/core'
+import { AppBar, Toolbar, useMediaQuery } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
@@ -8,41 +8,55 @@ import SearchIcon from '@material-ui/icons/Search'
 import { StyledText } from '../components/StyledText'
 import translations from '../locales'
 import { useRouter } from 'next/router'
+import theme from '../styles/theme'
+import React from 'react'
+import SearchInput from './search/SearchInput'
 
 type HeaderProps = {
-  imageToTop: boolean
+  imageToTop?: boolean
+  scrolled?: number
+  position?: 'sticky' | 'absolute'
 }
 
-type AppBarStyleProps = HeaderProps
+type AppBarStyleProps = {
+  imageToTop?: boolean
+}
 
 const useStyles = makeStyles<Theme, AppBarStyleProps>((theme) => ({
   appBar: {
-    height: theme.mixins.toolbar.minHeight,
     color: (props) => (props.imageToTop ? 'white' : theme.palette.primary.main),
-  },
-  toolBar: {
-    minHeight: theme.mixins.toolbar.minHeight,
+    backgroundColor: (props) => (props.imageToTop ? 'transparent' : 'white'),
   },
   title: {
     flexGrow: 1,
+    [theme.breakpoints.up('sm')]: {
+      flexGrow: 0,
+      marginRight: theme.spacing(2),
+    },
+    cursor: 'pointer',
   },
-  offset: theme.mixins.toolbar,
 }))
-export default function Header({ imageToTop }: HeaderProps) {
+export default function Header({
+  imageToTop,
+  scrolled,
+  position,
+}: HeaderProps) {
   const classes = useStyles({
     imageToTop,
   })
-  const { locale } = useRouter()
+  const { locale, pathname } = useRouter()
   const { homeTitle } = translations[locale || 'zh']
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
   return (
     <>
       <AppBar
-        position="absolute"
+        position={position}
         elevation={0}
         color="transparent"
-        className={classes.appBar}
+        className={`${classes.appBar}`}
+        style={{ opacity: scrolled }}
       >
-        <Toolbar className={classes.toolBar}>
+        <Toolbar>
           <Link href="/search-all">
             <IconButton edge="start" color="inherit" aria-label="menu">
               <MenuIcon />
@@ -57,14 +71,16 @@ export default function Header({ imageToTop }: HeaderProps) {
               </span>
             </Link>
           </div>
-          <Link href="/search">
-            <IconButton edge="end" color="inherit" aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Link>
+          {smOrAbove && pathname !== '/' && <SearchInput size="sm" />}
+          {!smOrAbove && (
+            <Link href="/search">
+              <IconButton edge="end" color="inherit" aria-label="search">
+                <SearchIcon />
+              </IconButton>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
-      {!imageToTop && <div className={classes.offset} />}
     </>
   )
 }

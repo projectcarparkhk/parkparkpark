@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles, Theme } from '@material-ui/core'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { Filters, FilterCounts } from '../../types/components/filters'
+import { StyledText } from '../StyledText'
 
 export interface FilterCatalogueProps {
   filterTypes: (keyof Filters)[]
@@ -14,6 +15,7 @@ export interface FilterCatalogueProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   filterCatalogue: {
+    marginTop: theme.spacing(2),
     display: 'flex',
   },
   filterTypeButton: {
@@ -22,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& .MuiFormControlLabel-label': {
       fontSize: '1rem',
     },
+    cursor: 'pointer',
   },
   active: {
     fontWeight: 700,
@@ -50,9 +53,11 @@ export function FilterCatalogue({
             }`}
             onClick={() => applyFilterCatalogue(type)}
           >
-            <div>{translations[locale][type]}</div>
+            <StyledText size="h5">{translations[locale][type]}</StyledText>
             {filterCounts[type] > 0 && (
-              <span className={classes.count}>({filterCounts[type]})</span>
+              <StyledText size="h6" className={classes.count}>
+                ({filterCounts[type]})
+              </StyledText>
             )}
             <ExpandMoreIcon />
           </div>

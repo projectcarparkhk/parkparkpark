@@ -8,6 +8,7 @@ import {
   Link,
   makeStyles,
   Theme,
+  useMediaQuery,
 } from '@material-ui/core'
 import React from 'react'
 import Carousel from 'react-material-ui-carousel'
@@ -36,6 +37,8 @@ import { translatePosts } from '../../utils/translatePosts'
 import UndecoratedLink from '../../components/UndecoratedLink'
 import PriceDetailTable from '../../components/table/PriceDetailTable'
 import { orderCarparkPosts } from '../../sanityApi/toApplication/posts'
+import theme from '../../styles/theme'
+import ShareSection from '../../components/share/ShareSection'
 interface IProps {
   carpark: CarparkResponse
   nearbyCarparks: CarparkResponse[]
@@ -48,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    [theme.breakpoints.up('sm')]: {
+      height: '50vh',
+    },
   },
   container: {
     padding: theme.spacing(2, 0),
@@ -129,6 +135,7 @@ const CarparkPage = ({
 }: IProps) => {
   const classes = useStyles()
   const router = useRouter()
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
   const fallbackLocale = (router.locale as SupportedLanguages) || 'zh'
   const {
     latestPromotionsLabel,
@@ -163,7 +170,7 @@ const CarparkPage = ({
       renderButton: () => (
         <Link
           href={`/carparks?subDistricts=${carparkSubDistrictIdsString}`}
-          style={{ width: '100%' }}
+          style={{ width: '100%', textAlign: 'center' }}
         >
           <StyledButton variant="outlined" color="primary">
             <StyledText size="h6" bold>
@@ -211,17 +218,16 @@ const CarparkPage = ({
     },
   }))(Chip)
 
-  return (
-    <div>
-      <Container>
-        <Header imageToTop={false} />
-      </Container>
+  const renderCarousel = () => {
+    const carousel = (
       <Carousel
         swipe
         navButtonsAlwaysInvisible
         autoPlay={false}
         IndicatorIcon={<div></div>}
-        activeIndicatorIconButtonProps={{ className: classes.activeIndicator }}
+        activeIndicatorIconButtonProps={{
+          className: classes.activeIndicator,
+        }}
         indicatorIconButtonProps={{ className: classes.nonActiveIndicator }}
         indicatorContainerProps={{ className: classes.indicator }}
       >
@@ -237,13 +243,25 @@ const CarparkPage = ({
           ></div>
         ))}
       </Carousel>
+    )
+    if (smOrAbove) {
+      return <Container>{carousel}</Container>
+    }
+    return carousel
+  }
+
+  return (
+    <div>
+      <Header position="sticky" />
+      <div>{renderCarousel()}</div>
       <Container>
         <div className={classes.container}>
+          <ShareSection />
           <div className={classes.section}>
             <StyledText size="h3" bold className={classes.title}>
               {carpark.name[fallbackLocale]}
             </StyledText>
-            <StyledText size="subtitle2" className={classes.description}>
+            <StyledText size="subtitle1" className={classes.description}>
               {carpark.descriptions[fallbackLocale]}
             </StyledText>
             {carpark.tags.map((tag) => (
@@ -313,7 +331,7 @@ const CarparkPage = ({
                       objectFit="contain"
                     />
                   </div>
-                  <StyledText size="subtitle2">
+                  <StyledText size="subtitle1">
                     {method.name[fallbackLocale]}
                   </StyledText>
                 </div>
