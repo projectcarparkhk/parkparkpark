@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useCallback } from 'react'
 import Autosuggest, {
   ChangeEvent,
   InputProps,
@@ -22,7 +22,8 @@ import translations from '../../locales'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
 import { useRouter } from 'next/router'
 import { StyledText } from '../StyledText'
-
+import { throttle } from 'lodash'
+import * as gtag from '../../utils/gtag'
 interface StyleType {
   size: 'sm' | 'lg'
 }
@@ -121,6 +122,19 @@ function SearchInput({ children, size = 'lg' }: ISearchProps) {
   const classes = useStyles({ size })
   const { push, locale } = useRouter()
   const fallBackLocale = locale as SupportedLanguages
+  const delayedQuery = useCallback(
+    throttle(async (query) => {
+      const res = await getSuggestions(query)
+      setSuggestions(res.result.data)
+
+      gtag.event({
+        action: 'type',
+        category: 'site search',
+        label: query,
+      })
+    }, 1000),
+    []
+  )
 
   const renderSuggestion = (
     suggestion: Suggestion,
@@ -157,8 +171,7 @@ function SearchInput({ children, size = 'lg' }: ISearchProps) {
   async function onSuggestionsFetchRequested({
     value,
   }: SuggestionsFetchRequestedParams) {
-    const res = await getSuggestions(value)
-    setSuggestions(res.result.data)
+    delayedQuery(value)
   }
 
   function onSuggestionsClearRequested() {
