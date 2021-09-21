@@ -1,11 +1,12 @@
 import React, { memo, useState, useCallback } from 'react'
-import Autosuggest, {
+import {
   ChangeEvent,
   InputProps,
   RenderInputComponentProps,
   SuggestionSelectedEventData,
   SuggestionsFetchRequestedParams,
 } from 'react-autosuggest'
+import { AutosuggestPatch } from './Autosuggest/AutosuggestPatch'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -209,7 +210,7 @@ function SearchInput({ children, size = 'lg' }: ISearchProps) {
   }
 
   return (
-    <Autosuggest
+    <AutosuggestPatch
       suggestions={suggestions}
       onSuggestionsFetchRequested={onSuggestionsFetchRequested}
       onSuggestionsClearRequested={onSuggestionsClearRequested}
