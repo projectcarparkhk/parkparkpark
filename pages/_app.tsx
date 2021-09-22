@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, ElementType } from 'react'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../styles/theme'
-import { ElementType } from 'react'
+import * as gtag from '../utils/gtag'
 interface IProps {
-  Component: ElementType;
+  Component: ElementType
   pageProps: any
 }
 
 function MyApp({ Component, pageProps }: IProps) {
+  const router = useRouter()
   useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side')
@@ -17,6 +19,16 @@ function MyApp({ Component, pageProps }: IProps) {
       jssStyles.parentElement.removeChild(jssStyles)
     }
   }, [])
+
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      gtag.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
 
   return (
     <React.Fragment>

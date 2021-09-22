@@ -36,7 +36,12 @@ interface SearchAllPageProps extends ListProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   content: {
-    marginTop: theme.spacing(3),
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  section: {
+    margin: theme.spacing(2, 0),
   },
   flexItem: {
     margin: theme.spacing(0, 1, 1, 0),
@@ -47,6 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     height: theme.spacing(5),
     textAlign: 'center',
+    margin: theme.spacing(2, 0),
   },
   currentPageTypeButton: {
     fontWeight: 700,
@@ -76,7 +82,7 @@ function TagList({ tags, locale }: TagListProps) {
               variant="outlined"
               color="primary"
             >
-              {tag.name[locale]}
+              <StyledText size="subtitle1">{tag.name[locale]}</StyledText>
             </Button>
           </Link>
         ))}
@@ -101,20 +107,22 @@ function SubDistrictList({ areas, locale }: SubDistrictListProps) {
   )
   return (
     <>
-      <div>
+      <div className={classes.section}>
         {areas.map((area) => (
           <Chip
             key={area._id}
             className={classes.flexItem}
             color="primary"
-            label={area.name[locale]}
+            label={
+              <StyledText size="subtitle1">{area.name[locale]}</StyledText>
+            }
             variant={area.slug === selectedArea ? 'default' : 'outlined'}
             onClick={() => setSelectedArea(area.slug)}
           />
         ))}
       </div>
       <div>
-        <StyledText size="h3" bold inline={false}>
+        <StyledText size="h3" bold inline={false} className={classes.section}>
           {subDistrictsLabel}
         </StyledText>
         {subDistricts.map((subDistrict) => (
@@ -130,7 +138,9 @@ function SubDistrictList({ areas, locale }: SubDistrictListProps) {
               variant="outlined"
               color="primary"
             >
-              {subDistrict.name[locale]}
+              <StyledText size="subtitle1">
+                {subDistrict.name[locale]}
+              </StyledText>
             </Button>
           </Link>
         ))}
@@ -173,30 +183,30 @@ function SearchAll({ areas, tags }: SearchAllPageProps) {
   }, [areas])
   return (
     <>
-      <Header imageToTop={false} />
-      <div className={classes.pageTypeButtonContainer}>
-        {tabConfig.map((tab) => {
-          return (
-            <ButtonBase
-              key={tab.type}
-              className={
-                pageType === tab.type
-                  ? classes.currentPageTypeButton
-                  : classes.pageTypeButton
-              }
-              onClick={() => {
-                setPageType(tab.type)
-                router.push({
-                  query: { type: tab.type },
-                })
-              }}
-            >
-              {tab.label}
-            </ButtonBase>
-          )
-        })}
-      </div>
+      <Header position="sticky" />
       <Container className={classes.content} maxWidth="lg">
+        <div className={classes.pageTypeButtonContainer}>
+          {tabConfig.map((tab) => {
+            return (
+              <ButtonBase
+                key={tab.type}
+                className={
+                  pageType === tab.type
+                    ? classes.currentPageTypeButton
+                    : classes.pageTypeButton
+                }
+                onClick={() => {
+                  setPageType(tab.type)
+                  router.push({
+                    query: { type: tab.type },
+                  })
+                }}
+              >
+                <StyledText size="h6">{tab.label}</StyledText>
+              </ButtonBase>
+            )
+          })}
+        </div>
         {pageType === 'sub-districts' && (
           <SubDistrictList
             areas={areaList}

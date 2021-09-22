@@ -1,5 +1,5 @@
 import { Theme, makeStyles, CardActionArea } from '@material-ui/core'
-import React from 'react'
+import React, { memo } from 'react'
 import Card from '@material-ui/core/Card'
 import { StyledText } from '../StyledText'
 import { SupportedLanguages } from '../../constants/SupportedLanguages'
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   cardActionArea: {
     display: 'flex',
-    padding: theme.spacing(2, 1),
+    padding: theme.spacing(2, 2),
   },
   image: {
     objectFit: 'cover',
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-export default function CarparkListItem({ carpark, locale }: CarparkListProps) {
+function CarparkListItem({ carpark, locale }: CarparkListProps) {
   const classes = useStyles()
   const router = useRouter()
   const { name, imagePath, subDistricts, tags, slug } = carpark
@@ -86,3 +86,5 @@ export default function CarparkListItem({ carpark, locale }: CarparkListProps) {
     </Card>
   )
 }
+
+export default memo(CarparkListItem)

@@ -12,7 +12,7 @@ const locale = {
   cheapestCarparksHeader: 'Cheapest carparks',
   hotCarparkTagsHeader: 'Hot carpark tags',
   checkoutAll: 'View all',
-  hot: 'Hot',
+  hotLabel: 'Hot',
   subDistrict: 'District',
   carpark: 'Carpark',
   areaSelection: 'Select area',

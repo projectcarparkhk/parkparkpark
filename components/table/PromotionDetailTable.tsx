@@ -15,10 +15,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   tableTitle: {
     padding: theme.spacing(0.7, 1.5),
     whiteSpace: 'nowrap',
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(2, 2),
+    },
   },
   tableCell: {
     padding: theme.spacing(0.7, 1.5),
     whiteSpace: 'nowrap',
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(2, 2),
+    },
   },
 }))
 
@@ -65,10 +71,10 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
       }
       dataRows={
         <>
-          {promotionDetails.map((detail: PromotionDetail) => (
-            <TableRow key={`${detail.day}_${detail.time}_${detail.hr}`}>
+          {promotionDetails.map((detail: PromotionDetail, i) => (
+            <TableRow key={`${detail.day}_${detail.time}_${detail.hr}_${i}`}>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {parseDayDetailData(
                     detail.day,
                     fallbackLocale as SupportedLanguages
@@ -76,7 +82,7 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {parseTimeData(
                     detail.time,
                     fallbackLocale as SupportedLanguages
@@ -84,25 +90,25 @@ const PromotionDetailTable = ({ promotionDetails }: IProps) => {
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {`${detail.hr} ${hourLabel}`}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {detail.spending ? `$${detail.spending}` : ''}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{detail.movie}</StyledText>
+                <StyledText size="subtitle1">{detail.movie}</StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">
+                <StyledText size="subtitle1">
                   {detail.dining ? `$${detail.dining}` : ''}
                 </StyledText>
               </TableCell>
               <TableCell className={classes.tableCell}>
-                <StyledText size="subtitle2">{detail.condition}</StyledText>
+                <StyledText size="subtitle1">{detail.condition}</StyledText>
               </TableCell>
             </TableRow>
           ))}

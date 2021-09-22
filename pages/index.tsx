@@ -1,14 +1,13 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { getHotPosts, getLatestPosts } from '../sanityApi/posts'
 import { getSubDistrictsGroupByArea } from '../sanityApi/subDistricts'
 import Header from '../components/header'
-import { Container, InputBase, useMediaQuery } from '@material-ui/core'
+import { Container, useMediaQuery } from '@material-ui/core'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
-import SearchIcon from '@material-ui/icons/Search'
 import Link from 'next/link'
 import { AreaCategory, Section, SectionProps } from '../components/Section'
-import { useStyles as useSearchBoxStyles } from '../components/search/input'
+import SearchInput from '../components/search/SearchInput'
 import { StyledText } from '../components/StyledText'
 import UndecoratedLink from '../components/UndecoratedLink'
 import {
@@ -30,40 +29,44 @@ import Footer from '../components/footer/footer'
 import { translatePosts } from '../utils/translatePosts'
 import { translateCarparks } from '../utils/translateCarparks'
 import theme from '../styles/theme'
+import { useScrollPosition } from '../hooks/useScrollPosition'
 
-interface IndexStyleProps {
-  iconColor?: string
-}
-
-const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   backdrop: {
-    zIndex: -1,
+    zIndex: 10,
     height: '45vh',
     [theme.breakpoints.up('sm')]: {
       height: '65vh',
-      justifyContent: 'center',
+      position: 'relative',
+      overflow: 'visible',
     },
-    padding: theme.spacing(8, 2, 2, 2),
+    padding: theme.spacing(0, 2, 2, 2),
     backgroundImage:
       'linear-gradient(rgba(8, 8, 8, 0), rgba(8, 8, 8, 0.5) 70%, black 100%), url(\'/backdrop.png\')',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    justifyContent: 'space-between',
     backgroundPosition: 'center',
     display: 'flex',
     flexDirection: 'column',
     boxShadow: '3px 6px 15px -8px #000000;',
   },
   sloganContainerLarge: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    position: 'relative',
+    top: '20vh',
   },
 
   sloganContainer: {
     position: 'relative',
     color: 'white',
     width: '100%',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
   },
   subSlogan: {
     fontWeight: 700,
@@ -71,7 +74,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     fontSize: '1rem',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '1.5rem',
+      fontSize: '2rem',
     },
   },
   mainSlogan: {
@@ -80,7 +83,7 @@ const useStyles = makeStyles<Theme, IndexStyleProps>((theme: Theme) => ({
     color: 'white',
     [theme.breakpoints.up('sm')]: {
       textAlign: 'center',
-      fontSize: '3rem',
+      fontSize: '3.5rem',
       marginBottom: '1.5rem',
     },
   },
@@ -125,10 +128,11 @@ export default function Index({
   hotTags,
   areas,
 }: IProps) {
-  const classes = useStyles({})
-  const searchBoxClasses = useSearchBoxStyles()
+  const classes = useStyles()
   const { locale } = useRouter()
   const fallbackLocale = (locale as SupportedLanguages) || 'zh'
+  const [scrollTop] = useScrollPosition()
+  const [backdropHeight, setBackdropHeight] = useState(0)
 
   const translatedLatestPosts = useMemo(
     () => translatePosts(latestPosts, fallbackLocale),
@@ -162,7 +166,6 @@ export default function Index({
   const {
     mainSlogan,
     subSlogan,
-    searchPlaceholder,
     latestCarparkPromotions,
     cheapestCarparkPromotions,
     cheapestCarparksHeader,
@@ -227,33 +230,41 @@ export default function Index({
     },
   ]
 
-  const SearchSection = () => (
-    <Link href="/search">
-      <div className={searchBoxClasses.searchBox}>
-        <div className={searchBoxClasses.searchIcon}>
-          <SearchIcon fontSize={smOrAbove ? 'large' : 'default'} />
-        </div>
-        <InputBase
-          placeholder={searchPlaceholder}
-          className={searchBoxClasses.inputInput}
-          inputProps={{ 'aria-label': 'search' }}
-        />
-      </div>
-    </Link>
-  )
+  const scrollPercent = useMemo(() => {
+    const toolbarHeight = parseInt(theme.mixins.toolbar.minHeight as string)
+    const scrolled = scrollTop - backdropHeight
+    const minPercent = scrolled < 0 ? 0 : scrolled / toolbarHeight
+    const maxPercent = minPercent > 1 ? 1 : minPercent
+    return maxPercent
+  }, [scrollTop, backdropHeight])
+
+  const backdropRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (backdropRef.current) {
+      const current = backdropRef.current
+      setBackdropHeight(current.offsetHeight)
+    }
+  }, [backdropRef, backdropRef.current])
+
   return (
     <>
-      <Header imageToTop />
-      <div className={classes.backdrop}>
+      <div className={classes.backdrop} ref={backdropRef}>
+        <div style={{ marginTop: theme.spacing(7) }}>
+          <Header imageToTop position="absolute" />
+        </div>
         {smOrAbove ? (
           <div className={classes.sloganContainerLarge}>
             <div className={classes.subSlogan}>{subSlogan}</div>
             <div className={classes.mainSlogan}>{mainSlogan}</div>
-            <SearchSection />
+            <SearchInput />
           </div>
         ) : (
           <>
-            <SearchSection />
+            <Link href="/search">
+              <div>
+                <SearchInput />
+              </div>
+            </Link>
             <div className={classes.sloganContainer}>
               <div className={classes.subSlogan}>{subSlogan}</div>
               <div className={classes.mainSlogan}>{mainSlogan}</div>
@@ -261,8 +272,11 @@ export default function Index({
           </>
         )}
       </div>
-      <div className={classes.sectionContainer}>
-        <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+
+      <Header scrolled={scrollPercent} position="sticky" />
+
+      <div>
+        <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
           <AreaCategory areas={areas} />
         </Container>
       </div>
@@ -275,7 +289,7 @@ export default function Index({
           }
           className={classes.sectionContainer}
         >
-          <Container maxWidth={smOrAbove ? 'md' : 'lg'}>
+          <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
             <Section {...section} />
           </Container>
         </div>

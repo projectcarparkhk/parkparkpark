@@ -1,7 +1,6 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import SearchInput from '../components/search/input'
-import { Suggestion } from '../components/search/type'
+import React from 'react'
+import { useRouter } from 'next/router'
+import SearchInput from '../components/search/SearchInput'
 import { HotTagResponse } from '../types/pages'
 import Header from '../components/header'
 import { getHotTags } from '../sanityApi/tags'
@@ -10,13 +9,14 @@ import Container from '@material-ui/core/Container'
 import Chip from '@material-ui/core/Chip'
 import { Theme } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
-import { SupportedLanguages } from '../constants/SupportedLanguages';
-import translations from '../locales';
+import { SupportedLanguages } from '../constants/SupportedLanguages'
+import translations from '../locales'
+import theme from '../styles/theme'
+import { useMediaQuery } from '@material-ui/core'
 
 interface IProps {
   hotTags: HotTagResponse[]
 }
-
 
 const useStyles = makeStyles((theme: Theme) => ({
   searchWrapper: {
@@ -28,42 +28,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 function Search({ hotTags }: IProps) {
-  const { push, locale } = useRouter()
+  const { locale } = useRouter()
 
-  const {
-    hot,
-  } = translations[locale || 'zh']
+  const { hotLabel } = translations[locale || 'zh']
 
   const classes = useStyles()
+  const smOrAbove = useMediaQuery(theme.breakpoints.up('sm'))
 
-  function onSuggestionClick(suggestion: Suggestion) {
-    switch (suggestion.type) {
-      case 'subDistrict':
-        push({
-          pathname: '/carparks',
-          query: { subDistricts: suggestion.slug },
-        })
-        break
-      case 'carpark':
-        push({
-          pathname: `/carparks/${suggestion.slug}`
-        })
-        break
-    }
-  }
   return (
-    <Container>
-      <Header imageToTop={false} />
-      <div className={classes.searchWrapper}>
-      <SearchInput
-        onSuggestionClick={onSuggestionClick}
-      >
-        <>
-          <h3>{hot}</h3>
-          <div>
-            {hotTags
-              .map((tag) => (
-                <Link 
+    <>
+      <Header position="sticky" />
+      <Container maxWidth={smOrAbove ? 'lg' : 'md'}>
+        <div className={classes.searchWrapper}>
+          <SearchInput>
+            <>
+              <h3>{hotLabel}</h3>
+              {hotTags.map((tag) => (
+                <Link
                   key={tag[locale as SupportedLanguages].name}
                   href={{
                     pathname: '/carparks',
@@ -77,11 +58,11 @@ function Search({ hotTags }: IProps) {
                   />
                 </Link>
               ))}
-          </div>
-        </>
-      </SearchInput>
-      </div>
-    </Container>
+            </>
+          </SearchInput>
+        </div>
+      </Container>
+    </>
   )
 }
 

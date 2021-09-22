@@ -11,6 +11,7 @@ interface IProps {
     slug: string
   }[]
   className?: string
+  subPath?: string
 }
 const useStyles = makeStyles(() => ({
   carousel: {
@@ -26,14 +27,18 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-export const CarouselBanner = ({ items, className: klasses = '' }: IProps) => {
+export const CarouselBanner = ({
+  items,
+  subPath,
+  className: klasses = '',
+}: IProps) => {
   const classes = useStyles()
   return (
     <div className={`${classes.carouselContainer} ${klasses}`}>
       <Carousel className={classes.carousel}>
         {items.map(({ imagePath, slug }) => (
           <Paper key={slug}>
-            <Link href={slug}>
+            <Link href={`${subPath}/${slug}`}>
               <div style={{ height: '20vh' }}>
                 <Image src={imagePath} layout="fill" objectFit="cover" />
               </div>
