@@ -74,7 +74,10 @@ export const useStyles = makeStyles<Theme, StyleType>((theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: '5px',
     boxShadow: '0 6px 20px rgb(0 0 0 / 8%)',
-    height: '40vh',
+    height: '27vh',
+    [theme.breakpoints.up('sm')]: {
+      height: '40vh',
+    },
     overflowY: 'scroll',
   },
   container: {

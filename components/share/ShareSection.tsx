@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   shareContainer: {
     display: 'flex',
-    alignItem: 'center',
+    alignItems: 'center',
   },
   shareBtnContainer: {
     display: 'flex',
-    alignItem: 'center',
+    alignItems: 'center',
   },
   shareBtn: {
     ...theme.typography.h4,
