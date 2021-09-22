@@ -260,7 +260,11 @@ export default function Index({
           </div>
         ) : (
           <>
-            <SearchInput />
+            <Link href="/search">
+              <div>
+                <SearchInput />
+              </div>
+            </Link>
             <div className={classes.sloganContainer}>
               <div className={classes.subSlogan}>{subSlogan}</div>
               <div className={classes.mainSlogan}>{mainSlogan}</div>

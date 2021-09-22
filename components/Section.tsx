@@ -160,7 +160,7 @@ export const Section = ({
                   autoPlay={false}
                   indicators={false}
                 >
-                  <CarouselBanner items={postItems} />
+                  <CarouselBanner items={postItems} subPath={subPath} />
                 </Carousel>
               ) : slidingCard ? (
                 <div>
@@ -285,7 +285,7 @@ export const AreaCategory = ({ areas }: AreaCategoryProps) => {
               en: 'More',
               zh: '更多',
             },
-            slug: 'more',
+            slug: 'all',
           },
         ].map((area, i) => {
           const { icon: Icon, color } = areaConfig[i]
